@@ -4,12 +4,7 @@ import { useMemo, useState } from "react";
 import Ornament from "@/components/Ornament";
 import { useGoldPrices } from "@/hooks/useGoldPrices";
 import { PURITY_DEFS, type PurityValue } from "@/lib/gold";
-
-const UNITS = [
-  { value: "qian", label: "錢 (台錢)", toQian: 1 },
-  { value: "g",    label: "公克 (g)", toQian: 1 / 3.75 },
-  { value: "tael", label: "兩 (台兩)", toQian: 10 },
-];
+import { useT } from "@/lib/i18n/provider";
 
 const formatNT = (n: number) =>
   "NT$ " +
@@ -31,10 +26,17 @@ const dirColors = {
 } as const;
 
 export default function Calculator() {
+  const t = useT();
   const [purity, setPurity] = useState<PurityValue>("9999");
   const [unit, setUnit] = useState("qian");
   const [weight, setWeight] = useState("");
   const { rates, trends, directions, updatedAt } = useGoldPrices();
+
+  const UNITS = [
+    { value: "qian", label: t.calculator.unit_qian, toQian: 1 },
+    { value: "g",    label: t.calculator.unit_gram, toQian: 1 / 3.75 },
+    { value: "tael", label: t.calculator.unit_tael, toQian: 10 },
+  ];
 
   const currentRate = rates[purity];
   const currentTrend = trends[purity];
@@ -62,21 +64,21 @@ export default function Calculator() {
       <div className="relative mx-auto max-w-6xl px-6 sm:px-10">
         <div className="text-center mb-16 md:mb-20">
           <p className="font-display tracking-[0.5em] text-gold-300 text-[10px] mb-6 uppercase">
-            Cash Today · 今天能換多少
+            {t.calculator.eyebrow}
           </p>
           <h2 className="font-display text-4xl md:text-6xl mb-8 leading-tight">
-            今天把舊金拿來金閃閃,
+            {t.calculator.title_a}
             <br />
-            <span className="italic font-serif gold-foil">大約能換多少現金?</span>
+            <span className="italic font-serif gold-foil">{t.calculator.title_b}</span>
           </h2>
           <Ornament className="mb-8" />
           <p className="text-ivory-50/85 max-w-2xl mx-auto text-base md:text-lg leading-loose font-light">
-            抽屜裡那條老金鏈、媽媽留下的金牌、結婚時的對戒 ——
+            {t.calculator.intro_a}
             <br />
-            輸入重量,3 秒看到今天大約可以換到多少現金。
+            {t.calculator.intro_b}
             <br />
             <span className="text-ivory-50/60 text-sm md:text-base">
-              金價即時跟著國際牌告.現場秤重.現金結清.絕不扣耗損。
+              {t.calculator.intro_note}
             </span>
           </p>
         </div>
@@ -85,7 +87,7 @@ export default function Calculator() {
           <div className="lg:col-span-7 space-y-10">
             <div>
               <label className="block font-display tracking-[0.4em] text-xs md:text-sm text-gold-300 uppercase mb-5">
-                01 · 你的金是哪一種?
+                {t.calculator.step_purity}
               </label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-px bg-white/10 border border-white/10">
                 {PURITY_DEFS.map((p) => (
@@ -110,7 +112,7 @@ export default function Calculator() {
 
             <div>
               <label className="block font-display tracking-[0.4em] text-xs md:text-sm text-gold-300 uppercase mb-5">
-                02 · 你習慣用哪個單位?
+                {t.calculator.step_unit}
               </label>
               <div className="grid grid-cols-3 gap-px bg-white/10 border border-white/10">
                 {UNITS.map((u) => (
@@ -133,9 +135,9 @@ export default function Calculator() {
             <div>
               <label
                 htmlFor="weight"
-                className="block font-display tracking-[0.4em] text-[10px] text-gold-300 uppercase mb-5"
+                className="block font-display tracking-[0.4em] text-xs md:text-sm text-gold-300 uppercase mb-5"
               >
-                03 · 大概有多重?
+                {t.calculator.step_weight}
               </label>
               <input
                 id="weight"
@@ -143,7 +145,7 @@ export default function Calculator() {
                 inputMode="decimal"
                 min={0}
                 step="0.01"
-                placeholder="例如 5"
+                placeholder={t.calculator.weight_ph}
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
                 className="w-full bg-transparent border-b border-white/40 focus:border-gold-300 focus:outline-none py-3 text-3xl md:text-4xl font-sans font-semibold text-white placeholder-white/30 transition-colors"
@@ -153,7 +155,7 @@ export default function Calculator() {
                   <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-75" />
                   <span className="relative inline-flex w-1.5 h-1.5 rounded-full bg-emerald-400" />
                 </span>
-                <span>目前牌告 · {currentPurity.label}</span>
+                <span>{t.calculator.current_quote} {currentPurity.label}</span>
                 <span
                   key={currentRate}
                   className={`${dirStyle.priceText} ${dirStyle.flash} transition-colors`}
@@ -183,10 +185,10 @@ export default function Calculator() {
               />
               <div className="relative">
                 <p className="font-display tracking-[0.4em] text-xs md:text-sm text-gold-600 uppercase mb-4">
-                  Cash Today · 今天大約可換
+                  {t.calculator.result_eyebrow}
                 </p>
                 <p className="text-sm md:text-base text-ink-700 mb-6 font-light tracking-wider">
-                  {result > 0 ? "把你的金拿來金閃閃,今天可以換到" : "輸入重量,看看可以換多少"}
+                  {result > 0 ? t.calculator.result_sub_filled : t.calculator.result_sub_empty}
                 </p>
                 <p
                   key={result}
@@ -195,15 +197,15 @@ export default function Calculator() {
                   {result > 0 ? formatNT(result) : "NT$ —"}
                 </p>
                 <p className="text-sm text-ink-700/80 mb-8 font-light">
-                  依今日金價試算 · 實際以門市現場秤重為準
+                  {t.calculator.result_note}
                 </p>
 
                 <div className="h-px bg-ink-950/15 mb-8" />
 
                 <p className="text-base text-ink-700 leading-loose font-light mb-6">
-                  想知道精準的金額?
+                  {t.calculator.accurate_q}
                   <br />
-                  加 LINE 或來電,我們告訴你今天最即時的成交價。
+                  {t.calculator.accurate_a}
                 </p>
 
                 <div className="flex flex-col gap-3">
@@ -211,14 +213,14 @@ export default function Calculator() {
                     href="tel:+88632805908"
                     className="inline-flex items-center justify-between bg-ink-950 text-ivory-50 hover:bg-gold-500 hover:text-ink-950 px-6 py-4 text-sm tracking-[0.3em] font-display uppercase transition-colors"
                   >
-                    <span>立即來電 (03) 280-5908</span>
+                    <span>{t.calculator.cta_call}</span>
                     <span>→</span>
                   </a>
                   <a
                     href="/#contact"
                     className="inline-flex items-center justify-between border border-ink-950/30 text-ink-950 hover:border-gold-500 hover:text-gold-600 px-6 py-4 text-sm tracking-[0.3em] font-display uppercase transition-colors"
                   >
-                    <span>加 LINE 詢實際金價</span>
+                    <span>{t.calculator.cta_line}</span>
                     <span>→</span>
                   </a>
                 </div>
@@ -227,7 +229,7 @@ export default function Calculator() {
                   className="mt-6 text-xs tracking-wider text-ink-700/70 font-light text-center"
                   suppressHydrationWarning
                 >
-                  牌告更新 · {updatedAt ? formatTime(updatedAt) : "—"}
+                  {t.calculator.updated} · {updatedAt ? formatTime(updatedAt) : "—"}
                 </p>
               </div>
             </div>

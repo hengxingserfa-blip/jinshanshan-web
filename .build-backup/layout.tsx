@@ -7,8 +7,6 @@ import Footer from "@/components/Footer";
 import TopBar from "@/components/TopBar";
 import CategoryBar from "@/components/CategoryBar";
 import FloatingActions from "@/components/FloatingActions";
-import { I18nProvider } from "@/lib/i18n/provider";
-import { getActivePromotion } from "@/lib/data/promotions";
 
 const notoTC = Noto_Sans_TC({
   subsets: ["latin"],
@@ -52,22 +50,17 @@ export default async function RootLayout({
   const pathname = h.get("x-pathname") ?? "";
   const isAdmin = pathname.startsWith("/admin");
 
-  // 抓 promo (server-side fetch, 傳給 client TopBar)
-  const promo = !isAdmin ? await getActivePromotion() : null;
-
   return (
     <html lang="zh-TW">
       <body
         className={`${notoTC.variable} ${cormorant.variable} ${italiana.variable} font-sans antialiased bg-ivory-50 text-ink-950 font-light`}
       >
-        <I18nProvider>
-          {!isAdmin && <TopBar promo={promo} />}
-          {!isAdmin && <Header />}
-          {!isAdmin && <CategoryBar />}
-          <main>{children}</main>
-          {!isAdmin && <Footer />}
-          {!isAdmin && <FloatingActions />}
-        </I18nProvider>
+        {!isAdmin && <TopBar />}
+        {!isAdmin && <Header />}
+        {!isAdmin && <CategoryBar />}
+        <main>{children}</main>
+        {!isAdmin && <Footer />}
+        {!isAdmin && <FloatingActions />}
       </body>
     </html>
   );

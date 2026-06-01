@@ -3,6 +3,7 @@
 import { useGoldPrices } from "@/hooks/useGoldPrices";
 import { PURITY_DEFS, PRICE_EN_LABELS } from "@/lib/gold";
 import Sparkline from "@/components/Sparkline";
+import { useT } from "@/lib/i18n/provider";
 
 const formatTime = (d: Date) =>
   d.toLocaleTimeString("zh-TW", {
@@ -20,6 +21,7 @@ const colors = {
 } as const;
 
 export default function GoldPriceTicker() {
+  const t = useT();
   const { rates, trends, directions, updatedAt, anchor, source, history } =
     useGoldPrices();
 
@@ -38,7 +40,7 @@ export default function GoldPriceTicker() {
           <div>
             <div className="flex items-center gap-4 mb-3">
               <p className="font-display tracking-[0.5em] text-gold-600 text-[10px] uppercase">
-                Live · 今日金價
+                {t.ticker.eyebrow}
               </p>
               <span className="inline-flex items-center gap-2">
                 <span className="relative flex w-2 h-2">
@@ -51,7 +53,7 @@ export default function GoldPriceTicker() {
               </span>
             </div>
             <h3 className="font-display text-2xl md:text-3xl text-ink-950">
-              本店<span className="italic font-serif text-gold-500"> 回收 </span>牌告
+              {t.ticker.title_a}<span className="italic font-serif text-gold-500"> {t.ticker.title_b} </span>
             </h3>
           </div>
           <p
@@ -181,7 +183,7 @@ export default function GoldPriceTicker() {
         </div>
 
         <p className="mt-6 text-[10px] tracking-[0.3em] uppercase text-ink-400 font-display text-center">
-          ※ 漲紅跌綠.資料僅供參考,實際以門市秤重檢測為準
+          ※ {t.ticker.note}
         </p>
       </div>
     </section>

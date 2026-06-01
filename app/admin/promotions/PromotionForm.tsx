@@ -4,6 +4,8 @@ import { useFormState, useFormStatus } from "react-dom";
 import { useTransition, useState } from "react";
 import Link from "next/link";
 import { createPromotionAction, updatePromotionAction, deletePromotionAction } from "./actions";
+import TranslationsEditor from "../_components/TranslationsEditor";
+import type { Translations } from "@/lib/supabase/types";
 
 interface PromotionDefaults {
   id?: string;
@@ -15,6 +17,7 @@ interface PromotionDefaults {
   cta_label?: string | null;
   cta_url?: string | null;
   active?: boolean;
+  translations?: Translations | null;
 }
 
 const initial = { ok: false, message: "" };
@@ -84,6 +87,16 @@ export default function PromotionForm({ defaults }: { defaults?: PromotionDefaul
         </div>
 
         <Toggle name="active" label="啟用(在時間範圍內顯示)" defaultChecked={defaults?.active ?? true} />
+
+        <TranslationsEditor
+          name="translations"
+          defaultValue={defaults?.translations}
+          fields={[
+            { key: "title",     label: "標題(TopBar 左側)", base: defaults?.title_zh ?? null },
+            { key: "body",      label: "活動內容",            base: defaults?.body_zh ?? null, multiline: true },
+            { key: "cta_label", label: "CTA 文字",            base: defaults?.cta_label ?? null },
+          ]}
+        />
 
         {state?.message && (
           <p className={`text-sm font-medium ${state.ok ? "text-emerald-700" : "text-red-600"}`}>{state.message}</p>

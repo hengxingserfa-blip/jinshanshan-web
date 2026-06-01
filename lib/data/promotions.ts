@@ -11,6 +11,7 @@ const FALLBACK: Promotion = {
   cta_label: "詢問詳情",
   cta_url: "/#contact",
   active: true,
+  translations: {},
   created_at: "",
 };
 

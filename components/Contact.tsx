@@ -1,43 +1,51 @@
+"use client";
+
+import { useT } from "@/lib/i18n/provider";
+
 export default function Contact() {
+  const t = useT();
   return (
-    <section id="contact" className="bg-ink-950 text-ivory-50 py-28 md:py-40">
-      <div className="mx-auto max-w-7xl px-6 sm:px-10">
+    <section id="contact" className="bg-ink-950 text-ivory-50 py-28 md:py-40 relative overflow-hidden">
+      <div
+        className="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 20% 30%, rgba(201,164,81,0.4), transparent 50%), radial-gradient(circle at 80% 70%, rgba(220,186,118,0.3), transparent 50%)",
+        }}
+      />
+      <div className="relative mx-auto max-w-7xl px-6 sm:px-10">
         <div className="text-center mb-20 md:mb-24">
           <p className="font-display tracking-[0.45em] text-gold-300 text-[10px] mb-6 uppercase">
-            Visit Us
+            {t.contact.eyebrow}
           </p>
-          <h2 className="font-display text-4xl md:text-6xl mb-6">
-            親自走一趟
+          <h2 className="font-display text-3xl md:text-5xl mb-6">
+            {t.contact.title}
           </h2>
           <div className="w-12 gold-line h-px mx-auto mb-8" />
           <p className="text-ivory-50/60 max-w-md mx-auto text-sm leading-loose font-light">
-            建議來店前先 LINE 詢今日金價,
-            <br />
-            我們在桃園中壢中和路 108 號等您。
+            {t.contact.intro}
           </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-px bg-white/10">
           <div className="bg-ink-950 text-ivory-50 p-10 md:p-14">
             <p className="font-display tracking-[0.35em] text-gold-300 text-[10px] uppercase mb-10">
-              Boutique Information
+              {t.contact.boutique_info}
             </p>
 
             <dl className="space-y-7 text-sm md:text-base">
               <div className="grid grid-cols-[80px_1fr] gap-6 items-start">
                 <dt className="font-display tracking-[0.3em] text-[10px] text-gold-300 uppercase pt-1">
-                  Address
+                  {t.contact.label_address}
                 </dt>
                 <dd>
                   <a
                     href="https://www.google.com/maps/search/?api=1&query=桃園市中壢區中和路108號"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-ivory-50 hover:text-gold-300 transition-colors"
+                    className="text-ivory-50 hover:text-gold-300 transition-colors whitespace-pre-line"
                   >
-                    320 桃園市中壢區
-                    <br />
-                    中和路 108 號
+                    {t.contact.address}
                   </a>
                 </dd>
               </div>
@@ -45,7 +53,7 @@ export default function Contact() {
 
               <div className="grid grid-cols-[80px_1fr] gap-6 items-center">
                 <dt className="font-display tracking-[0.3em] text-[10px] text-gold-300 uppercase">
-                  Phone
+                  {t.contact.label_phone}
                 </dt>
                 <dd>
                   <a href="tel:+88632805908" className="text-ivory-50 hover:text-gold-300 transition-colors">
@@ -57,23 +65,23 @@ export default function Contact() {
 
               <div className="grid grid-cols-[80px_1fr] gap-6 items-center">
                 <dt className="font-display tracking-[0.3em] text-[10px] text-gold-300 uppercase">
-                  Hours
+                  {t.contact.label_hours}
                 </dt>
-                <dd className="text-ivory-50">每日 10:30 – 20:30</dd>
+                <dd className="text-ivory-50">{t.contact.hours_value}</dd>
               </div>
               <div className="h-px bg-white/20" />
 
               <div className="grid grid-cols-[80px_1fr] gap-6 items-center">
                 <dt className="font-display tracking-[0.3em] text-[10px] text-gold-300 uppercase">
-                  LINE
+                  {t.contact.label_line}
                 </dt>
-                <dd className="text-ivory-50/75">@待提供官方 ID</dd>
+                <dd className="text-ivory-50/75">{t.contact.line_value}</dd>
               </div>
               <div className="h-px bg-white/20" />
 
               <div className="grid grid-cols-[80px_1fr] gap-6 items-center">
                 <dt className="font-display tracking-[0.3em] text-[10px] text-gold-300 uppercase">
-                  Instagram
+                  {t.contact.label_ig}
                 </dt>
                 <dd>
                   <a
@@ -82,7 +90,24 @@ export default function Contact() {
                     rel="noreferrer"
                     className="text-ivory-50 hover:text-gold-300 transition-colors"
                   >
-                    @shiny_gold991
+                    {t.contact.ig_value}
+                  </a>
+                </dd>
+              </div>
+              <div className="h-px bg-white/20" />
+
+              <div className="grid grid-cols-[80px_1fr] gap-6 items-center">
+                <dt className="font-display tracking-[0.3em] text-[10px] text-gold-300 uppercase">
+                  {t.contact.label_fb}
+                </dt>
+                <dd>
+                  <a
+                    href="https://www.facebook.com/profile.php?id=61575318885967"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-ivory-50 hover:text-gold-300 transition-colors"
+                  >
+                    {t.contact.fb_value}
                   </a>
                 </dd>
               </div>
@@ -93,7 +118,7 @@ export default function Contact() {
                 href="tel:+88632805908"
                 className="inline-flex items-center text-[10px] tracking-[0.35em] uppercase font-display text-ivory-50 border-b border-ivory-50 hover:border-gold-300 hover:text-gold-300 pb-1.5 transition-colors"
               >
-                Call Us
+                {t.contact.cta_call}
               </a>
               <a
                 href="https://www.google.com/maps/search/?api=1&query=桃園市中壢區中和路108號"
@@ -101,7 +126,7 @@ export default function Contact() {
                 rel="noreferrer"
                 className="inline-flex items-center text-[10px] tracking-[0.35em] uppercase font-display text-ivory-50/70 hover:text-gold-300 pb-1.5 transition-colors"
               >
-                Direction →
+                {t.contact.cta_map}
               </a>
             </div>
           </div>
@@ -115,7 +140,7 @@ export default function Contact() {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="金閃閃銀樓地圖"
+              title="Map"
             />
           </div>
         </div>

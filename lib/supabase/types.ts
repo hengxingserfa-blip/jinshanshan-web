@@ -3,6 +3,13 @@
 
 export type Locale = "zh-TW" | "vi" | "en" | "id" | "fil" | "th";
 
+// translations 結構:
+//   { en: { name: "...", description: "..." }, vi: {...}, id: {...}, fil: {...}, th: {...} }
+export type Translations = Partial<Record<
+  "en" | "vi" | "id" | "fil" | "th",
+  Record<string, string>
+>>;
+
 export interface Product {
   id: string;
   slug: string;
@@ -16,6 +23,7 @@ export interface Product {
   featured: boolean;
   available: boolean;
   sort_order: number;
+  translations: Translations;
   created_at: string;
   updated_at: string;
 }
@@ -31,6 +39,7 @@ export interface Article {
   hero_image_url: string | null;
   published: boolean;
   published_at: string | null;
+  translations: Translations;
   created_at: string;
   updated_at: string;
 }
@@ -45,6 +54,7 @@ export interface Promotion {
   cta_label: string | null;
   cta_url: string | null;
   active: boolean;
+  translations: Translations;
   created_at: string;
 }
 

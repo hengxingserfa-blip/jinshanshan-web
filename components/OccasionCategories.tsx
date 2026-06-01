@@ -1,60 +1,35 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { IMG } from "@/lib/images";
 import Ornament from "@/components/Ornament";
-
-const occasions = [
-  {
-    en: "Wedding",
-    title: "結婚囍金",
-    desc: "對戒、囍餅金、入門金條 ── 為一輩子的承諾準備。",
-    img: IMG.pair,
-  },
-  {
-    en: "Newborn",
-    title: "彌月禮品",
-    desc: "刻字金牌、平安金鎖,把祝福留給寶寶的成長記憶。",
-    img: IMG.fancy,
-  },
-  {
-    en: "Engagement",
-    title: "訂婚對戒",
-    desc: "親手試戴、現場討論款式,讓最重要的瞬間有最合適的戒。",
-    img: IMG.ring1,
-  },
-  {
-    en: "Mother's Day",
-    title: "母親節獻禮",
-    desc: "把心意換成她值得的光,5 月限定加碼活動進行中。",
-    img: IMG.necklace2,
-  },
-  {
-    en: "New Year",
-    title: "過年招財",
-    desc: "金條、財神金幣、招財金飾 —— 在新年第一筆,投入價值。",
-    img: IMG.bar,
-  },
-  {
-    en: "Investment",
-    title: "投資金條",
-    desc: "9999 純金,從五錢到一兩、多種規格,長期保值首選。",
-    img: IMG.bracelet1,
-  },
-];
+import { useT } from "@/lib/i18n/provider";
 
 export default function OccasionCategories() {
+  const t = useT();
+
+  const occasions = [
+    { en: "Wedding",      title: t.occasions.wedding_title,      desc: t.occasions.wedding_desc,      img: IMG.pair },
+    { en: "Newborn",      title: t.occasions.newborn_title,      desc: t.occasions.newborn_desc,      img: IMG.fancy },
+    { en: "Engagement",   title: t.occasions.engagement_title,   desc: t.occasions.engagement_desc,   img: IMG.ring1 },
+    { en: "Mother's Day", title: t.occasions.mothers_day_title,  desc: t.occasions.mothers_day_desc,  img: IMG.necklace2 },
+    { en: "New Year",     title: t.occasions.new_year_title,     desc: t.occasions.new_year_desc,     img: IMG.bar },
+    { en: "Investment",   title: t.occasions.investment_title,   desc: t.occasions.investment_desc,   img: IMG.bracelet1 },
+  ];
+
   return (
     <section className="bg-white py-32 md:py-44 border-y border-ink-950/8">
       <div className="mx-auto max-w-7xl px-6 sm:px-10">
         <div className="text-center mb-20 md:mb-24">
           <p className="font-display tracking-[0.5em] text-gold-600 text-[10px] mb-8 uppercase">
-            For Every Occasion
+            {t.occasions.eyebrow}
           </p>
           <h2 className="font-display text-5xl md:text-7xl text-ink-950">
-            為每個場合,
+            {t.occasions.title_a}
             <br />
             <span className="italic font-serif gold-foil">
-              選一塊合適的金
+              {t.occasions.title_b}
             </span>
           </h2>
           <Ornament className="mt-10" />
@@ -87,7 +62,7 @@ export default function OccasionCategories() {
                   {o.desc}
                 </p>
                 <span className="inline-flex items-center gap-2 text-[10px] tracking-[0.35em] uppercase font-display text-ink-400 group-hover:text-gold-600 transition-colors">
-                  Explore <span className="transition-transform group-hover:translate-x-1">→</span>
+                  {t.occasions.explore} <span className="transition-transform group-hover:translate-x-1">→</span>
                 </span>
               </div>
             </Link>

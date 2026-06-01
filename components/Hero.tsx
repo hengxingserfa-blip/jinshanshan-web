@@ -1,45 +1,47 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { IMG } from "@/lib/images";
 import Ornament from "@/components/Ornament";
+import { useT } from "@/lib/i18n/provider";
 
 export default function Hero() {
+  const t = useT();
   return (
     <section className="relative bg-ivory-50">
       <div className="grid lg:grid-cols-12 min-h-[90vh] lg:min-h-screen">
         <div className="lg:col-span-5 flex items-center px-6 sm:px-10 lg:px-20 py-24 lg:py-0 order-2 lg:order-1 subtle-noise">
           <div className="max-w-md animate-fade-up">
             <p className="font-display tracking-[0.5em] text-gold-600 text-[10px] mb-12 uppercase">
-              Est. Zhongli · Taoyuan
+              {t.hero.eyebrow}
             </p>
             <h1 className="font-display text-5xl md:text-7xl lg:text-[6.5rem] leading-[0.95] text-ink-950 mb-12">
-              在這裡,
+              {t.hero.title_a}
               <br />
-              <span className="gold-foil">黃金</span>
+              <span className="gold-foil">{t.hero.title_b}</span>
               <br />
-              <span className="italic font-serif text-ink-900">不只是黃金</span>
+              <span className="italic font-serif text-ink-900">{t.hero.title_c}</span>
             </h1>
             <Ornament className="mb-10 !justify-start" />
             <p className="text-sm md:text-base text-ink-700 leading-loose mb-12 font-light">
-              桃園中壢的誠信銀樓。
+              {t.hero.subtitle_1}
               <br />
-              公開金價・現場秤重・清楚試算。
+              {t.hero.subtitle_2}
             </p>
             <div className="flex flex-col gap-4">
               <Link
                 href="/#contact"
                 className="group inline-flex w-fit items-center gap-3 text-[10px] tracking-[0.4em] uppercase font-display text-ink-950 pb-2 border-b border-ink-950 hover:border-gold-500 hover:text-gold-600 transition-colors"
               >
-                <span>Enquire · 詢今日金價</span>
-                <span className="transition-transform group-hover:translate-x-1">
-                  →
-                </span>
+                <span>{t.hero.cta_a}</span>
+                <span className="transition-transform group-hover:translate-x-1">→</span>
               </Link>
               <Link
                 href="/products"
                 className="group inline-flex w-fit items-center gap-3 text-[10px] tracking-[0.4em] uppercase font-display text-ink-400 hover:text-gold-600 transition-colors"
               >
-                <span>The Collection · 金飾選品</span>
+                <span>{t.hero.cta_b} →</span>
               </Link>
             </div>
           </div>
@@ -60,7 +62,7 @@ export default function Hero() {
           <div className="absolute top-8 right-8 lg:top-12 lg:right-12 flex items-center gap-3 animate-fade-in">
             <span className="block w-8 h-px bg-gold-300" />
             <span className="font-display tracking-[0.45em] text-[10px] text-white/90 uppercase">
-              The Maison · 金閃閃
+              {t.hero.maison_tag}
             </span>
           </div>
 
@@ -77,13 +79,13 @@ export default function Hero() {
 
       <div className="bg-ink-950 text-ivory-50">
         <div className="mx-auto max-w-7xl px-6 sm:px-10 py-5 flex flex-wrap items-center justify-center gap-x-8 md:gap-x-12 gap-y-2 text-sm md:text-base font-sans">
-          <span className="text-gold-300 font-medium">★ Google 5.0</span>
+          <span className="text-gold-300 font-medium">★ {t.hero.rating}</span>
           <span className="text-ivory-50/55">·</span>
-          <span>桃園中壢中和路 108 號</span>
+          <span>{t.hero.address}</span>
           <span className="text-ivory-50/55">·</span>
-          <span>每日 10:30 – 20:30</span>
+          <span>{t.hero.hours}</span>
           <span className="text-ivory-50/55">·</span>
-          <span className="font-medium">(03) 280-5908</span>
+          <span className="font-medium">{t.hero.phone}</span>
         </div>
       </div>
     </section>

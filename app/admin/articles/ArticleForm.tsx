@@ -5,6 +5,8 @@ import { useTransition, useState } from "react";
 import Link from "next/link";
 import { createArticleAction, updateArticleAction, deleteArticleAction } from "./actions";
 import ImageUpload from "../_components/ImageUpload";
+import TranslationsEditor from "../_components/TranslationsEditor";
+import type { Translations } from "@/lib/supabase/types";
 
 interface ArticleDefaults {
   id?: string;
@@ -17,6 +19,7 @@ interface ArticleDefaults {
   hero_image_url?: string | null;
   published?: boolean;
   published_at?: string | null;
+  translations?: Translations | null;
 }
 
 const initial = { ok: false, message: "" };
@@ -86,6 +89,16 @@ export default function ArticleForm({ defaults }: { defaults?: ArticleDefaults }
         </Field>
 
         <Toggle name="published" label="發布到網站(取消勾選 = 草稿)" defaultChecked={defaults?.published ?? false} />
+
+        <TranslationsEditor
+          name="translations"
+          defaultValue={defaults?.translations}
+          fields={[
+            { key: "title",   label: "標題",     base: defaults?.title_zh ?? null },
+            { key: "excerpt", label: "摘要",     base: defaults?.excerpt_zh ?? null, multiline: true },
+            { key: "content", label: "內文",     base: (defaults?.content_zh ?? null)?.slice(0, 80) ?? null, multiline: true },
+          ]}
+        />
 
         {state?.message && (
           <p className={`text-sm font-medium ${state.ok ? "text-emerald-700" : "text-red-600"}`}>{state.message}</p>

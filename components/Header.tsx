@@ -1,15 +1,20 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-
-const navLinks = [
-  { href: "/services", label: "Services", zh: "服務" },
-  { href: "/products", label: "Collection", zh: "選品" },
-  { href: "/articles", label: "Journal", zh: "文章" },
-  { href: "/about", label: "Maison", zh: "關於" },
-  { href: "/faq", label: "FAQ", zh: "Q&A" },
-];
+import { useT } from "@/lib/i18n/provider";
 
 export default function Header() {
+  const t = useT();
+
+  const navLinks = [
+    { href: "/services", label: t.header.services, en: "Services" },
+    { href: "/products", label: t.header.collection, en: "Collection" },
+    { href: "/articles", label: t.header.journal, en: "Journal" },
+    { href: "/about",    label: t.header.maison, en: "Maison" },
+    { href: "/faq",      label: t.header.faq, en: "FAQ" },
+  ];
+
   return (
     <header className="sticky top-0 z-50 bg-ivory-50/90 backdrop-blur-md border-b border-ink-950/8">
       <div className="mx-auto max-w-7xl px-6 sm:px-10 h-20 md:h-24 flex items-center justify-between gap-6">
@@ -31,9 +36,9 @@ export default function Header() {
               href={l.href}
               className="group flex flex-col items-center text-xs tracking-[0.2em] text-ink-950/85 hover:text-gold-600 transition-colors uppercase font-sans font-medium"
             >
-              <span>{l.label}</span>
+              <span>{l.en}</span>
               <span className="text-[11px] tracking-[0.15em] font-sans font-light text-ink-400 group-hover:text-gold-500 mt-0.5">
-                {l.zh}
+                {l.label}
               </span>
             </Link>
           ))}
@@ -42,7 +47,7 @@ export default function Header() {
         <div className="flex items-center gap-5 md:gap-7">
           <Link
             href="/products"
-            aria-label="收藏 Wishlist"
+            aria-label="Wishlist"
             className="hidden md:inline-flex text-ink-950/70 hover:text-gold-600 transition-colors"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -58,14 +63,14 @@ export default function Header() {
             href="/reserve"
             className="hidden md:inline-flex items-center gap-2 text-xs tracking-[0.2em] uppercase font-sans font-medium text-ink-950 border border-ink-950 hover:border-gold-500 hover:text-gold-600 hover:bg-ivory-100 px-4 py-2.5 transition-colors"
           >
-            預約看店 · Reserve
+            {t.header.reserve_cta}
           </Link>
 
           <a
             href="tel:+88632805908"
             className="lg:hidden text-[10px] tracking-[0.3em] uppercase text-ink-950 border-b border-ink-950 pb-0.5"
           >
-            來電
+            {t.header.call_short}
           </a>
         </div>
       </div>

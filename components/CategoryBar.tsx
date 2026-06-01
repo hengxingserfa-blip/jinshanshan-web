@@ -1,17 +1,22 @@
-import Link from "next/link";
+"use client";
 
-const cats = [
-  { en: "All",       zh: "全部商品",   href: "/products" },
-  { en: "Rings",     zh: "戒指",      href: "/products" },
-  { en: "Necklaces", zh: "項鍊",      href: "/products" },
-  { en: "Bracelets", zh: "手鏈",      href: "/products" },
-  { en: "Wedding",   zh: "對戒",      href: "/products" },
-  { en: "Newborn",   zh: "彌月禮",    href: "/products" },
-  { en: "Bullion",   zh: "投資金條",  href: "/products" },
-  { en: "Custom",    zh: "訂製",      href: "/products" },
-];
+import Link from "next/link";
+import { useT } from "@/lib/i18n/provider";
 
 export default function CategoryBar() {
+  const t = useT();
+
+  const cats = [
+    { en: "All",       zh: t.category_bar.all,        href: "/products" },
+    { en: "Rings",     zh: t.category_bar.rings,      href: "/products" },
+    { en: "Necklaces", zh: t.category_bar.necklaces,  href: "/products" },
+    { en: "Bracelets", zh: t.category_bar.bracelets,  href: "/products" },
+    { en: "Wedding",   zh: t.category_bar.wedding,    href: "/products" },
+    { en: "Newborn",   zh: t.category_bar.newborn,    href: "/products" },
+    { en: "Bullion",   zh: t.category_bar.bullion,    href: "/products" },
+    { en: "Custom",    zh: t.category_bar.custom,     href: "/products" },
+  ];
+
   return (
     <div className="sticky top-20 lg:top-24 z-40 bg-ivory-50/95 backdrop-blur-md border-b border-ink-950/8">
       <div className="mx-auto max-w-7xl">

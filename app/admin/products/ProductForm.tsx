@@ -5,6 +5,8 @@ import { useTransition, useState } from "react";
 import Link from "next/link";
 import { createProductAction, updateProductAction, deleteProductAction } from "./actions";
 import ImageUpload from "../_components/ImageUpload";
+import TranslationsEditor from "../_components/TranslationsEditor";
+import type { Translations } from "@/lib/supabase/types";
 
 const CATS = [
   { value: "rings",     label: "戒指 Rings" },
@@ -31,6 +33,7 @@ interface ProductDefaults {
   featured?: boolean;
   available?: boolean;
   sort_order?: number;
+  translations?: Translations | null;
 }
 
 const initial = { ok: false, message: "" };
@@ -141,6 +144,15 @@ export default function ProductForm({ defaults }: { defaults?: ProductDefaults }
           <Toggle name="featured" label="精選 (首頁顯示)" defaultChecked={defaults?.featured ?? false} />
           <Toggle name="available" label="上架" defaultChecked={defaults?.available ?? true} />
         </div>
+
+        <TranslationsEditor
+          name="translations"
+          defaultValue={defaults?.translations}
+          fields={[
+            { key: "name",        label: "商品名稱",  base: defaults?.name_zh ?? null },
+            { key: "description", label: "商品描述",  base: defaults?.description_zh ?? null, multiline: true },
+          ]}
+        />
 
         {state?.message && (
           <p className={`text-sm font-medium ${state.ok ? "text-emerald-700" : "text-red-600"}`}>

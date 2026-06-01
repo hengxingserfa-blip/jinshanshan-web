@@ -12,11 +12,7 @@ export const metadata: Metadata = {
 export default function ReservePage() {
   return (
     <>
-      <PageHero
-        eyebrow="Reserve · 預約看店"
-        title="選個時間,我們等您"
-        subtitle="預約讓我們能事先準備.公開金價、現場秤重、絕不扣耗損。"
-      />
+      <PageHero page="reserve" />
 
       <section className="bg-white py-20 md:py-28">
         <div className="mx-auto max-w-4xl px-6 sm:px-10">

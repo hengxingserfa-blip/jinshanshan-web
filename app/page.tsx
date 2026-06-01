@@ -7,8 +7,11 @@ import ProductsPreview from "@/components/ProductsPreview";
 import Testimonials from "@/components/Testimonials";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
+import { getFeaturedProducts } from "@/lib/data/products";
 
-export default function Home() {
+export default async function Home() {
+  const featured = await getFeaturedProducts(3);
+
   return (
     <>
       <Hero />
@@ -16,7 +19,7 @@ export default function Home() {
       <GoldPriceTicker />
       <Services />
       <OccasionCategories />
-      <ProductsPreview />
+      <ProductsPreview products={featured} />
       <Testimonials />
       <About />
       <Contact />
