@@ -3,25 +3,126 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FCF9F1;
+  --foreground: #0A0805;
+  color-scheme: light only;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+a {
+  color: inherit;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+  .gold-line {
+    background: linear-gradient(90deg, transparent, #9B782A 50%, transparent);
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .gold-foil {
+    background: linear-gradient(
+      135deg,
+      #B58E3F 0%,
+      #DEC588 25%,
+      #9B782A 50%,
+      #DEC588 75%,
+      #B58E3F 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .subtle-noise {
+    background-image: radial-gradient(
+        circle at 25% 25%,
+        rgba(214, 180, 120, 0.05) 0,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 75% 75%,
+        rgba(214, 180, 120, 0.04) 0,
+        transparent 50%
+      );
+  }
+}
+
+img,
+.transition-img {
+  transition: transform 1400ms cubic-bezier(0.22, 1, 0.36, 1), opacity 800ms ease, filter 800ms ease;
+}
+
+/* Markdown 文章渲染樣式 */
+.prose-article h1 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 2.5rem 0 1rem;
+  color: #16120B;
+}
+.prose-article h2 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 2rem 0 0.75rem;
+  color: #16120B;
+}
+.prose-article h3 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.5rem;
+  color: #16120B;
+}
+.prose-article p { margin: 1rem 0; line-height: 1.9; }
+.prose-article ul, .prose-article ol { margin: 1rem 0; padding-left: 1.5rem; }
+.prose-article ul { list-style: disc; }
+.prose-article ol { list-style: decimal; }
+.prose-article li { margin: 0.4rem 0; line-height: 1.8; }
+.prose-article a { color: #7D611D; text-decoration: underline; text-underline-offset: 3px; }
+.prose-article a:hover { color: #9B782A; }
+.prose-article blockquote {
+  border-left: 3px solid #C9A65A;
+  padding: 0.5rem 0 0.5rem 1.25rem;
+  margin: 1.5rem 0;
+  color: #3A352B;
+  font-style: italic;
+}
+.prose-article hr { border: 0; border-top: 1px solid rgba(0,0,0,0.1); margin: 2.5rem auto; width: 4rem; }
+.prose-article strong { color: #16120B; font-weight: 600; }
+.prose-article img { margin: 1.5rem 0; }
+.prose-article code {
+  background: rgba(0,0,0,0.06);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+/* 反白選取樣式:用品牌金色半透底,保留原文字色,確保暗底亮底都看得到 */
+::selection {
+  background-color: rgba(184, 142, 63, 0.55);
+  color: #FCF9F1;
+  text-shadow: none;
+}
+::-moz-selection {
+  background-color: rgba(184, 142, 63, 0.55);
+  color: #FCF9F1;
+  text-shadow: none;
 }
