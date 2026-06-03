@@ -22,7 +22,7 @@ create table if not exists public.products (
   id            uuid primary key default gen_random_uuid(),
   slug          text not null unique,
   category      text not null check (category in
-                  ('rings','necklaces','bracelets','wedding','newborn','bullion','custom')),
+                  ('rings','earrings','necklaces','bracelets','wedding','newborn','bullion','custom')),
   name_zh       text not null,
   name_en       text,
   description_zh text,

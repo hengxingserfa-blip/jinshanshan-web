@@ -9,6 +9,7 @@ export default function CategoryBar() {
   const cats = [
     { en: "All",       zh: t.category_bar.all,        href: "/products" },
     { en: "Rings",     zh: t.category_bar.rings,      href: "/products" },
+    { en: "Earrings",  zh: t.category_bar.earrings,   href: "/products" },
     { en: "Necklaces", zh: t.category_bar.necklaces,  href: "/products" },
     { en: "Bracelets", zh: t.category_bar.bracelets,  href: "/products" },
     { en: "Wedding",   zh: t.category_bar.wedding,    href: "/products" },

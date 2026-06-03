@@ -189,6 +189,7 @@ export type Dict = {
   category_bar: {
     all: string;
     rings: string;
+    earrings: string;
     necklaces: string;
     bracelets: string;
     wedding: string;
@@ -414,6 +415,7 @@ const zhTW: Dict = {
   category_bar: {
     all: "全部商品",
     rings: "戒指",
+    earrings: "耳環",
     necklaces: "項鍊",
     bracelets: "手鏈",
     wedding: "對戒",
@@ -639,6 +641,7 @@ const en: Dict = {
   category_bar: {
     all: "All",
     rings: "Rings",
+    earrings: "Earrings",
     necklaces: "Necklaces",
     bracelets: "Bracelets",
     wedding: "Wedding",
@@ -864,6 +867,7 @@ const vi: Dict = {
   category_bar: {
     all: "Tất cả",
     rings: "Nhẫn",
+    earrings: "Khuyên tai",
     necklaces: "Dây chuyền",
     bracelets: "Vòng tay",
     wedding: "Nhẫn cưới",
@@ -1089,6 +1093,7 @@ const id: Dict = {
   category_bar: {
     all: "Semua",
     rings: "Cincin",
+    earrings: "Anting",
     necklaces: "Kalung",
     bracelets: "Gelang",
     wedding: "Pernikahan",
@@ -1314,6 +1319,7 @@ const fil: Dict = {
   category_bar: {
     all: "Lahat",
     rings: "Singsing",
+    earrings: "Hikaw",
     necklaces: "Kuwintas",
     bracelets: "Pulseras",
     wedding: "Kasal",
@@ -1539,6 +1545,7 @@ const th: Dict = {
   category_bar: {
     all: "ทั้งหมด",
     rings: "แหวน",
+    earrings: "ต่างหู",
     necklaces: "สร้อยคอ",
     bracelets: "สร้อยข้อมือ",
     wedding: "แต่งงาน",

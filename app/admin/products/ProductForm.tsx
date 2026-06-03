@@ -10,6 +10,7 @@ import type { Translations } from "@/lib/supabase/types";
 
 const CATS = [
   { value: "rings",     label: "戒指 Rings" },
+  { value: "earrings",  label: "耳環 Earrings" },
   { value: "necklaces", label: "項鍊 Necklaces" },
   { value: "bracelets", label: "手鏈 Bracelets" },
   { value: "wedding",   label: "對戒 Wedding" },

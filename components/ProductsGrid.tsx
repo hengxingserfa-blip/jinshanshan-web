@@ -7,6 +7,7 @@ import type { Product } from "@/lib/supabase/types";
 
 const CATEGORY_LABELS_EN: Record<string, string> = {
   rings: "Rings",
+  earrings: "Earrings",
   necklaces: "Necklaces",
   bracelets: "Bracelets",
   wedding: "Wedding",
@@ -15,7 +16,7 @@ const CATEGORY_LABELS_EN: Record<string, string> = {
   custom: "Custom",
 };
 
-const TABS = ["all", "rings", "necklaces", "bracelets", "wedding", "newborn", "bullion"] as const;
+const TABS = ["all", "rings", "earrings", "necklaces", "bracelets", "wedding", "newborn", "bullion"] as const;
 
 interface Props {
   products: Product[];

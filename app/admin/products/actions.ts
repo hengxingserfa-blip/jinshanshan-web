@@ -6,7 +6,7 @@ import { isAdminLoggedIn } from "@/lib/admin/auth";
 import { getServiceRoleSupabase } from "@/lib/supabase/server";
 
 type ProductCategory =
-  | "rings" | "necklaces" | "bracelets" | "wedding"
+  | "rings" | "earrings" | "necklaces" | "bracelets" | "wedding"
   | "newborn" | "bullion" | "custom";
 
 interface ActionResult {
@@ -36,7 +36,7 @@ function parseForm(formData: FormData) {
 }
 
 const ALLOWED_CATEGORIES: ProductCategory[] = [
-  "rings", "necklaces", "bracelets", "wedding", "newborn", "bullion", "custom",
+  "rings", "earrings", "necklaces", "bracelets", "wedding", "newborn", "bullion", "custom",
 ];
 
 function validate(p: ReturnType<typeof parseForm>): string | null {
