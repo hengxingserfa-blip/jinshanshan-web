@@ -205,6 +205,7 @@ export default function ProductsGrid({ products }: Props) {
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
                         className="object-cover group-hover:scale-[1.04] transition-transform duration-[1200ms] ease-out"
+                        unoptimized
                       />
                     )}
                     {p.featured && (

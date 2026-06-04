@@ -11,6 +11,11 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export async function generateStaticParams() {
+  const all = await getArticles();
+  return all.map((a) => ({ slug: a.slug }));
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const all = await getArticles();

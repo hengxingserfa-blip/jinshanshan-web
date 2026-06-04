@@ -57,6 +57,7 @@ export default function ProductsPreview({ products }: Props) {
                   fill
                   sizes="(max-width: 1024px) 100vw, 58vw"
                   className="object-cover group-hover:scale-[1.04] transition-transform duration-[1400ms] ease-out"
+                  unoptimized
                 />
               )}
               <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-ink-950/35 to-transparent" />
@@ -106,6 +107,7 @@ export default function ProductsPreview({ products }: Props) {
                         fill
                         sizes="(max-width: 1024px) 50vw, 42vw"
                         className="object-cover group-hover:scale-[1.04] transition-transform duration-[1400ms] ease-out"
+                        unoptimized
                       />
                     )}
                     {p.weight_qian != null && p.weight_qian > 0 && (
