@@ -21,8 +21,10 @@ export default async function ProductsPage() {
         <div className="mx-auto max-w-7xl px-6 sm:px-10">
           <ProductsGrid products={products} />
 
-          <p className="mt-24 text-center text-[10px] tracking-[0.3em] uppercase text-ink-400 font-display max-w-md mx-auto">
-            目前商品照為示意.正式商品照與分類篩選功能將於後台上線後啟用
+          <p className="mt-24 text-center text-[10px] tracking-[0.3em] uppercase text-ink-400 font-display max-w-md mx-auto leading-loose">
+            商品照為實際庫存 · 來店現場可挑選試戴
+            <br />
+            指定款式或重量,LINE / 電話直接詢問
           </p>
         </div>
       </section>

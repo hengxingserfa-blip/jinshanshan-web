@@ -1,4 +1,5 @@
 import Hero from "@/components/Hero";
+import TrustBadges from "@/components/TrustBadges";
 import Calculator from "@/components/Calculator";
 import GoldPriceTicker from "@/components/GoldPriceTicker";
 import Services from "@/components/Services";
@@ -15,6 +16,7 @@ export default async function Home() {
   return (
     <>
       <Hero />
+      <TrustBadges />
       <Calculator />
       <GoldPriceTicker />
       <Services />

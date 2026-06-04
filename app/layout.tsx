@@ -112,7 +112,7 @@ export default async function RootLayout({
         <StructuredData />
       </head>
       <body
-        className={`${notoTC.variable} ${cormorant.variable} ${italiana.variable} font-sans antialiased bg-ivory-50 text-ink-950 font-light`}
+        className={`${notoTC.variable} ${cormorant.variable} ${italiana.variable} font-sans antialiased bg-ivory-50 text-ink-950 font-light ${!isAdmin ? "pb-[64px] md:pb-0" : ""}`}
       >
         <I18nProvider>
           {!isAdmin && <TopBar promo={promo} />}
