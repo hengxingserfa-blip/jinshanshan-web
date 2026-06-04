@@ -34,7 +34,7 @@ const italiana = Italiana({
 });
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://jinshanshan.com";
-const SEARCH_CONSOLE = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
+const SEARCH_CONSOLE = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "_ALBLBU3J1mXohl-w9hDwx2JKnBo9fuoKsZQ7T_d__g";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
