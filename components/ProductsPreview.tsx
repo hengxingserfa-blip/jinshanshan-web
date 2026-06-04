@@ -28,7 +28,8 @@ export default function ProductsPreview({ products }: Props) {
   const [hero, ...rest] = products;
   const heroEn = CATEGORY_LABELS_EN[hero.category] ?? "Featured";
   const heroZh = t.category_bar[hero.category as keyof typeof t.category_bar] ?? "";
-  const heroName = localize(hero.translations, locale, "name", hero.name_zh);
+  const cleanWeight = (n: string) => n.replace(/\s*·\s*[\d.]+\s*錢\s*$/, "");
+  const heroName = cleanWeight(localize(hero.translations, locale, "name", hero.name_zh));
   const heroDesc = localize(hero.translations, locale, "description", hero.description_zh);
 
   return (
@@ -64,6 +65,11 @@ export default function ProductsPreview({ products }: Props) {
                   {t.products_preview.featured}
                 </span>
               </div>
+              {hero.weight_qian != null && hero.weight_qian > 0 && (
+                <span className="absolute bottom-5 right-5 bg-ink-950/85 text-ivory-50 text-sm font-medium px-3 py-1.5 backdrop-blur-sm">
+                  {hero.weight_qian} 錢
+                </span>
+              )}
             </div>
             <div className="pt-7">
               <p className="font-display tracking-[0.4em] text-[10px] text-gold-600 uppercase mb-3">
@@ -89,7 +95,7 @@ export default function ProductsPreview({ products }: Props) {
             {rest.map((p) => {
               const en = CATEGORY_LABELS_EN[p.category] ?? "Item";
               const zh = t.category_bar[p.category as keyof typeof t.category_bar] ?? "";
-              const pName = localize(p.translations, locale, "name", p.name_zh);
+              const pName = cleanWeight(localize(p.translations, locale, "name", p.name_zh));
               return (
                 <article key={p.id} className="group">
                   <div className="aspect-[4/5] relative overflow-hidden bg-ivory-100">
@@ -101,6 +107,11 @@ export default function ProductsPreview({ products }: Props) {
                         sizes="(max-width: 1024px) 50vw, 42vw"
                         className="object-cover group-hover:scale-[1.04] transition-transform duration-[1400ms] ease-out"
                       />
+                    )}
+                    {p.weight_qian != null && p.weight_qian > 0 && (
+                      <span className="absolute bottom-3 right-3 bg-ink-950/85 text-ivory-50 text-xs font-medium px-2.5 py-1 backdrop-blur-sm">
+                        {p.weight_qian} 錢
+                      </span>
                     )}
                   </div>
                   <div className="pt-6">

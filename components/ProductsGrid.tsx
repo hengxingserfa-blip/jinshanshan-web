@@ -179,6 +179,8 @@ export default function ProductsGrid({ products }: Props) {
               const en = CATEGORY_LABELS_EN[p.category] ?? "Item";
               const zh = t.category_bar[p.category as keyof typeof t.category_bar] ?? "";
               const name = localize(p.translations, locale, "name", p.name_zh);
+              // 從 name 移除 "· X 錢" 把重量單獨顯示
+              const cleanName = name.replace(/\s*·\s*[\d.]+\s*錢\s*$/, "");
               return (
                 <article key={p.id} className="group">
                   <div className="aspect-[3/4] relative overflow-hidden bg-ivory-100">
@@ -191,13 +193,23 @@ export default function ProductsGrid({ products }: Props) {
                         className="object-cover group-hover:scale-[1.04] transition-transform duration-[1200ms] ease-out"
                       />
                     )}
+                    {p.featured && (
+                      <span className="absolute top-3 left-3 bg-gold-500 text-ink-950 text-[10px] tracking-[0.25em] uppercase font-display px-2.5 py-1">
+                        精選
+                      </span>
+                    )}
+                    {p.weight_qian != null && p.weight_qian > 0 && (
+                      <span className="absolute bottom-3 right-3 bg-ink-950/85 text-ivory-50 text-xs font-medium px-2.5 py-1 backdrop-blur-sm">
+                        {p.weight_qian} 錢
+                      </span>
+                    )}
                   </div>
                   <div className="pt-6">
                     <p className="font-display tracking-[0.35em] text-[10px] text-gold-600 uppercase mb-2">
                       {en} · {zh}
                     </p>
                     <h3 className="font-display text-xl text-ink-950 mb-1">
-                      {name}
+                      {cleanName}
                     </h3>
                     {p.name_en && locale !== "en" && (
                       <p className="text-[11px] tracking-wider text-ink-400 mb-1 font-serif italic">
