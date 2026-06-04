@@ -7,6 +7,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useI18n, useT } from "@/lib/i18n/provider";
 import { localize } from "@/lib/i18n/localize";
 import type { Product } from "@/lib/supabase/types";
+import ProductDialog from "./ProductDialog";
 
 const CATEGORY_LABELS_EN: Record<string, string> = {
   rings: "Rings",
@@ -41,6 +42,7 @@ export default function ProductsGrid({ products }: Props) {
   const [weightRange, setWeightRange] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("featured");
   const [page, setPage] = useState(1);
+  const [openProduct, setOpenProduct] = useState<Product | null>(null);
 
   // Reset page when filter changes
   useEffect(() => {
@@ -196,7 +198,12 @@ export default function ProductsGrid({ products }: Props) {
               // 從 name 移除 "· X 錢" 把重量單獨顯示
               const cleanName = name.replace(/\s*·\s*[\d.]+\s*錢\s*$/, "");
               return (
-                <article key={p.id} className="group">
+                <button
+                  type="button"
+                  key={p.id}
+                  onClick={() => setOpenProduct(p)}
+                  className="group text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
+                >
                   <div className="aspect-[3/4] relative overflow-hidden bg-ivory-100">
                     {p.image_url && (
                       <Image
@@ -218,6 +225,11 @@ export default function ProductsGrid({ products }: Props) {
                         {p.weight_qian} 錢
                       </span>
                     )}
+                    <span className="absolute inset-0 bg-ink-950/0 group-hover:bg-ink-950/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <span className="bg-ivory-50 text-ink-950 px-5 py-2 text-[10px] tracking-[0.35em] uppercase font-display">
+                        查看詳情
+                      </span>
+                    </span>
                   </div>
                   <div className="pt-6">
                     <p className="font-display tracking-[0.35em] text-[10px] text-gold-600 uppercase mb-2">
@@ -232,7 +244,7 @@ export default function ProductsGrid({ products }: Props) {
                       </p>
                     )}
                   </div>
-                </article>
+                </button>
               );
             })}
           </div>
@@ -278,6 +290,8 @@ export default function ProductsGrid({ products }: Props) {
           )}
         </>
       )}
+
+      <ProductDialog product={openProduct} onClose={() => setOpenProduct(null)} />
     </>
   );
 }
