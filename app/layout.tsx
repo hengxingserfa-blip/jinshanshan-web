@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import TopBar from "@/components/TopBar";
 import CategoryBar from "@/components/CategoryBar";
 import FloatingActions from "@/components/FloatingActions";
+import BackToTop from "@/components/BackToTop";
 import StructuredData from "@/components/StructuredData";
 import Analytics from "@/components/Analytics";
 import { I18nProvider } from "@/lib/i18n/provider";
@@ -121,6 +122,7 @@ export default async function RootLayout({
           <main>{children}</main>
           {!isAdmin && <Footer />}
           {!isAdmin && <FloatingActions />}
+          {!isAdmin && <BackToTop />}
         </I18nProvider>
         <Analytics />
       </body>
