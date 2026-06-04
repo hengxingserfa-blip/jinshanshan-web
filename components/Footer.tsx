@@ -28,7 +28,8 @@ export default function Footer() {
       title: t.footer.col_contact,
       items: [
         { label: "(03) 280-5908", href: "tel:+88632805908" },
-        { label: "@shiny_gold991", href: "https://instagram.com/shiny_gold991" },
+        { label: "@shiny_gold991 (IG)", href: "https://instagram.com/shiny_gold991" },
+        { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61575318885967" },
         {
           label: "Google Map",
           href: "https://www.google.com/maps/search/?api=1&query=桃園市中壢區中和路108號",

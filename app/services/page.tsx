@@ -7,7 +7,13 @@ import CtaBlock from "@/components/CtaBlock";
 import { useI18n } from "@/lib/i18n/provider";
 import { getServices } from "@/lib/i18n/page-content";
 
-const IMAGES = [IMG.ring2, IMG.bar, IMG.necklace2, IMG.fancy];
+// 4 個服務各配 1 張對應金飾照
+const IMAGES = [
+  IMG.bracelet1,  // I. 舊金換新 → 9999 金條堆(換現值最直接)
+  IMG.bar,        // II. 舊金回收 → 招財進寶金錢幣(傳統金回收意象)
+  IMG.necklace2,  // III. 飾金販售 → 優雅水滴金墜
+  IMG.pair,       // IV. 修飾販售 → 對戒近拍(細工感)
+];
 
 export default function ServicesPage() {
   const { locale } = useI18n();
