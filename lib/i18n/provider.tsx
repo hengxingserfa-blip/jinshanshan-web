@@ -24,9 +24,30 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       if (saved && (LOCALES as readonly string[]).includes(saved)) {
         setLocaleState(saved as Locale);
         document.documentElement.lang = LOCALE_META[saved as Locale].htmlLang;
+        return;
       }
+      // 自動偵測瀏覽器語言(新訪客第一次來)
+      const browserLang = (navigator.language || "").toLowerCase();
+      const langMap: Array<[string, Locale]> = [
+        ["vi",  "vi"],   // Vietnamese
+        ["id",  "id"],   // Indonesian
+        ["in",  "id"],   // legacy Indonesian code
+        ["ms",  "id"],   // Malay close enough
+        ["fil", "fil"],  // Filipino
+        ["tl",  "fil"],  // Tagalog
+        ["th",  "th"],   // Thai
+        ["en",  "en"],   // English
+      ];
+      for (const [prefix, locale] of langMap) {
+        if (browserLang.startsWith(prefix)) {
+          setLocaleState(locale);
+          document.documentElement.lang = LOCALE_META[locale].htmlLang;
+          return;
+        }
+      }
+      // 預設 zh-TW,不用改
     } catch {
-      // localStorage 不可用就無視
+      // 例如 localStorage 被阻擋,就無視
     }
   }, []);
 
