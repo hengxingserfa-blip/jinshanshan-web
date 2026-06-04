@@ -5,7 +5,7 @@ import ProductsGrid from "@/components/ProductsGrid";
 import { getProducts } from "@/lib/data/products";
 
 export const metadata: Metadata = {
-  title: "金飾選品 | 金閃閃銀樓",
+  title: "金飾選品",
   description:
     "金閃閃銀樓金飾選品總覽。戒指、項鍊、手鐲、對戒、彌月禮、投資金條,每件附金重證明。",
 };

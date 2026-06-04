@@ -4,7 +4,7 @@ import CtaBlock from "@/components/CtaBlock";
 import ReservationForm from "@/components/ReservationForm";
 
 export const metadata: Metadata = {
-  title: "預約看店 | 金閃閃銀樓 SHINY GOLD Jeweller's",
+  title: "預約看店",
   description:
     "預約金閃閃銀樓的看店時段。舊金回收、換新、換購、修飾、訂製,選擇您方便的時間,我們在桃園中壢中和路 108 號等您。",
 };

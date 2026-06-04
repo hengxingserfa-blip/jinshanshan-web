@@ -5,7 +5,7 @@ import ArticlesGrid from "@/components/ArticlesGrid";
 import { getArticles } from "@/lib/data/articles";
 
 export const metadata: Metadata = {
-  title: "金飾知識・文章 | 金閃閃銀樓",
+  title: "金飾知識・文章",
   description:
     "黃金回收、舊金換新、金飾保養、傳家智慧 —— 金閃閃銀樓的金飾知識專欄。",
 };
