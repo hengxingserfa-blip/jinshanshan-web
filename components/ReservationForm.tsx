@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 
+const LINE_OA = process.env.NEXT_PUBLIC_LINE_OA_ID || "shiny.gold991";
+
 const SERVICES = [
   "舊金換新",
   "舊金回收",
@@ -49,6 +51,7 @@ export default function ReservationForm() {
   const [lang, setLang] = useState(LANGS[0]);
   const [notes, setNotes] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const ready = useMemo(
     () =>
@@ -84,13 +87,23 @@ export default function ReservationForm() {
   };
 
   if (submitted) {
+    const summary = `【金閃閃銀樓 預約】\n姓名:${name}\n電話:${phone}\n日期:${date} ${time}\n服務:${service}\n語言:${lang}${notes ? `\n備註:${notes}` : ""}`;
+    const lineUrl = `https://line.me/R/oaMessage/@${LINE_OA}/?${encodeURIComponent(summary)}`;
+    const copyText = () => {
+      navigator.clipboard?.writeText(summary).then(
+        () => setCopied(true),
+        () => setCopied(false)
+      );
+      setTimeout(() => setCopied(false), 2000);
+    };
+
     return (
       <div className="bg-ivory-50 border border-gold-200 p-10 md:p-14 text-center">
         <p className="font-display tracking-[0.5em] text-gold-600 text-[10px] uppercase mb-6">
-          Reserved · 預約成功
+          Reserved · 預約資料已準備好
         </p>
         <h3 className="font-display text-3xl md:text-4xl text-ink-950 mb-6">
-          已收到您的預約
+          請選一個方式通知店家
         </h3>
         <div className="w-12 gold-line h-px mx-auto mb-8" />
         <div className="max-w-md mx-auto text-left bg-white border border-ink-950/8 p-6 mb-8">
@@ -117,13 +130,37 @@ export default function ReservationForm() {
             </div>
           </dl>
         </div>
-        <p className="text-sm text-ink-700 leading-loose font-light mb-8">
-          我們將於門市營業時間內以電話或 LINE 與您確認。
-          <br />
-          如有急用,歡迎直接撥打 <a href="tel:+88632805908" className="text-gold-700 underline">(03) 280-5908</a>。
-        </p>
-        <p className="text-[10px] tracking-wider text-ink-400 font-display max-w-md mx-auto">
-          ※ 目前預約資料暫存於您的瀏覽器.後台上線後將自動送達門市
+
+        <div className="max-w-md mx-auto flex flex-col gap-3 mb-8">
+          <a
+            href={lineUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-between bg-[#06C755] text-white hover:opacity-90 px-6 py-4 text-sm tracking-[0.3em] font-display uppercase transition-opacity"
+          >
+            <span>用 LINE 通知店家</span>
+            <span>→</span>
+          </a>
+          <a
+            href="tel:+88632805908"
+            className="inline-flex items-center justify-between bg-ink-950 text-ivory-50 hover:bg-gold-500 hover:text-ink-950 px-6 py-4 text-sm tracking-[0.3em] font-display uppercase transition-colors"
+          >
+            <span>直接撥打 (03) 280-5908</span>
+            <span>→</span>
+          </a>
+          <button
+            type="button"
+            onClick={copyText}
+            className="inline-flex items-center justify-between border border-ink-950/30 text-ink-950 hover:border-gold-500 hover:text-gold-600 px-6 py-4 text-sm tracking-[0.3em] font-display uppercase transition-colors"
+          >
+            <span>{copied ? "已複製!" : "複製預約內容"}</span>
+            <span>{copied ? "✓" : "⧉"}</span>
+          </button>
+        </div>
+
+        <p className="text-[10px] tracking-wider text-ink-400 font-display max-w-md mx-auto leading-loose">
+          ※ 為了保護您的隱私,本網站不會把資料寄到伺服器<br />
+          請主動透過上方任一方式聯絡店家,我們將於營業時段內回覆
         </p>
       </div>
     );
