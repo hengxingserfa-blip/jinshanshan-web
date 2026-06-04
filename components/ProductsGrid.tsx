@@ -78,6 +78,15 @@ export default function ProductsGrid({ products }: Props) {
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const visible = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
+  // 各分類數量(讓 tab 顯示「戒指 (164)」)
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: products.length };
+    for (const p of products) {
+      counts[p.category] = (counts[p.category] ?? 0) + 1;
+    }
+    return counts;
+  }, [products]);
+
   return (
     <>
       <div className="flex flex-wrap gap-x-10 gap-y-6 mb-10 justify-center border-b border-ink-950/8 pb-8">
@@ -101,6 +110,11 @@ export default function ProductsGrid({ products }: Props) {
               <span className="text-[10px] tracking-[0.25em] text-ink-400 mt-1">
                 {t.category_bar[key]}
               </span>
+              {categoryCounts[key] > 0 && (
+                <span className="text-[9px] text-ink-400 mt-0.5">
+                  ({categoryCounts[key]})
+                </span>
+              )}
             </Link>
           );
         })}
