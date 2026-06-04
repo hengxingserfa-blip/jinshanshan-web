@@ -10,12 +10,12 @@ export default function OccasionCategories() {
   const t = useT();
 
   const occasions = [
-    { en: "Wedding",      title: t.occasions.wedding_title,      desc: t.occasions.wedding_desc,      img: IMG.pair },
-    { en: "Newborn",      title: t.occasions.newborn_title,      desc: t.occasions.newborn_desc,      img: IMG.fancy },
-    { en: "Engagement",   title: t.occasions.engagement_title,   desc: t.occasions.engagement_desc,   img: IMG.ring1 },
-    { en: "Mother's Day", title: t.occasions.mothers_day_title,  desc: t.occasions.mothers_day_desc,  img: IMG.necklace2 },
-    { en: "New Year",     title: t.occasions.new_year_title,     desc: t.occasions.new_year_desc,     img: IMG.bar },
-    { en: "Investment",   title: t.occasions.investment_title,   desc: t.occasions.investment_desc,   img: IMG.bracelet1 },
+    { en: "Wedding",      title: t.occasions.wedding_title,      desc: t.occasions.wedding_desc,      img: IMG.pair,      href: "/products?category=wedding" },
+    { en: "Newborn",      title: t.occasions.newborn_title,      desc: t.occasions.newborn_desc,      img: IMG.fancy,     href: "/products?category=newborn" },
+    { en: "Engagement",   title: t.occasions.engagement_title,   desc: t.occasions.engagement_desc,   img: IMG.ring1,     href: "/products?category=rings" },
+    { en: "Mother's Day", title: t.occasions.mothers_day_title,  desc: t.occasions.mothers_day_desc,  img: IMG.necklace2, href: "/products?category=necklaces" },
+    { en: "New Year",     title: t.occasions.new_year_title,     desc: t.occasions.new_year_desc,     img: IMG.bar,       href: "/products?category=custom" },
+    { en: "Investment",   title: t.occasions.investment_title,   desc: t.occasions.investment_desc,   img: IMG.bracelet1, href: "/products?category=bullion" },
   ];
 
   return (
@@ -39,7 +39,7 @@ export default function OccasionCategories() {
           {occasions.map((o) => (
             <Link
               key={o.title}
-              href="/products"
+              href={o.href}
               className="group bg-white hover:bg-ivory-50 transition-colors p-8 md:p-10 flex gap-6"
             >
               <div className="shrink-0 w-24 h-24 md:w-28 md:h-28 relative overflow-hidden bg-ivory-100">

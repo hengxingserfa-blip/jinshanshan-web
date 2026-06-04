@@ -8,14 +8,14 @@ export default function CategoryBar() {
 
   const cats = [
     { en: "All",       zh: t.category_bar.all,        href: "/products" },
-    { en: "Rings",     zh: t.category_bar.rings,      href: "/products" },
-    { en: "Earrings",  zh: t.category_bar.earrings,   href: "/products" },
-    { en: "Necklaces", zh: t.category_bar.necklaces,  href: "/products" },
-    { en: "Bracelets", zh: t.category_bar.bracelets,  href: "/products" },
-    { en: "Wedding",   zh: t.category_bar.wedding,    href: "/products" },
-    { en: "Newborn",   zh: t.category_bar.newborn,    href: "/products" },
-    { en: "Bullion",   zh: t.category_bar.bullion,    href: "/products" },
-    { en: "Custom",    zh: t.category_bar.custom,     href: "/products" },
+    { en: "Rings",     zh: t.category_bar.rings,      href: "/products?category=rings" },
+    { en: "Earrings",  zh: t.category_bar.earrings,   href: "/products?category=earrings" },
+    { en: "Necklaces", zh: t.category_bar.necklaces,  href: "/products?category=necklaces" },
+    { en: "Bracelets", zh: t.category_bar.bracelets,  href: "/products?category=bracelets" },
+    { en: "Wedding",   zh: t.category_bar.wedding,    href: "/products?category=wedding" },
+    { en: "Newborn",   zh: t.category_bar.newborn,    href: "/products?category=newborn" },
+    { en: "Bullion",   zh: t.category_bar.bullion,    href: "/products?category=bullion" },
+    { en: "Custom",    zh: t.category_bar.custom,     href: "/products?category=custom" },
   ];
 
   return (
