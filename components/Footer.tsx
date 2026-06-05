@@ -31,6 +31,7 @@ export default function Footer() {
         { label: "加 LINE 好友", href: "https://lin.ee/onfiZgZ" },
         { label: "@shiny_gold991 (IG)", href: "https://instagram.com/shiny_gold991" },
         { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61575318885967" },
+        { label: "蝦皮選物 Shopee", href: "https://shopee.tw/shiny_gold" },
         {
           label: "Google Map",
           href: "https://www.google.com/maps/search/?api=1&query=桃園市中壢區中和路108號",

@@ -157,11 +157,13 @@ export type Dict = {
     label_line: string;
     label_ig: string;
     label_fb: string;
+    label_shopee: string;
     address: string;
     hours_value: string;
     line_value: string;
     ig_value: string;
     fb_value: string;
+    shopee_value: string;
     cta_call: string;
     cta_map: string;
   };
@@ -383,11 +385,13 @@ const zhTW: Dict = {
     label_line: "LINE",
     label_ig: "Instagram",
     label_fb: "Facebook",
+    label_shopee: "Shopee",
     address: "320 桃園市中壢區\n中和路 108 號",
     hours_value: "每日 10:30 – 20:30",
     line_value: "加好友 lin.ee/onfiZgZ",
     ig_value: "@shiny_gold991",
     fb_value: "金閃閃銀樓 / Taoyuan",
+    shopee_value: "蝦皮選物",
     cta_call: "Call Us",
     cta_map: "Direction →",
   },
@@ -609,11 +613,13 @@ const en: Dict = {
     label_line: "LINE",
     label_ig: "Instagram",
     label_fb: "Facebook",
+    label_shopee: "Shopee",
     address: "108 Zhonghe Rd,\nZhongli, Taoyuan 320",
     hours_value: "Daily 10:30 – 20:30",
     line_value: "Add friend lin.ee/onfiZgZ",
     ig_value: "@shiny_gold991",
     fb_value: "Shiny Gold / Taoyuan",
+    shopee_value: "Shop on Shopee",
     cta_call: "Call Us",
     cta_map: "Directions →",
   },
@@ -835,11 +841,13 @@ const vi: Dict = {
     label_line: "LINE",
     label_ig: "Instagram",
     label_fb: "Facebook",
+    label_shopee: "Shopee",
     address: "108 đường Trung Hòa,\nTrung Lịch, Đào Viên 320",
     hours_value: "Mỗi ngày 10:30 – 20:30",
     line_value: "Kết bạn lin.ee/onfiZgZ",
     ig_value: "@shiny_gold991",
     fb_value: "Tiệm Vàng Sang Lấy",
+    shopee_value: "Mua trên Shopee",
     cta_call: "Gọi ngay",
     cta_map: "Chỉ đường →",
   },
@@ -1061,11 +1069,13 @@ const id: Dict = {
     label_line: "LINE",
     label_ig: "Instagram",
     label_fb: "Facebook",
+    label_shopee: "Shopee",
     address: "Jl. Zhonghe 108,\nZhongli, Taoyuan 320",
     hours_value: "Setiap hari 10:30 – 20:30",
     line_value: "Tambah teman lin.ee/onfiZgZ",
     ig_value: "@shiny_gold991",
     fb_value: "Shiny Gold / Taoyuan",
+    shopee_value: "Belanja di Shopee",
     cta_call: "Telepon",
     cta_map: "Arah →",
   },
@@ -1287,11 +1297,13 @@ const fil: Dict = {
     label_line: "LINE",
     label_ig: "Instagram",
     label_fb: "Facebook",
+    label_shopee: "Shopee",
     address: "108 Zhonghe Rd,\nZhongli, Taoyuan 320",
     hours_value: "Araw-araw 10:30 – 20:30",
     line_value: "Idagdag bilang kaibigan lin.ee/onfiZgZ",
     ig_value: "@shiny_gold991",
     fb_value: "Shiny Gold / Taoyuan",
+    shopee_value: "Bumili sa Shopee",
     cta_call: "Tumawag",
     cta_map: "Direksyon →",
   },
@@ -1513,11 +1525,13 @@ const th: Dict = {
     label_line: "LINE",
     label_ig: "Instagram",
     label_fb: "Facebook",
+    label_shopee: "Shopee",
     address: "108 ถ.จงเหอ\nจงลี่ เถาหยวน 320",
     hours_value: "ทุกวัน 10:30 – 20:30",
     line_value: "เพิ่มเพื่อน lin.ee/onfiZgZ",
     ig_value: "@shiny_gold991",
     fb_value: "Shiny Gold / Taoyuan",
+    shopee_value: "ช้อปบน Shopee",
     cta_call: "โทร",
     cta_map: "เส้นทาง →",
   },

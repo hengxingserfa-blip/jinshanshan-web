@@ -47,6 +47,8 @@ const jsonLd = {
   sameAs: [
     "https://instagram.com/shiny_gold991",
     "https://www.facebook.com/profile.php?id=61575318885967",
+    "https://shopee.tw/shiny_gold",
+    "https://lin.ee/onfiZgZ",
   ],
   hasOfferCatalog: {
     "@type": "OfferCatalog",

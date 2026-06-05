@@ -120,6 +120,23 @@ export default function Contact() {
                   </a>
                 </dd>
               </div>
+              <div className="h-px bg-white/20" />
+
+              <div className="grid grid-cols-[80px_1fr] gap-6 items-center">
+                <dt className="font-display tracking-[0.3em] text-[10px] text-gold-300 uppercase">
+                  {t.contact.label_shopee}
+                </dt>
+                <dd>
+                  <a
+                    href="https://shopee.tw/shiny_gold"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-ivory-50 hover:text-gold-300 transition-colors"
+                  >
+                    {t.contact.shopee_value} →
+                  </a>
+                </dd>
+              </div>
             </dl>
 
             <div className="mt-12 flex gap-8 flex-wrap">
