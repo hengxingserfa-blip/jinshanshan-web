@@ -43,3 +43,30 @@ export async function getProductsByCategory(
   const all = await getProducts();
   return all.filter((p) => p.category === category);
 }
+
+// 撈單一商品(用 slug),找不到回 null
+export async function getProductBySlug(slug: string): Promise<Product | null> {
+  const supabase = await getServerSupabase();
+  if (!supabase) {
+    return FALLBACK.find((p) => p.slug === slug) ?? null;
+  }
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("slug", slug)
+    .maybeSingle();
+  if (error || !data) return null;
+  return data as Product;
+}
+
+// 撈所有可索引的 slug,給 sitemap 用
+export async function getAllProductSlugs(): Promise<string[]> {
+  const supabase = await getServerSupabase();
+  if (!supabase) return FALLBACK.map((p) => p.slug);
+  const { data, error } = await supabase
+    .from("products")
+    .select("slug")
+    .eq("available", true);
+  if (error || !data) return [];
+  return data.map((r: { slug: string }) => r.slug);
+}

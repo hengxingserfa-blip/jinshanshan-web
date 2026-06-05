@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { getAllProductSlugs } from "@/lib/data/products";
 
 const SITE = "https://www.shinygold.com.tw";
 
@@ -21,7 +22,10 @@ const buildAlternates = (path: string): Record<string, string> => ({
   "x-default": `${SITE}${path}`,
 });
 
-export default function sitemap(): MetadataRoute.Sitemap {
+// 1 小時 revalidate,避免每次抓 sitemap 都打 Supabase
+export const revalidate = 3600;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const fixedPages: Array<{
@@ -55,7 +59,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // 商品分類頁也讓 Google 收錄
-  const categories = ["rings", "necklaces", "bracelets", "wedding", "newborn", "bullion", "custom"];
+  const categories = ["rings", "earrings", "necklaces", "bracelets", "wedding", "newborn", "bullion", "custom"];
   const categoryEntries: MetadataRoute.Sitemap = categories.map((c) => ({
     url: `${SITE}/products?category=${c}`,
     lastModified: now,
@@ -63,5 +67,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...fixed, ...articles, ...categoryEntries];
+  // 每個商品的詳細頁(3000+ URL — Supabase 撈,失敗回空陣列不擋 sitemap)
+  let productEntries: MetadataRoute.Sitemap = [];
+  try {
+    const slugs = await getAllProductSlugs();
+    productEntries = slugs.map((slug) => ({
+      url: `${SITE}/products/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    }));
+  } catch {
+    // Supabase 失敗時 sitemap 還是會輸出固定頁,不影響其他項目
+  }
+
+  return [...fixed, ...articles, ...categoryEntries, ...productEntries];
 }
