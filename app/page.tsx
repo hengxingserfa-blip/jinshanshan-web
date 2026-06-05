@@ -18,12 +18,12 @@ export default async function Home() {
     <>
       <Hero />
       <TrustBadges />
+      <InstagramSection />
       <Calculator />
       <GoldPriceTicker />
       <Services />
       <OccasionCategories />
       <ProductsPreview products={featured} />
-      <InstagramSection />
       <Testimonials />
       <About />
       <Contact />
