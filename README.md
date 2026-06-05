@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 金閃閃銀樓 SHINY GOLD Jeweller's
 
-## Getting Started
+桃園中壢誠信銀樓官方網站原始碼 · **官網:[https://www.shinygold.com.tw](https://www.shinygold.com.tw)**
 
-First, run the development server:
+> 9999 純金 · 公開秤重 · 透明金價 · 絕不扣耗損
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 關於金閃閃銀樓
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**金閃閃銀樓 SHINY GOLD Jeweller's** 位於桃園中壢中和路 108 號中平商圈,家族經營的在地銀樓。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 🏠 **地址**:桃園市中壢區中和路 108 號
+- 📞 **電話**:(03) 280-5908
+- 🕐 **營業**:每日 10:30 – 20:30
+- 💬 **LINE**:[lin.ee/onfiZgZ](https://lin.ee/onfiZgZ)(加好友)
+- 📷 **Instagram**:[@shiny_gold991](https://instagram.com/shiny_gold991)
+- 📘 **Facebook**:[金閃閃銀樓](https://www.facebook.com/profile.php?id=61575318885967)
+- 🛍️ **蝦皮**:[shopee.tw/shiny_gold](https://shopee.tw/shiny_gold)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 服務項目
 
-## Learn More
+1. **舊金換新** — 把抽屜裡的舊金條、舊金飾換成現在想戴的款式。當日金價試算,只補差價。
+2. **舊金回收** — 公開當日金價、現場秤重、清楚試算。當日現金結清,絕不扣耗損費。
+3. **飾金販售** — 9999 純金戒指、項鍊、手鐲、對戒、彌月禮、投資金條,每件附金重證明。
+4. **修飾翻新** — 斷鍊接線、戒圍放大縮小、款式改造、拋光翻新、寶石重鑲。
 
-To learn more about Next.js, take a look at the following resources:
+## 多國語言歡迎
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+中文 · English · Tiếng Việt · Bahasa Indonesia · Filipino · ภาษาไทย
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+歡迎中越英印菲泰各國朋友來店。
 
-## Deploy on Vercel
+## 官網功能
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- ⚡ [即時黃金計算機](https://www.shinygold.com.tw/) — 每日國際金價自動更新
+- 💍 [3000+ 件 9999 純金商品](https://www.shinygold.com.tw/products) — 戒指、項鍊、手鐲、對戒、彌月禮、金條
+- 📖 [金飾知識專欄](https://www.shinygold.com.tw/articles) — 黃金回收注意事項 / 婚嫁清單 / 金飾保養
+- ❓ [常見問題](https://www.shinygold.com.tw/faq) — 火耗 / 純度 / 回收價格說明
+- 📅 [預約看店](https://www.shinygold.com.tw/reserve) — 線上預約
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 技術棧
+
+Next.js 14 · React 18 · TypeScript · Tailwind CSS · Supabase · Vercel
+
+---
+
+© 2026 金閃閃銀樓 SHINY GOLD Jeweller's · [官網](https://www.shinygold.com.tw)
