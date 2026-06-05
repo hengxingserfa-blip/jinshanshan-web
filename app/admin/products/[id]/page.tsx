@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ProductForm from "../ProductForm";
 import { getServerSupabase, isSupabaseConfigured } from "@/lib/supabase/server";
 import { getProducts } from "@/lib/data/products";
+import { getCategories } from "@/lib/data/categories";
 import type { Product } from "@/lib/supabase/types";
 
 export const metadata = { title: "編輯商品 | 金閃閃後台" };
@@ -31,6 +32,8 @@ export default async function EditProductPage({
 
   if (!product) return notFound();
 
+  const categories = await getCategories();
+
   return (
     <div className="p-4 sm:p-8 md:p-12 max-w-3xl">
       <header className="mb-5 sm:mb-10">
@@ -49,7 +52,7 @@ export default async function EditProductPage({
         </div>
       )}
 
-      <ProductForm defaults={product} />
+      <ProductForm defaults={product} categories={categories} />
     </div>
   );
 }

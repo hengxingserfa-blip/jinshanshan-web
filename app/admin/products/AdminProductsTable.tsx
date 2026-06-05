@@ -4,17 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { Product } from "@/lib/supabase/types";
-
-const CATEGORY_LABELS: Record<string, string> = {
-  rings: "戒指",
-  earrings: "耳環",
-  necklaces: "項鍊",
-  bracelets: "手鏈",
-  wedding: "對戒",
-  newborn: "彌月禮",
-  bullion: "金條",
-  custom: "訂製",
-};
+import type { ProductCategory } from "@/lib/data/categories";
 
 const LANGS = [
   { key: "en", flag: "EN" },
@@ -30,9 +20,15 @@ const PAGE_SIZE = 50;
 
 interface Props {
   products: Product[];
+  categories: ProductCategory[];
 }
 
-export default function AdminProductsTable({ products }: Props) {
+export default function AdminProductsTable({ products, categories }: Props) {
+  const CATEGORY_LABELS = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const c of categories) map[c.slug] = c.name_zh;
+    return map;
+  }, [categories]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string>("all");
   const [trFilter, setTrFilter] = useState<TranslationFilter>("all");

@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { getProducts } from "@/lib/data/products";
+import { getCategories } from "@/lib/data/categories";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 import AdminProductsTable from "./AdminProductsTable";
 
 export const metadata = { title: "商品管理 | 金閃閃後台" };
 
 export default async function ProductsAdmin() {
-  const products = await getProducts();
+  const [products, categories] = await Promise.all([getProducts(), getCategories()]);
   const configured = isSupabaseConfigured();
 
   // 統計翻譯
@@ -60,7 +61,7 @@ export default async function ProductsAdmin() {
         </div>
       </details>
 
-      <AdminProductsTable products={products} />
+      <AdminProductsTable products={products} categories={categories} />
     </div>
   );
 }

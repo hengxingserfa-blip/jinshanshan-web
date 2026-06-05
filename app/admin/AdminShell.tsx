@@ -9,6 +9,7 @@ const NAV = [
   { href: "/admin", label: "Dashboard", zh: "總覽", icon: "📊" },
   { href: "/admin/gold-price", label: "Gold Price", zh: "今日金價", icon: "💰" },
   { href: "/admin/products", label: "Products", zh: "商品管理", icon: "💍" },
+  { href: "/admin/categories", label: "Categories", zh: "商品分類", icon: "🏷️" },
   { href: "/admin/articles", label: "Articles", zh: "文章管理", icon: "📖" },
   { href: "/admin/promotions", label: "Promotions", zh: "促銷活動", icon: "🎁" },
 ];

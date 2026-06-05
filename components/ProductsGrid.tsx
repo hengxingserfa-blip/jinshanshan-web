@@ -7,36 +7,41 @@ import { useState, useMemo, useEffect } from "react";
 import { useI18n, useT } from "@/lib/i18n/provider";
 import { localize } from "@/lib/i18n/localize";
 import type { Product } from "@/lib/supabase/types";
+import type { ProductCategory } from "@/lib/data/categories";
 import ProductDialog from "./ProductDialog";
-
-const CATEGORY_LABELS_EN: Record<string, string> = {
-  rings: "Rings",
-  earrings: "Earrings",
-  necklaces: "Necklaces",
-  bracelets: "Bracelets",
-  wedding: "Wedding",
-  newborn: "Newborn",
-  bullion: "Bullion",
-  custom: "Custom",
-};
-
-const TABS = ["all", "rings", "earrings", "necklaces", "bracelets", "wedding", "newborn", "bullion", "custom"] as const;
-type TabKey = typeof TABS[number];
 
 const PAGE_SIZE = 30;
 
 interface Props {
   products: Product[];
+  categories: ProductCategory[];
 }
 
-export default function ProductsGrid({ products }: Props) {
+export default function ProductsGrid({ products, categories }: Props) {
   const t = useT();
   const { locale } = useI18n();
   const sp = useSearchParams();
-  const rawCat = sp.get("category");
-  const active: TabKey = (TABS as readonly string[]).includes(rawCat ?? "")
-    ? (rawCat as TabKey)
-    : "all";
+  const rawCat = sp.get("category") ?? "all";
+
+  // 內建分類用 dictionary 翻譯, 新增分類用 DB name_zh
+  const categoryLabels = useMemo(() => {
+    const labels: Record<string, { en: string; native: string }> = {};
+    for (const c of categories) {
+      const dictNative = t.category_bar[c.slug as keyof typeof t.category_bar];
+      labels[c.slug] = {
+        en: c.name_en ?? c.slug,
+        native: dictNative ?? c.name_zh,
+      };
+    }
+    return labels;
+  }, [categories, t]);
+
+  // 動態 tab 從 DB
+  const tabs = useMemo(
+    () => ["all", ...categories.map((c) => c.slug)],
+    [categories]
+  );
+  const active = tabs.includes(rawCat) ? rawCat : "all";
 
   const [search, setSearch] = useState("");
   const [weightRange, setWeightRange] = useState<string>("all");
@@ -94,9 +99,11 @@ export default function ProductsGrid({ products }: Props) {
       {/* 分類 tab — 手機橫滑,桌機 wrap */}
       <div className="-mx-6 sm:mx-0 mb-6 sm:mb-10 border-b border-ink-950/8 pb-4 sm:pb-8">
         <div className="flex overflow-x-auto scrollbar-none sm:flex-wrap sm:justify-center gap-x-6 sm:gap-x-10 gap-y-4 sm:gap-y-6 px-6 sm:px-0 snap-x">
-          {TABS.map((key) => {
+          {tabs.map((key) => {
             const isActive = key === active;
             const href = key === "all" ? "/products" : `/products?category=${key}`;
+            const labelEn = key === "all" ? "All" : (categoryLabels[key]?.en ?? key);
+            const labelNative = key === "all" ? t.category_bar.all : (categoryLabels[key]?.native ?? key);
             return (
               <Link
                 key={key}
@@ -109,10 +116,10 @@ export default function ProductsGrid({ products }: Props) {
                     isActive ? "text-gold-600 border-b border-gold-500" : "text-ink-700 group-hover:text-gold-600"
                   } transition-colors pb-1`}
                 >
-                  {key === "all" ? "All" : key.charAt(0).toUpperCase() + key.slice(1)}
+                  {labelEn}
                 </span>
                 <span className="text-[10px] tracking-[0.2em] sm:tracking-[0.25em] text-ink-400 mt-1 whitespace-nowrap">
-                  {t.category_bar[key]}
+                  {labelNative}
                   {categoryCounts[key] > 0 && (
                     <span className="text-ink-400 ml-1">({categoryCounts[key]})</span>
                   )}
@@ -193,8 +200,8 @@ export default function ProductsGrid({ products }: Props) {
         <>
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-16">
             {visible.map((p) => {
-              const en = CATEGORY_LABELS_EN[p.category] ?? "Item";
-              const zh = t.category_bar[p.category as keyof typeof t.category_bar] ?? "";
+              const en = categoryLabels[p.category]?.en ?? "Item";
+              const zh = categoryLabels[p.category]?.native ?? p.category;
               const name = localize(p.translations, locale, "name", p.name_zh);
               // 從 name 移除 "· X 錢" 把重量單獨顯示
               const cleanName = name.replace(/\s*·\s*[\d.]+\s*錢\s*$/, "");

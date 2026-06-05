@@ -7,17 +7,7 @@ import { createProductAction, updateProductAction, deleteProductAction } from ".
 import ImageUpload from "../_components/ImageUpload";
 import TranslationsEditor from "../_components/TranslationsEditor";
 import type { Translations } from "@/lib/supabase/types";
-
-const CATS = [
-  { value: "rings",     label: "戒指 Rings" },
-  { value: "earrings",  label: "耳環 Earrings" },
-  { value: "necklaces", label: "項鍊 Necklaces" },
-  { value: "bracelets", label: "手鏈 Bracelets" },
-  { value: "wedding",   label: "對戒 Wedding" },
-  { value: "newborn",   label: "彌月禮 Newborn" },
-  { value: "bullion",   label: "金條 Bullion" },
-  { value: "custom",    label: "訂製 Custom" },
-];
+import type { ProductCategory } from "@/lib/data/categories";
 
 const PURITIES = ["9999", "999", "18K", "14K", "9K", "PT"];
 
@@ -52,7 +42,13 @@ function SubmitBtn({ label }: { label: string }) {
   );
 }
 
-export default function ProductForm({ defaults }: { defaults?: ProductDefaults }) {
+export default function ProductForm({
+  defaults,
+  categories,
+}: {
+  defaults?: ProductDefaults;
+  categories: ProductCategory[];
+}) {
   const isEdit = !!defaults?.id;
   const action = isEdit
     ? updateProductAction.bind(null, defaults!.id!)
@@ -76,11 +72,25 @@ export default function ProductForm({ defaults }: { defaults?: ProductDefaults }
             />
           </Field>
           <Field label="分類" required>
-            <select name="category" defaultValue={defaults?.category ?? "rings"} required className={input}>
-              {CATS.map((c) => (
-                <option key={c.value} value={c.value}>{c.label}</option>
+            <select
+              name="category"
+              defaultValue={defaults?.category ?? categories[0]?.slug ?? "rings"}
+              required
+              className={input}
+            >
+              {categories.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.name_zh}
+                  {c.name_en ? ` ${c.name_en}` : ""}
+                </option>
               ))}
             </select>
+            <p className="text-[11px] text-ink-500 mt-1.5">
+              ※ 沒看到需要的分類?{" "}
+              <a href="/admin/categories" className="text-gold-700 underline">
+                到分類管理新增
+              </a>
+            </p>
           </Field>
           <Field label="中文名稱" required>
             <input

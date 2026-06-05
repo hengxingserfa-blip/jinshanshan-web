@@ -4,6 +4,7 @@ import CtaBlock from "@/components/CtaBlock";
 import ProductsGrid from "@/components/ProductsGrid";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getProducts } from "@/lib/data/products";
+import { getCategories } from "@/lib/data/categories";
 
 const SITE = "https://www.shinygold.com.tw";
 
@@ -38,7 +39,7 @@ const CATEGORY_NAMES: Record<string, string> = {
 };
 
 export default async function ProductsPage() {
-  const products = await getProducts();
+  const [products, categories] = await Promise.all([getProducts(), getCategories()]);
 
   // 給 Google 抓的商品清單 schema — 取前 20 件展示(避免 JSON 過大)
   const showcase = products.slice(0, 20);
@@ -94,7 +95,7 @@ export default async function ProductsPage() {
 
       <section className="bg-white py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-6 sm:px-10">
-          <ProductsGrid products={products} />
+          <ProductsGrid products={products} categories={categories} />
 
           <p className="mt-24 text-center text-[10px] tracking-[0.3em] uppercase text-ink-400 font-display max-w-md mx-auto leading-loose">
             商品照為實際庫存 · 來店現場可挑選試戴

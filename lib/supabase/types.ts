@@ -13,7 +13,7 @@ export type Translations = Partial<Record<
 export interface Product {
   id: string;
   slug: string;
-  category: "rings" | "necklaces" | "bracelets" | "wedding" | "newborn" | "bullion" | "custom";
+  category: string;
   name_zh: string;
   name_en: string | null;
   description_zh: string | null;

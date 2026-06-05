@@ -1,20 +1,23 @@
 import Link from "next/link";
 import ProductForm from "../ProductForm";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
+import { getCategories } from "@/lib/data/categories";
 
 export const metadata = { title: "新增商品 | 金閃閃後台" };
 
-export default function NewProductPage() {
+export default async function NewProductPage() {
+  const categories = await getCategories();
+
   return (
     <div className="p-4 sm:p-8 md:p-12 max-w-3xl">
-      <header className="mb-10">
-        <p className="font-sans tracking-[0.3em] text-[10px] text-gold-600 uppercase mb-2 font-medium">
-          New Product · 新增商品
-        </p>
-        <h1 className="font-display text-4xl text-ink-950">新增金飾商品</h1>
-        <Link href="/admin/products" className="text-sm text-ink-400 hover:text-ink-950 mt-3 inline-block">
+      <header className="mb-5 sm:mb-10">
+        <Link href="/admin/products" className="text-xs sm:text-sm text-ink-500 hover:text-ink-950 mb-2 sm:mb-3 inline-block">
           ← 回商品列表
         </Link>
+        <p className="hidden sm:block font-sans tracking-[0.3em] text-[10px] text-gold-600 uppercase mb-2 font-medium">
+          New Product · 新增商品
+        </p>
+        <h1 className="font-display text-xl sm:text-4xl text-ink-950 leading-tight">新增金飾商品</h1>
       </header>
 
       {!isSupabaseConfigured() && (
@@ -23,7 +26,7 @@ export default function NewProductPage() {
         </div>
       )}
 
-      <ProductForm />
+      <ProductForm categories={categories} />
     </div>
   );
 }
