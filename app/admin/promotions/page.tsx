@@ -30,7 +30,7 @@ export default async function PromotionsAdmin() {
   const now = Date.now();
 
   return (
-    <div className="p-8 md:p-12 max-w-6xl">
+    <div className="p-4 sm:p-8 md:p-12 max-w-6xl">
       <header className="mb-10 flex items-end justify-between gap-6 flex-wrap">
         <div>
           <p className="font-sans tracking-[0.3em] text-[10px] text-gold-600 uppercase mb-2 font-medium">

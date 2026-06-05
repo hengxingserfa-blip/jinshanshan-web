@@ -64,7 +64,7 @@ export default function ProductForm({ defaults }: { defaults?: ProductDefaults }
 
   return (
     <div className="space-y-8">
-      <form action={formAction} className="bg-white border border-ink-950/10 p-8 space-y-6">
+      <form action={formAction} className="bg-white border border-ink-950/10 p-4 sm:p-8 space-y-6">
         <div className="grid sm:grid-cols-2 gap-6">
           <Field label="Slug (英文+數字+連字號)" required>
             <input

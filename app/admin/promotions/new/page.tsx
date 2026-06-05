@@ -6,7 +6,7 @@ export const metadata = { title: "新增促銷活動 | 金閃閃後台" };
 
 export default function NewPromotionPage() {
   return (
-    <div className="p-8 md:p-12 max-w-3xl">
+    <div className="p-4 sm:p-8 md:p-12 max-w-3xl">
       <header className="mb-10">
         <p className="font-sans tracking-[0.3em] text-[10px] text-gold-600 uppercase mb-2 font-medium">
           New Promotion · 新增活動

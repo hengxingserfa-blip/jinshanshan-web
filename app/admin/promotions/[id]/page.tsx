@@ -31,7 +31,7 @@ export default async function EditPromotionPage({
   if (!promo) return notFound();
 
   return (
-    <div className="p-8 md:p-12 max-w-3xl">
+    <div className="p-4 sm:p-8 md:p-12 max-w-3xl">
       <header className="mb-10">
         <p className="font-sans tracking-[0.3em] text-[10px] text-gold-600 uppercase mb-2 font-medium">
           Edit Promotion · 編輯活動

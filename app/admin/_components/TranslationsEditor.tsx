@@ -64,7 +64,7 @@ export default function TranslationsEditor({ name, fields, defaultValue }: Props
   };
 
   return (
-    <div className="bg-ivory-50 border border-ink-950/10 p-6">
+    <div className="bg-ivory-50 border border-ink-950/10 p-4 sm:p-6">
       <div className="flex items-baseline justify-between mb-4">
         <p className="text-xs tracking-[0.2em] text-gold-700 uppercase font-medium">
           多語翻譯(選填,沒填會 fallback 到中文)

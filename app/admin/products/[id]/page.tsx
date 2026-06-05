@@ -32,15 +32,15 @@ export default async function EditProductPage({
   if (!product) return notFound();
 
   return (
-    <div className="p-8 md:p-12 max-w-3xl">
-      <header className="mb-10">
-        <p className="font-sans tracking-[0.3em] text-[10px] text-gold-600 uppercase mb-2 font-medium">
-          Edit Product · 編輯商品
-        </p>
-        <h1 className="font-display text-4xl text-ink-950">{product.name_zh}</h1>
-        <Link href="/admin/products" className="text-sm text-ink-400 hover:text-ink-950 mt-3 inline-block">
+    <div className="p-4 sm:p-8 md:p-12 max-w-3xl">
+      <header className="mb-5 sm:mb-10">
+        <Link href="/admin/products" className="text-xs sm:text-sm text-ink-500 hover:text-ink-950 mb-2 sm:mb-3 inline-block">
           ← 回商品列表
         </Link>
+        <p className="hidden sm:block font-sans tracking-[0.3em] text-[10px] text-gold-600 uppercase mb-2 font-medium">
+          Edit Product · 編輯商品
+        </p>
+        <h1 className="font-display text-xl sm:text-4xl text-ink-950 leading-tight">{product.name_zh}</h1>
       </header>
 
       {!isSupabaseConfigured() && (

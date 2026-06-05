@@ -90,9 +90,9 @@ export default function AdminProductsTable({ products }: Props) {
 
   return (
     <>
-      {/* 篩選 + 搜尋 列 */}
-      <div className="bg-white border border-ink-950/10 p-5 mb-4 space-y-3">
-        <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center">
+      {/* 篩選 + 搜尋 列 — sticky 在頂 */}
+      <div className="bg-white border border-ink-950/10 p-3 sm:p-5 mb-3 sm:mb-4 space-y-2.5 sticky top-12 lg:top-0 z-20 shadow-sm">
+        <div className="flex flex-col md:flex-row gap-2 md:gap-3 items-stretch md:items-center">
           <div className="relative flex-1">
             <input
               type="text"
@@ -102,60 +102,163 @@ export default function AdminProductsTable({ products }: Props) {
                 setPage(1);
               }}
               placeholder="搜尋商品名 / SKU / 翻譯…"
-              className="w-full bg-ivory-50 border border-ink-950/15 px-3 py-2 pr-9 text-sm focus:outline-none focus:border-gold-500"
+              className="w-full bg-ivory-50 border border-ink-950/15 px-3 py-2.5 pr-9 text-sm focus:outline-none focus:border-gold-500"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-ink-400 hover:text-ink-950"
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center text-ink-400 hover:text-ink-950"
               >
                 ✕
               </button>
             )}
           </div>
 
-          <select
-            value={category}
-            onChange={(e) => {
-              setCategory(e.target.value);
-              setPage(1);
-            }}
-            className="bg-ivory-50 border border-ink-950/15 px-3 py-2 text-sm"
-          >
-            <option value="all">所有分類</option>
-            {Object.entries(CATEGORY_LABELS).map(([k, v]) => (
-              <option key={k} value={k}>
-                {v}
-              </option>
-            ))}
-          </select>
+          <div className="grid grid-cols-2 md:flex md:gap-3 gap-2">
+            <select
+              value={category}
+              onChange={(e) => {
+                setCategory(e.target.value);
+                setPage(1);
+              }}
+              className="bg-ivory-50 border border-ink-950/15 px-3 py-2.5 text-sm"
+            >
+              <option value="all">所有分類</option>
+              {Object.entries(CATEGORY_LABELS).map(([k, v]) => (
+                <option key={k} value={k}>
+                  {v}
+                </option>
+              ))}
+            </select>
 
-          <select
-            value={trFilter}
-            onChange={(e) => {
-              setTrFilter(e.target.value as TranslationFilter);
-              setPage(1);
-            }}
-            className="bg-ivory-50 border border-ink-950/15 px-3 py-2 text-sm"
-          >
-            <option value="all">所有翻譯狀態</option>
-            <option value="untranslated">⚠️ 完全沒翻譯 ({stats.untrans})</option>
-            <option value="partial">部分翻譯 ({stats.partial})</option>
-            <option value="complete">5 國全翻譯 ({stats.complete})</option>
-          </select>
+            <select
+              value={trFilter}
+              onChange={(e) => {
+                setTrFilter(e.target.value as TranslationFilter);
+                setPage(1);
+              }}
+              className="bg-ivory-50 border border-ink-950/15 px-3 py-2.5 text-sm"
+            >
+              <option value="all">所有翻譯</option>
+              <option value="untranslated">沒翻譯 ({stats.untrans})</option>
+              <option value="partial">部分 ({stats.partial})</option>
+              <option value="complete">全翻 ({stats.complete})</option>
+            </select>
+          </div>
         </div>
 
-        <p className="text-xs text-ink-500">
+        <p className="text-[11px] sm:text-xs text-ink-500">
           找到 <strong>{filtered.length}</strong> 件
-          {totalPages > 1 && ` · 第 ${page} / ${totalPages} 頁`}
-          <span className="ml-4 text-ink-400">
-            (總:{products.length} 件 · 完全沒翻譯 {stats.untrans} 件)
+          {totalPages > 1 && ` · ${page}/${totalPages}`}
+          <span className="ml-2 text-ink-400">
+            (共 {products.length} · 缺翻 {stats.untrans})
           </span>
         </p>
       </div>
 
-      <div className="bg-white border border-ink-950/10 overflow-x-auto">
+      {/* 手機卡片版 */}
+      <div className="lg:hidden space-y-3">
+        {visible.map((p) => {
+          const langStatus = LANGS.map((l) => ({
+            key: l.key,
+            flag: l.flag,
+            filled: (p.translations?.[l.key]?.name ?? "").trim().length > 0,
+          }));
+          const filledCount = langStatus.filter((s) => s.filled).length;
+          return (
+            <Link
+              key={p.id}
+              href={`/admin/products/${p.id}`}
+              className="block bg-white border border-ink-950/10 active:bg-ivory-50 transition-colors"
+            >
+              <div className="flex gap-3 p-3">
+                {/* 圖 */}
+                <div className="shrink-0">
+                  {p.image_url ? (
+                    <div className="relative w-16 h-16 overflow-hidden bg-ivory-100">
+                      <Image
+                        src={p.image_url}
+                        alt={p.name_zh}
+                        fill
+                        sizes="64px"
+                        className="object-cover"
+                        unoptimized
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-16 h-16 bg-ivory-100" />
+                  )}
+                </div>
+
+                {/* 內容 */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-ink-950 leading-tight text-sm truncate">
+                        {p.name_zh}
+                      </p>
+                      <p className="text-[10px] text-ink-400 font-mono truncate">
+                        {p.slug}
+                      </p>
+                    </div>
+                    <span className="text-xs text-gold-700 shrink-0 mt-0.5">
+                      ✏ 編輯 →
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 mt-2 text-[11px] text-ink-600">
+                    <span>{CATEGORY_LABELS[p.category] ?? p.category}</span>
+                    {p.weight_qian && (
+                      <>
+                        <span className="text-ink-300">·</span>
+                        <span className="font-mono">{p.weight_qian} 錢</span>
+                      </>
+                    )}
+                    <span className="text-ink-300">·</span>
+                    {p.available ? (
+                      <span className="text-emerald-700">上架</span>
+                    ) : (
+                      <span className="text-red-500">下架</span>
+                    )}
+                    {p.featured && (
+                      <>
+                        <span className="text-ink-300">·</span>
+                        <span className="text-gold-600">★精選</span>
+                      </>
+                    )}
+                  </div>
+
+                  {/* 翻譯 badge */}
+                  <div className="flex items-center gap-1 mt-2 flex-wrap">
+                    {langStatus.map((s) => (
+                      <span
+                        key={s.key}
+                        className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
+                          s.filled
+                            ? "bg-emerald-100 text-emerald-700"
+                            : "bg-ink-100 text-ink-400 line-through"
+                        }`}
+                      >
+                        {s.flag}
+                      </span>
+                    ))}
+                    <span className="ml-1 text-[10px] text-ink-400">
+                      {filledCount}/5
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          );
+        })}
+        {visible.length === 0 && (
+          <p className="text-center py-12 text-sm text-ink-400">沒找到符合條件的商品</p>
+        )}
+      </div>
+
+      {/* 桌機表格版 */}
+      <div className="hidden lg:block bg-white border border-ink-950/10 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-ivory-50 text-ink-400 text-[11px] uppercase tracking-wider">
@@ -255,20 +358,26 @@ export default function AdminProductsTable({ products }: Props) {
         <div className="flex items-center justify-center gap-2 mt-6">
           <button
             type="button"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            onClick={() => {
+              setPage((p) => Math.max(1, p - 1));
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
             disabled={page === 1}
-            className="px-3 py-1.5 text-xs border border-ink-950/15 hover:border-gold-500 disabled:opacity-30"
+            className="px-4 py-2 text-xs border border-ink-950/15 bg-white hover:border-gold-500 disabled:opacity-30"
           >
             ← 上一頁
           </button>
-          <span className="text-xs text-ink-700 font-mono">
+          <span className="text-xs text-ink-700 font-mono px-3">
             {page} / {totalPages}
           </span>
           <button
             type="button"
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            onClick={() => {
+              setPage((p) => Math.min(totalPages, p + 1));
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
             disabled={page === totalPages}
-            className="px-3 py-1.5 text-xs border border-ink-950/15 hover:border-gold-500 disabled:opacity-30"
+            className="px-4 py-2 text-xs border border-ink-950/15 bg-white hover:border-gold-500 disabled:opacity-30"
           >
             下一頁 →
           </button>

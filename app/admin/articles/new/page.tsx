@@ -6,7 +6,7 @@ export const metadata = { title: "新增文章 | 金閃閃後台" };
 
 export default function NewArticlePage() {
   return (
-    <div className="p-8 md:p-12 max-w-3xl">
+    <div className="p-4 sm:p-8 md:p-12 max-w-3xl">
       <header className="mb-10">
         <p className="font-sans tracking-[0.3em] text-[10px] text-gold-600 uppercase mb-2 font-medium">
           New Article · 新增文章
