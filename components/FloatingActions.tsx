@@ -28,7 +28,7 @@ export default function FloatingActions() {
             <span className="text-[10px] tracking-wider mt-1">電話</span>
           </a>
           <a
-            href="/#contact"
+            href="https://lin.ee/onfiZgZ" target="_blank" rel="noopener noreferrer"
             className="flex flex-col items-center justify-center py-3 bg-gold-500 text-ink-950 hover:bg-gold-400 transition-colors"
             aria-label="LINE 詢問"
           >
@@ -69,7 +69,7 @@ export default function FloatingActions() {
           </svg>
         </a>
         <a
-          href="/#contact"
+          href="https://lin.ee/onfiZgZ" target="_blank" rel="noopener noreferrer"
           aria-label="加入 LINE 詢價"
           className="w-14 h-14 rounded-full bg-gold-500 text-ink-950 flex items-center justify-center shadow-[0_10px_30px_-10px_rgba(155,120,42,0.5)] hover:bg-gold-400 transition-colors"
         >

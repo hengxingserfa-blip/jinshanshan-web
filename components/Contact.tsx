@@ -75,7 +75,16 @@ export default function Contact() {
                 <dt className="font-display tracking-[0.3em] text-[10px] text-gold-300 uppercase">
                   {t.contact.label_line}
                 </dt>
-                <dd className="text-ivory-50/75">{t.contact.line_value}</dd>
+                <dd>
+                  <a
+                    href="https://lin.ee/onfiZgZ"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-ivory-50 hover:text-gold-300 transition-colors"
+                  >
+                    {t.contact.line_value}
+                  </a>
+                </dd>
               </div>
               <div className="h-px bg-white/20" />
 

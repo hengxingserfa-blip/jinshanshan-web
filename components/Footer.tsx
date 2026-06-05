@@ -28,6 +28,7 @@ export default function Footer() {
       title: t.footer.col_contact,
       items: [
         { label: "(03) 280-5908", href: "tel:+88632805908" },
+        { label: "加 LINE 好友", href: "https://lin.ee/onfiZgZ" },
         { label: "@shiny_gold991 (IG)", href: "https://instagram.com/shiny_gold991" },
         { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61575318885967" },
         {

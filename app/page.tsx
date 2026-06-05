@@ -5,6 +5,7 @@ import GoldPriceTicker from "@/components/GoldPriceTicker";
 import Services from "@/components/Services";
 import OccasionCategories from "@/components/OccasionCategories";
 import ProductsPreview from "@/components/ProductsPreview";
+import InstagramSection from "@/components/InstagramSection";
 import Testimonials from "@/components/Testimonials";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
@@ -22,6 +23,7 @@ export default async function Home() {
       <Services />
       <OccasionCategories />
       <ProductsPreview products={featured} />
+      <InstagramSection />
       <Testimonials />
       <About />
       <Contact />

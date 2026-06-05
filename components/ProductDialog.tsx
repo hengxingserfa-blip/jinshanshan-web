@@ -6,7 +6,7 @@ import { useI18n, useT } from "@/lib/i18n/provider";
 import { localize } from "@/lib/i18n/localize";
 import type { Product } from "@/lib/supabase/types";
 
-const LINE_OA = process.env.NEXT_PUBLIC_LINE_OA_ID || "shiny.gold991";
+const LINE_OA = process.env.NEXT_PUBLIC_LINE_OA_ID || "452rajhx";
 
 const CATEGORY_LABELS_EN: Record<string, string> = {
   rings: "Rings",

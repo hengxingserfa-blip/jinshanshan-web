@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-const LINE_OA = process.env.NEXT_PUBLIC_LINE_OA_ID || "shiny.gold991";
+const LINE_OA = process.env.NEXT_PUBLIC_LINE_OA_ID || "452rajhx";
 
 const SERVICES = [
   "舊金換新",

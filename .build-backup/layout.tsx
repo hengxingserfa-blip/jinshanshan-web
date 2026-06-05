@@ -7,6 +7,10 @@ import Footer from "@/components/Footer";
 import TopBar from "@/components/TopBar";
 import CategoryBar from "@/components/CategoryBar";
 import FloatingActions from "@/components/FloatingActions";
+import StructuredData from "@/components/StructuredData";
+import Analytics from "@/components/Analytics";
+import { I18nProvider } from "@/lib/i18n/provider";
+import { getActivePromotion } from "@/lib/data/promotions";
 
 const notoTC = Noto_Sans_TC({
   subsets: ["latin"],
@@ -29,16 +33,66 @@ const italiana = Italiana({
   display: "swap",
 });
 
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://jinshanshan.com";
+const SEARCH_CONSOLE = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
+
 export const metadata: Metadata = {
-  title: "金閃閃銀樓 SHINY GOLD Jeweller's | 桃園中壢黃金回收・舊金換新",
+  metadataBase: new URL(SITE),
+  title: {
+    default: "金閃閃銀樓 SHINY GOLD Jeweller's | 桃園中壢黃金回收・舊金換新",
+    template: "%s | 金閃閃銀樓",
+  },
   description:
-    "金閃閃銀樓位於桃園中壢中和路,提供舊金換新、舊金回收、飾金換購、修飾販售。公開秤重、透明金價,讓每一位客人都安心。",
+    "金閃閃銀樓位於桃園中壢中和路,提供舊金換新、舊金回收、飾金換購、修飾販售。公開秤重、透明金價,讓每一位客人都安心。歡迎中越英印菲泰各國朋友。",
+  keywords: [
+    "金閃閃銀樓", "SHINY GOLD", "桃園中壢黃金回收", "中壢銀樓", "舊金換新",
+    "黃金回收", "飾金回收", "金條買賣", "彌月金牌", "對戒",
+    "Tiệm vàng Trung Lịch", "Toko Emas Zhongli",
+  ],
+  authors: [{ name: "金閃閃銀樓" }],
+  creator: "金閃閃銀樓",
+  publisher: "金閃閃銀樓",
+  alternates: { canonical: SITE },
   openGraph: {
     title: "金閃閃銀樓 SHINY GOLD Jeweller's",
-    description: "桃園中壢在地誠信銀樓.舊金換新.公開秤重.透明金價.歡迎各國朋友",
+    description:
+      "桃園中壢在地誠信銀樓.舊金換新.公開秤重.透明金價.歡迎各國朋友",
+    url: SITE,
+    siteName: "金閃閃銀樓",
     locale: "zh_TW",
     type: "website",
+    images: [
+      {
+        url: `${SITE}/logo.png`,
+        width: 1200,
+        height: 630,
+        alt: "金閃閃銀樓 SHINY GOLD Jeweller's",
+      },
+    ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "金閃閃銀樓 SHINY GOLD Jeweller's",
+    description: "桃園中壢誠信銀樓.公開金價.歡迎各國朋友",
+    images: [`${SITE}/logo.png`],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
+  ...(SEARCH_CONSOLE && {
+    verification: { google: SEARCH_CONSOLE },
+  }),
 };
 
 export default async function RootLayout({
@@ -50,17 +104,25 @@ export default async function RootLayout({
   const pathname = h.get("x-pathname") ?? "";
   const isAdmin = pathname.startsWith("/admin");
 
+  const promo = !isAdmin ? await getActivePromotion() : null;
+
   return (
     <html lang="zh-TW">
+      <head>
+        <StructuredData />
+      </head>
       <body
         className={`${notoTC.variable} ${cormorant.variable} ${italiana.variable} font-sans antialiased bg-ivory-50 text-ink-950 font-light`}
       >
-        {!isAdmin && <TopBar />}
-        {!isAdmin && <Header />}
-        {!isAdmin && <CategoryBar />}
-        <main>{children}</main>
-        {!isAdmin && <Footer />}
-        {!isAdmin && <FloatingActions />}
+        <I18nProvider>
+          {!isAdmin && <TopBar promo={promo} />}
+          {!isAdmin && <Header />}
+          {!isAdmin && <CategoryBar />}
+          <main>{children}</main>
+          {!isAdmin && <Footer />}
+          {!isAdmin && <FloatingActions />}
+        </I18nProvider>
+        <Analytics />
       </body>
     </html>
   );
