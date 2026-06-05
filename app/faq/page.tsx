@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import FaqClient from "./FaqClient";
 import FaqStructuredData from "@/components/FaqStructuredData";
 
@@ -26,6 +27,7 @@ export const metadata: Metadata = {
 export default function FaqPage() {
   return (
     <>
+      <BreadcrumbJsonLd trail={[{ name: "常見問題", path: "/faq" }]} />
       <FaqStructuredData />
       <FaqClient />
     </>

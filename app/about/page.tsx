@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import AboutClient from "./AboutClient";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 const SITE = "https://www.shinygold.com.tw";
 
@@ -22,5 +23,10 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  return <AboutClient />;
+  return (
+    <>
+      <BreadcrumbJsonLd trail={[{ name: "關於我們", path: "/about" }]} />
+      <AboutClient />
+    </>
+  );
 }

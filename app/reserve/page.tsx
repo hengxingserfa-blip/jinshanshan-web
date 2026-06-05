@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import PageHero from "@/components/PageHero";
 import CtaBlock from "@/components/CtaBlock";
 import ReservationForm from "@/components/ReservationForm";
@@ -26,6 +27,7 @@ export const metadata: Metadata = {
 export default function ReservePage() {
   return (
     <>
+      <BreadcrumbJsonLd trail={[{ name: "預約看店", path: "/reserve" }]} />
       <PageHero page="reserve" />
 
       <section className="bg-white py-20 md:py-28">

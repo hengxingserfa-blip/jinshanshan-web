@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import PageHero from "@/components/PageHero";
 import CtaBlock from "@/components/CtaBlock";
 import ArticlesGrid from "@/components/ArticlesGrid";
@@ -29,6 +30,7 @@ export default async function ArticlesPage() {
 
   return (
     <>
+      <BreadcrumbJsonLd trail={[{ name: "金飾知識", path: "/articles" }]} />
       <PageHero page="journal" />
 
       <section className="bg-ivory-50 py-24 md:py-32">
