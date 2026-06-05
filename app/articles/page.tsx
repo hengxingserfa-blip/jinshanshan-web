@@ -4,7 +4,7 @@ import CtaBlock from "@/components/CtaBlock";
 import ArticlesGrid from "@/components/ArticlesGrid";
 import { getArticles } from "@/lib/data/articles";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://www.shinygold.com.tw";
+const SITE = "https://www.shinygold.com.tw";
 
 export const metadata: Metadata = {
   title: "金飾知識專欄 · 黃金回收 / 保養 / 婚嫁",

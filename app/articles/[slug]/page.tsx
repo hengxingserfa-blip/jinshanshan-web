@@ -7,7 +7,7 @@ import CtaBlock from "@/components/CtaBlock";
 import Ornament from "@/components/Ornament";
 import { getArticles } from "@/lib/data/articles";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://www.shinygold.com.tw";
+const SITE = "https://www.shinygold.com.tw";
 
 // 寫死可預先生成的文章 slug,避免 build 時打 Supabase (之前讓 Vercel build timeout)
 // 新文章從後台發布後,記得回來這裡補上 slug

@@ -13,7 +13,7 @@ import Contact from "@/components/Contact";
 import { getFeaturedProducts } from "@/lib/data/products";
 import { fetchInstagramPosts } from "@/lib/instagram";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://www.shinygold.com.tw";
+const SITE = "https://www.shinygold.com.tw";
 
 export const metadata: Metadata = {
   // 用空字串避免 layout template 在首頁加 " | 金閃閃銀樓" 後綴 (首頁標題本身就含品牌)

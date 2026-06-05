@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import FaqClient from "./FaqClient";
 import FaqStructuredData from "@/components/FaqStructuredData";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://www.shinygold.com.tw";
+const SITE = "https://www.shinygold.com.tw";
 
 export const metadata: Metadata = {
   title: "常見問題 FAQ · 黃金回收金價 / 火耗 / 純度",

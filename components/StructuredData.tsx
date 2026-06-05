@@ -1,7 +1,7 @@
 // JSON-LD 結構化資料:LocalBusiness (JewelryStore) schema 給 Google 抓
 // 含 NAP、地理座標、營業時間、評分、社群、服務目錄、付款方式、商圈圖
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://www.shinygold.com.tw";
+const SITE = "https://www.shinygold.com.tw";
 
 const jsonLd = {
   "@context": "https://schema.org",

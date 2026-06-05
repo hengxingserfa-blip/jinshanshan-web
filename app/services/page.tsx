@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import ServicesClient from "./ServicesClient";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://www.shinygold.com.tw";
+const SITE = "https://www.shinygold.com.tw";
 
 export const metadata: Metadata = {
   title: "服務項目 · 舊金換新 / 回收 / 飾金販售 / 修飾",

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://www.shinygold.com.tw";
+const SITE = "https://www.shinygold.com.tw";
 
 // 寫死 fallback slug — 新增文章後在這裡補
 // 避免 build 時打 Supabase 讓 Vercel timeout

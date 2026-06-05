@@ -3,7 +3,7 @@ import PageHero from "@/components/PageHero";
 import CtaBlock from "@/components/CtaBlock";
 import ReservationForm from "@/components/ReservationForm";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://www.shinygold.com.tw";
+const SITE = "https://www.shinygold.com.tw";
 
 export const metadata: Metadata = {
   title: "預約看店 · 中壢金閃閃銀樓",
