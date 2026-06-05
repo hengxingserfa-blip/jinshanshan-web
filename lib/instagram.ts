@@ -25,6 +25,8 @@ interface IGEdge {
 // 從 IG 公開端點抓取最近的貼文 (server-side only)
 export async function fetchInstagramPosts(limit = 6): Promise<IGPost[]> {
   try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 4000);
     const res = await fetch(
       `https://www.instagram.com/api/v1/users/web_profile_info/?username=${INSTAGRAM_HANDLE}`,
       {
@@ -33,8 +35,10 @@ export async function fetchInstagramPosts(limit = 6): Promise<IGPost[]> {
           "X-IG-App-ID": "936619743392459",
         },
         next: { revalidate: 3600 }, // 1 小時快取
+        signal: ctrl.signal,
       }
     );
+    clearTimeout(timer);
     if (!res.ok) return [];
     const data = await res.json();
     const edges: IGEdge[] = data?.data?.user?.edge_owner_to_timeline_media?.edges ?? [];
