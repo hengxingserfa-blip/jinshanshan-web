@@ -50,7 +50,7 @@ export default function Hero() {
         <div className="lg:col-span-7 relative min-h-[60vh] lg:min-h-screen order-1 lg:order-2">
           <Image
             src={IMG.heroJewelry}
-            alt="SHINY GOLD Fine Jewellery"
+            alt="金閃閃銀樓 SHINY GOLD Jeweller's · 桃園中壢 9999 純金黃金飾品 · 公開秤重透明金價"
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 58vw"

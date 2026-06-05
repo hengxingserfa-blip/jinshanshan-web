@@ -123,6 +123,11 @@ export default async function RootLayout({
   return (
     <html lang="zh-TW">
       <head>
+        {/* preconnect/dns-prefetch 給 Supabase 圖片 CDN,商品頁加速 */}
+        <link rel="preconnect" href="https://jwzdhnmxlybeikysbokf.supabase.co" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://jwzdhnmxlybeikysbokf.supabase.co" />
+        {/* IG embed (首頁 Instagram 區塊) */}
+        <link rel="dns-prefetch" href="https://www.instagram.com" />
         <StructuredData />
       </head>
       <body

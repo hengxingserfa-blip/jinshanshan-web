@@ -25,10 +25,57 @@ export const metadata: Metadata = {
   },
 };
 
+const services = [
+  {
+    name: "舊金換新 · Gold Renewal",
+    description:
+      "把抽屜裡的舊金條、舊金飾換成現在想戴的款式。當日金價試算,只補差價。不扣耗損、無火燒費。",
+    serviceType: "舊金換新",
+  },
+  {
+    name: "舊金回收 · Gold Buy-Back",
+    description:
+      "公開當日金價、現場秤重、清楚試算。當日現金結清,絕不扣耗損費。XRF 驗金儀器免費檢測。",
+    serviceType: "黃金回收",
+  },
+  {
+    name: "飾金販售 · Jewellery Sales",
+    description:
+      "9999 純金戒指、項鍊、手鐲、對戒、彌月禮、投資金條,3000+ 件實際庫存。每件附金重證明保證卡。",
+    serviceType: "金飾販售",
+  },
+  {
+    name: "修飾翻新 · Repair & Refit",
+    description:
+      "斷鍊接線、戒圍放大縮小、款式改造、拋光翻新、寶石重鑲。3-7 天交件,讓老件再次戴回身上。",
+    serviceType: "金飾修理",
+  },
+];
+
+const serviceJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": services.map((s) => ({
+    "@type": "Service",
+    name: s.name,
+    description: s.description,
+    serviceType: s.serviceType,
+    provider: { "@id": `${SITE}#business` },
+    areaServed: [
+      { "@type": "City", name: "中壢區" },
+      { "@type": "City", name: "桃園市" },
+    ],
+    availableLanguage: ["zh-TW", "en", "vi", "id", "fil", "th"],
+  })),
+};
+
 export default function ServicesPage() {
   return (
     <>
       <BreadcrumbJsonLd trail={[{ name: "服務項目", path: "/services" }]} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
       <ServicesClient />
     </>
   );

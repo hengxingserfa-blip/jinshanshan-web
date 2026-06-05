@@ -18,9 +18,10 @@ function allUrls(): string[] {
   const base = `https://${HOST}`;
   const fixed = ["/", "/services", "/products", "/articles", "/about", "/faq", "/reserve"];
   const articles = ARTICLE_SLUGS.map((s) => `/articles/${s}`);
-  const categories = ["rings", "necklaces", "bracelets", "wedding", "newborn", "bullion", "custom"]
+  const categories = ["rings", "earrings", "necklaces", "bracelets", "wedding", "newborn", "bullion", "custom"]
     .map((c) => `/products?category=${c}`);
-  return [...fixed, ...articles, ...categories].map((p) => `${base}${p}`);
+  const sitemaps = ["/sitemap.xml", "/image-sitemap.xml"];
+  return [...fixed, ...articles, ...categories, ...sitemaps].map((p) => `${base}${p}`);
 }
 
 async function pingIndexNow(endpoint: string, urls: string[]) {
