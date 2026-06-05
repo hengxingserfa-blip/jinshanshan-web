@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     description: "回收價怎麼算?火耗扣不扣?純度怎麼測?一次說清楚。",
     url: `${SITE}/faq`,
     type: "website",
+    images: [{ url: SITE + "/logo.png", width: 1200, height: 630, alt: "金閃閃銀樓" }],
   },
 };
 

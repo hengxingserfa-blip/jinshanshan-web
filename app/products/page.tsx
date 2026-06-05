@@ -21,6 +21,7 @@ export const metadata: Metadata = {
     description: "3000+ 件 9999 純金庫存,每件附金重證明。中壢中和路 108 號可看可試戴。",
     url: `${SITE}/products`,
     type: "website",
+    images: [{ url: SITE + "/logo.png", width: 1200, height: 630, alt: "金閃閃銀樓" }],
   },
 };
 

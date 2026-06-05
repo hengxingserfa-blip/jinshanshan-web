@@ -30,6 +30,13 @@ export const metadata: Metadata = {
       "9999 純金、公開秤重、透明金價、當日結清不扣耗損。中壢中和路 108 號,每日 10:30–20:30。",
     url: SITE,
     type: "website",
+    images: [{ url: `${SITE}/logo.png`, width: 1200, height: 630, alt: "金閃閃銀樓 SHINY GOLD Jeweller's" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "金閃閃銀樓 · 中壢黃金回收 / 舊金換新",
+    description: "9999 純金、公開秤重、透明金價、當日結清不扣耗損。",
+    images: [`${SITE}/logo.png`],
   },
 };
 

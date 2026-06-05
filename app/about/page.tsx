@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     description: "桃園中壢中和路 108 號,9999 純金、公開秤重、絕不扣耗損。",
     url: `${SITE}/about`,
     type: "website",
+    images: [{ url: SITE + "/logo.png", width: 1200, height: 630, alt: "金閃閃銀樓" }],
   },
 };
 

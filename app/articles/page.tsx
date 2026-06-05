@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     description: "黃金回收、保養、婚嫁、彌月,實用知識專欄。",
     url: `${SITE}/articles`,
     type: "website",
+    images: [{ url: SITE + "/logo.png", width: 1200, height: 630, alt: "金閃閃銀樓" }],
   },
 };
 

@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     description: "舊金換新、回收、飾金販售、修飾。桃園中壢誠信銀樓,當日結清不扣耗損。",
     url: `${SITE}/services`,
     type: "website",
+    images: [{ url: SITE + "/logo.png", width: 1200, height: 630, alt: "金閃閃銀樓" }],
   },
 };
 

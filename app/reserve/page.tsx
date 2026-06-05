@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     description: "舊金回收、換新、訂製、修飾,挑時段、留訊息,我們聯絡您。",
     url: `${SITE}/reserve`,
     type: "website",
+    images: [{ url: SITE + "/logo.png", width: 1200, height: 630, alt: "金閃閃銀樓" }],
   },
 };
 
