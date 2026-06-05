@@ -2,11 +2,14 @@ import Ornament from "@/components/Ornament";
 import {
   INSTAGRAM_HANDLE,
   INSTAGRAM_PROFILE_URL,
-  fetchInstagramPosts,
+  type IGPost,
 } from "@/lib/instagram";
 
-export default async function InstagramSection() {
-  const posts = await fetchInstagramPosts(6);
+interface Props {
+  posts: IGPost[];
+}
+
+export default function InstagramSection({ posts }: Props) {
 
   return (
     <section className="bg-ivory-50 py-28 md:py-36">

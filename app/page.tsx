@@ -10,15 +10,19 @@ import Testimonials from "@/components/Testimonials";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
 import { getFeaturedProducts } from "@/lib/data/products";
+import { fetchInstagramPosts } from "@/lib/instagram";
 
 export default async function Home() {
-  const featured = await getFeaturedProducts(3);
+  const [featured, igPosts] = await Promise.all([
+    getFeaturedProducts(3),
+    fetchInstagramPosts(6),
+  ]);
 
   return (
     <>
       <Hero />
       <TrustBadges />
-      <InstagramSection />
+      <InstagramSection posts={igPosts} />
       <Calculator />
       <GoldPriceTicker />
       <Services />
