@@ -4,10 +4,23 @@ import CtaBlock from "@/components/CtaBlock";
 import ArticlesGrid from "@/components/ArticlesGrid";
 import { getArticles } from "@/lib/data/articles";
 
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://www.shinygold.com.tw";
+
 export const metadata: Metadata = {
-  title: "金飾知識・文章",
+  title: "金飾知識專欄 · 黃金回收 / 保養 / 婚嫁",
   description:
-    "黃金回收、舊金換新、金飾保養、傳家智慧 —— 金閃閃銀樓的金飾知識專欄。",
+    "黃金一錢是多少?舊金回收前該注意什麼?結婚對戒怎麼挑?彌月金牌怎麼選?金閃閃銀樓專欄帶你看懂金飾與黃金知識。",
+  keywords: [
+    "黃金知識", "金飾保養", "黃金回收注意事項", "結婚對戒挑選",
+    "彌月金牌怎麼選", "黃金一錢多重", "金飾傳家", "中壢銀樓專欄",
+  ],
+  alternates: { canonical: `${SITE}/articles` },
+  openGraph: {
+    title: "金飾知識專欄 — 金閃閃銀樓",
+    description: "黃金回收、保養、婚嫁、彌月,實用知識專欄。",
+    url: `${SITE}/articles`,
+    type: "website",
+  },
 };
 
 export default async function ArticlesPage() {

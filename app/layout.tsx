@@ -53,7 +53,18 @@ export const metadata: Metadata = {
   authors: [{ name: "金閃閃銀樓" }],
   creator: "金閃閃銀樓",
   publisher: "金閃閃銀樓",
-  alternates: { canonical: SITE },
+  alternates: {
+    canonical: SITE,
+    languages: {
+      "zh-TW": SITE,
+      en: `${SITE}/?locale=en`,
+      vi: `${SITE}/?locale=vi`,
+      id: `${SITE}/?locale=id`,
+      fil: `${SITE}/?locale=fil`,
+      th: `${SITE}/?locale=th`,
+      "x-default": SITE,
+    },
+  },
   openGraph: {
     title: "金閃閃銀樓 SHINY GOLD Jeweller's",
     description:
@@ -61,6 +72,7 @@ export const metadata: Metadata = {
     url: SITE,
     siteName: "金閃閃銀樓",
     locale: "zh_TW",
+    alternateLocale: ["en_US", "vi_VN", "id_ID", "tl_PH", "th_TH"],
     type: "website",
     images: [
       {

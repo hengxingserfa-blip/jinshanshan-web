@@ -7,6 +7,19 @@ import CtaBlock from "@/components/CtaBlock";
 import Ornament from "@/components/Ornament";
 import { getArticles } from "@/lib/data/articles";
 
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://www.shinygold.com.tw";
+
+// 寫死可預先生成的文章 slug,避免 build 時打 Supabase (之前讓 Vercel build timeout)
+// 新文章從後台發布後,記得回來這裡補上 slug
+export function generateStaticParams() {
+  return [
+    { slug: "gold-weight-units" },
+    { slug: "recycle-tips" },
+    { slug: "wedding-checklist" },
+    { slug: "gold-care" },
+  ];
+}
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -15,14 +28,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const all = await getArticles();
   const article = all.find((a) => a.slug === slug);
-  if (!article) return { title: "找不到文章 | 金閃閃銀樓" };
+  if (!article) return { title: "找不到文章" };
   return {
-    title: `${article.title_zh} | 金閃閃銀樓`,
+    title: article.title_zh,
     description: article.excerpt_zh ?? undefined,
+    alternates: { canonical: `${SITE}/articles/${slug}` },
     openGraph: {
       title: article.title_zh,
       description: article.excerpt_zh ?? undefined,
+      url: `${SITE}/articles/${slug}`,
       type: "article",
+      publishedTime: article.published_at ?? undefined,
+      modifiedTime: article.updated_at ?? undefined,
+      images: article.hero_image_url ? [article.hero_image_url] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title_zh,
+      description: article.excerpt_zh ?? undefined,
       images: article.hero_image_url ? [article.hero_image_url] : [],
     },
   };
@@ -44,8 +67,43 @@ export default async function ArticleDetailPage({ params }: PageProps) {
   // 推薦其他 3 篇
   const others = all.filter((a) => a.slug !== slug).slice(0, 3);
 
+  // Article + BreadcrumbList JSON-LD
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title_zh,
+    description: article.excerpt_zh ?? undefined,
+    image: article.hero_image_url ? [article.hero_image_url] : undefined,
+    datePublished: article.published_at ?? undefined,
+    dateModified: article.updated_at ?? article.published_at ?? undefined,
+    author: { "@type": "Organization", name: "金閃閃銀樓 SHINY GOLD Jeweller's" },
+    publisher: {
+      "@type": "Organization",
+      name: "金閃閃銀樓 SHINY GOLD Jeweller's",
+      logo: { "@type": "ImageObject", url: `${SITE}/logo.png` },
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE}/articles/${slug}` },
+  };
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "首頁", item: SITE },
+      { "@type": "ListItem", position: 2, name: "金飾知識", item: `${SITE}/articles` },
+      { "@type": "ListItem", position: 3, name: article.title_zh, item: `${SITE}/articles/${slug}` },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <section className="bg-ivory-50 border-b border-ink-950/8">
         <div className="mx-auto max-w-3xl px-6 sm:px-10 pt-20 md:pt-28 pb-12 md:pb-16 text-center">
           <p className="font-sans tracking-[0.4em] text-[11px] text-gold-600 uppercase mb-6 font-medium">

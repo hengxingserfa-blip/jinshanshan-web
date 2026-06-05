@@ -3,10 +3,23 @@ import PageHero from "@/components/PageHero";
 import CtaBlock from "@/components/CtaBlock";
 import ReservationForm from "@/components/ReservationForm";
 
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://www.shinygold.com.tw";
+
 export const metadata: Metadata = {
-  title: "預約看店",
+  title: "預約看店 · 中壢金閃閃銀樓",
   description:
-    "預約金閃閃銀樓的看店時段。舊金回收、換新、換購、修飾、訂製,選擇您方便的時間,我們在桃園中壢中和路 108 號等您。",
+    "預約金閃閃銀樓看店時段。舊金回收、換新、換購、修飾、訂製金飾 / 對戒,選擇您方便時段。中壢中和路 108 號,每日 10:30–20:30,中越英印菲泰各國語言皆可。",
+  keywords: [
+    "金閃閃銀樓預約", "中壢銀樓預約", "舊金回收預約", "金飾訂製預約",
+    "對戒預約看店", "彌月金牌預約",
+  ],
+  alternates: { canonical: `${SITE}/reserve` },
+  openGraph: {
+    title: "預約看店 · 中壢金閃閃銀樓",
+    description: "舊金回收、換新、訂製、修飾,挑時段、留訊息,我們聯絡您。",
+    url: `${SITE}/reserve`,
+    type: "website",
+  },
 };
 
 export default function ReservePage() {
