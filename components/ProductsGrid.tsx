@@ -91,75 +91,76 @@ export default function ProductsGrid({ products }: Props) {
 
   return (
     <>
-      <div className="flex flex-wrap gap-x-10 gap-y-6 mb-10 justify-center border-b border-ink-950/8 pb-8">
-        {TABS.map((key) => {
-          const isActive = key === active;
-          const href = key === "all" ? "/products" : `/products?category=${key}`;
-          return (
-            <Link
-              key={key}
-              href={href}
-              scroll={false}
-              className="flex flex-col items-center group"
-            >
-              <span
-                className={`font-display tracking-[0.35em] text-[10px] uppercase ${
-                  isActive ? "text-gold-600 border-b border-gold-500" : "text-ink-700 group-hover:text-gold-600"
-                } transition-colors pb-1`}
+      {/* 分類 tab — 手機橫滑,桌機 wrap */}
+      <div className="-mx-6 sm:mx-0 mb-6 sm:mb-10 border-b border-ink-950/8 pb-4 sm:pb-8">
+        <div className="flex overflow-x-auto scrollbar-none sm:flex-wrap sm:justify-center gap-x-6 sm:gap-x-10 gap-y-4 sm:gap-y-6 px-6 sm:px-0 snap-x">
+          {TABS.map((key) => {
+            const isActive = key === active;
+            const href = key === "all" ? "/products" : `/products?category=${key}`;
+            return (
+              <Link
+                key={key}
+                href={href}
+                scroll={false}
+                className="flex flex-col items-center group shrink-0 snap-start"
               >
-                {key === "all" ? "All" : key.charAt(0).toUpperCase() + key.slice(1)}
-              </span>
-              <span className="text-[10px] tracking-[0.25em] text-ink-400 mt-1">
-                {t.category_bar[key]}
-              </span>
-              {categoryCounts[key] > 0 && (
-                <span className="text-[9px] text-ink-400 mt-0.5">
-                  ({categoryCounts[key]})
+                <span
+                  className={`font-display tracking-[0.3em] sm:tracking-[0.35em] text-[10px] uppercase whitespace-nowrap ${
+                    isActive ? "text-gold-600 border-b border-gold-500" : "text-ink-700 group-hover:text-gold-600"
+                  } transition-colors pb-1`}
+                >
+                  {key === "all" ? "All" : key.charAt(0).toUpperCase() + key.slice(1)}
                 </span>
-              )}
-            </Link>
-          );
-        })}
+                <span className="text-[10px] tracking-[0.2em] sm:tracking-[0.25em] text-ink-400 mt-1 whitespace-nowrap">
+                  {t.category_bar[key]}
+                  {categoryCounts[key] > 0 && (
+                    <span className="text-ink-400 ml-1">({categoryCounts[key]})</span>
+                  )}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
 
       {/* 搜尋 + 篩選 + 排序 */}
-      <div className="flex flex-col gap-4 mb-10">
-        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-          <div className="relative flex-1 sm:max-w-md">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="搜尋商品名稱 / SKU"
-              className="w-full bg-ivory-50 border border-ink-950/15 px-4 py-2.5 pr-10 text-sm focus:outline-none focus:border-gold-500 transition-colors"
-            />
-            <svg
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400"
-              width="18" height="18" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.3-4.3" />
-            </svg>
-          </div>
+      <div className="flex flex-col gap-3 mb-6 sm:mb-10">
+        <div className="relative">
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="搜尋商品 / SKU"
+            className="w-full bg-ivory-50 border border-ink-950/15 px-4 py-2.5 pr-10 text-sm focus:outline-none focus:border-gold-500 transition-colors"
+          />
+          <svg
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400"
+            width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+        </div>
 
+        <div className="grid grid-cols-2 sm:flex sm:flex-row gap-2 sm:gap-3">
           <select
             value={weightRange}
             onChange={(e) => setWeightRange(e.target.value)}
-            className="bg-ivory-50 border border-ink-950/15 px-4 py-2.5 text-sm font-sans focus:outline-none focus:border-gold-500 transition-colors"
+            className="bg-ivory-50 border border-ink-950/15 px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-sans focus:outline-none focus:border-gold-500 transition-colors"
             aria-label="重量篩選"
           >
             <option value="all">所有重量</option>
-            <option value="u1">小於 1 錢(輕巧)</option>
-            <option value="1-3">1 ~ 3 錢(中等)</option>
-            <option value="3-10">3 ~ 10 錢(較重)</option>
-            <option value="o10">10 錢以上(粗款)</option>
+            <option value="u1">小於 1 錢</option>
+            <option value="1-3">1 ~ 3 錢</option>
+            <option value="3-10">3 ~ 10 錢</option>
+            <option value="o10">10 錢以上</option>
           </select>
 
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-ivory-50 border border-ink-950/15 px-4 py-2.5 text-sm font-sans focus:outline-none focus:border-gold-500 transition-colors"
+            className="bg-ivory-50 border border-ink-950/15 px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm font-sans focus:outline-none focus:border-gold-500 transition-colors"
             aria-label="排序"
           >
             <option value="featured">推薦排序</option>
@@ -168,7 +169,7 @@ export default function ProductsGrid({ products }: Props) {
           </select>
         </div>
 
-        <p className="text-[11px] tracking-[0.2em] text-ink-500 uppercase font-display">
+        <p className="text-[10px] sm:text-[11px] tracking-[0.2em] text-ink-500 uppercase font-display">
           {filtered.length} 件商品
           {totalPages > 1 && ` · 第 ${page} / ${totalPages} 頁`}
         </p>
@@ -190,7 +191,7 @@ export default function ProductsGrid({ products }: Props) {
         </div>
       ) : (
         <>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-x-3 gap-y-8 sm:gap-x-8 sm:gap-y-16">
             {visible.map((p) => {
               const en = CATEGORY_LABELS_EN[p.category] ?? "Item";
               const zh = t.category_bar[p.category as keyof typeof t.category_bar] ?? "";
@@ -204,42 +205,42 @@ export default function ProductsGrid({ products }: Props) {
                   onClick={() => setOpenProduct(p)}
                   className="group text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
                 >
-                  <div className="aspect-[3/4] relative overflow-hidden bg-ivory-100">
+                  <div className="aspect-square sm:aspect-[3/4] relative overflow-hidden bg-ivory-100">
                     {p.image_url && (
                       <Image
                         src={p.image_url}
                         alt={p.name_en ?? p.name_zh}
                         fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         className="object-cover group-hover:scale-[1.04] transition-transform duration-[1200ms] ease-out"
                         unoptimized
                       />
                     )}
                     {p.featured && (
-                      <span className="absolute top-3 left-3 bg-gold-500 text-ink-950 text-[10px] tracking-[0.25em] uppercase font-display px-2.5 py-1">
+                      <span className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-gold-500 text-ink-950 text-[9px] sm:text-[10px] tracking-[0.2em] sm:tracking-[0.25em] uppercase font-display px-1.5 py-0.5 sm:px-2.5 sm:py-1">
                         精選
                       </span>
                     )}
                     {p.weight_qian != null && p.weight_qian > 0 && (
-                      <span className="absolute bottom-3 right-3 bg-ink-950/85 text-ivory-50 text-xs font-medium px-2.5 py-1 backdrop-blur-sm">
+                      <span className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 bg-ink-950/85 text-ivory-50 text-[10px] sm:text-xs font-medium px-1.5 py-0.5 sm:px-2.5 sm:py-1 backdrop-blur-sm">
                         {p.weight_qian} 錢
                       </span>
                     )}
-                    <span className="absolute inset-0 bg-ink-950/0 group-hover:bg-ink-950/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <span className="absolute inset-0 bg-ink-950/0 group-hover:bg-ink-950/20 transition-colors hidden sm:flex items-center justify-center opacity-0 group-hover:opacity-100">
                       <span className="bg-ivory-50 text-ink-950 px-5 py-2 text-[10px] tracking-[0.35em] uppercase font-display">
                         查看詳情
                       </span>
                     </span>
                   </div>
-                  <div className="pt-6">
-                    <p className="font-display tracking-[0.35em] text-[10px] text-gold-600 uppercase mb-2">
+                  <div className="pt-2 sm:pt-6">
+                    <p className="font-display tracking-[0.2em] sm:tracking-[0.35em] text-[9px] sm:text-[10px] text-gold-600 uppercase mb-1 sm:mb-2 truncate">
                       {en} · {zh}
                     </p>
-                    <h3 className="font-display text-xl text-ink-950 mb-1">
+                    <h3 className="font-display text-sm sm:text-xl text-ink-950 mb-0.5 sm:mb-1 leading-snug line-clamp-2">
                       {cleanName}
                     </h3>
                     {p.name_en && locale !== "en" && (
-                      <p className="text-[11px] tracking-wider text-ink-400 mb-1 font-serif italic">
+                      <p className="hidden sm:block text-[11px] tracking-wider text-ink-400 mb-1 font-serif italic truncate">
                         {p.name_en}
                       </p>
                     )}
@@ -249,42 +250,48 @@ export default function ProductsGrid({ products }: Props) {
             })}
           </div>
 
-          {/* 分頁器 */}
+          {/* 分頁器 — 手機簡化只剩 prev / current / next */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-20">
+            <div className="flex items-center justify-center gap-1 sm:gap-2 mt-10 sm:mt-20 flex-wrap">
               <button
                 onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 200, behavior: "smooth" }); }}
                 disabled={page === 1}
-                className="px-4 py-2 text-[11px] tracking-[0.3em] uppercase font-display border border-ink-950/15 hover:border-gold-500 hover:text-gold-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="px-3 sm:px-4 py-2 text-[10px] sm:text-[11px] tracking-[0.2em] sm:tracking-[0.3em] uppercase font-display border border-ink-950/15 hover:border-gold-500 hover:text-gold-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
-                ← 上一頁
+                ← <span className="hidden sm:inline">上一頁</span>
               </button>
-              {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
-                let n;
-                if (totalPages <= 7) n = i + 1;
-                else if (page <= 4) n = i + 1;
-                else if (page >= totalPages - 3) n = totalPages - 6 + i;
-                else n = page - 3 + i;
-                return (
-                  <button
-                    key={n}
-                    onClick={() => { setPage(n); window.scrollTo({ top: 200, behavior: "smooth" }); }}
-                    className={`w-10 h-10 text-sm font-display transition-colors ${
-                      n === page
-                        ? "bg-ink-950 text-ivory-50"
-                        : "text-ink-700 hover:text-gold-600 hover:bg-ivory-100"
-                    }`}
-                  >
-                    {n}
-                  </button>
-                );
-              })}
+              {/* 桌機:顯示 7 個頁碼;手機:只顯示當前頁碼 */}
+              <div className="hidden sm:flex items-center gap-2">
+                {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                  let n;
+                  if (totalPages <= 7) n = i + 1;
+                  else if (page <= 4) n = i + 1;
+                  else if (page >= totalPages - 3) n = totalPages - 6 + i;
+                  else n = page - 3 + i;
+                  return (
+                    <button
+                      key={n}
+                      onClick={() => { setPage(n); window.scrollTo({ top: 200, behavior: "smooth" }); }}
+                      className={`w-10 h-10 text-sm font-display transition-colors ${
+                        n === page
+                          ? "bg-ink-950 text-ivory-50"
+                          : "text-ink-700 hover:text-gold-600 hover:bg-ivory-100"
+                      }`}
+                    >
+                      {n}
+                    </button>
+                  );
+                })}
+              </div>
+              <span className="sm:hidden font-display text-sm tracking-wider text-ink-700 px-3">
+                {page} / {totalPages}
+              </span>
               <button
                 onClick={() => { setPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 200, behavior: "smooth" }); }}
                 disabled={page === totalPages}
-                className="px-4 py-2 text-[11px] tracking-[0.3em] uppercase font-display border border-ink-950/15 hover:border-gold-500 hover:text-gold-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="px-3 sm:px-4 py-2 text-[10px] sm:text-[11px] tracking-[0.2em] sm:tracking-[0.3em] uppercase font-display border border-ink-950/15 hover:border-gold-500 hover:text-gold-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
-                下一頁 →
+                <span className="hidden sm:inline">下一頁</span> →
               </button>
             </div>
           )}
