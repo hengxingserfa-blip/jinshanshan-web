@@ -59,6 +59,29 @@ const jsonLd = {
     bestRating: "5",
     worstRating: "1",
   },
+  review: [
+    {
+      "@type": "Review",
+      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
+      author: { "@type": "Person", name: "L 小姐" },
+      reviewBody:
+        "媽媽留下的金鍊放了十幾年捨不得拿出來。在金閃閃,他們現場秤重給我看,試算清清楚楚,還把舊金留下一小塊讓我做成項鍊。回家以後我才哭。",
+    },
+    {
+      "@type": "Review",
+      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
+      author: { "@type": "Person", name: "Ms. Nguyễn" },
+      reviewBody:
+        "我講越南話,他們慢慢用簡單的中文跟我溝通,還拿紙筆寫給我看。我帶兩條金鍊回收,給我的價錢比另外兩家好,當天就拿到現金。",
+    },
+    {
+      "@type": "Review",
+      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
+      author: { "@type": "Person", name: "C 先生" },
+      reviewBody:
+        "本來只是路過進來看看,老闆沒有推銷,反而花時間幫我們講解金重跟款式。最後挑到一對對戒,女朋友超喜歡。下次彌月也會回來。",
+    },
+  ],
   knowsLanguage: ["zh-TW", "en", "vi", "id", "fil", "th"],
   sameAs: [
     "https://instagram.com/shiny_gold991",
