@@ -16,7 +16,7 @@ const buildAlternates = (path: string): Record<string, string> => ({
   en: `${SITE}${path}?locale=en`,
   vi: `${SITE}${path}?locale=vi`,
   id: `${SITE}${path}?locale=id`,
-  fil: `${SITE}${path}?locale=fil`,
+  "fil-PH": `${SITE}${path}?locale=fil`,
   th: `${SITE}${path}?locale=th`,
   "x-default": `${SITE}${path}`,
 });

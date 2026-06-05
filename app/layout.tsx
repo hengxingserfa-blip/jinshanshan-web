@@ -55,15 +55,16 @@ export const metadata: Metadata = {
   publisher: "金閃閃銀樓",
   alternates: {
     canonical: SITE,
+    // Next.js TS 對 fil (Filipino) 不認,用 BCP 47 的 fil-PH 形式 + 強制斷言
     languages: {
       "zh-TW": SITE,
       en: `${SITE}/?locale=en`,
       vi: `${SITE}/?locale=vi`,
       id: `${SITE}/?locale=id`,
-      fil: `${SITE}/?locale=fil`,
+      "fil-PH": `${SITE}/?locale=fil`,
       th: `${SITE}/?locale=th`,
       "x-default": SITE,
-    },
+    } as Record<string, string>,
   },
   openGraph: {
     title: "金閃閃銀樓 SHINY GOLD Jeweller's",
