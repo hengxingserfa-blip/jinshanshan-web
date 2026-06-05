@@ -22,13 +22,23 @@ const FALLBACK: Product[] = [
 export async function getProducts(): Promise<Product[]> {
   const supabase = await getServerSupabase();
   if (!supabase) return FALLBACK;
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .eq("available", true)
-    .order("sort_order", { ascending: true });
-  if (error || !data || data.length === 0) return FALLBACK;
-  return data as Product[];
+  // Supabase 預設 1000 列,3000+ 商品要分頁撈
+  const all: Product[] = [];
+  const pageSize = 1000;
+  let from = 0;
+  while (true) {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("available", true)
+      .order("sort_order", { ascending: true })
+      .range(from, from + pageSize - 1);
+    if (error || !data || data.length === 0) break;
+    all.push(...(data as Product[]));
+    if (data.length < pageSize) break;
+    from += pageSize;
+  }
+  return all.length > 0 ? all : FALLBACK;
 }
 
 export async function getFeaturedProducts(limit = 6): Promise<Product[]> {
@@ -59,14 +69,23 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   return data as Product;
 }
 
-// 撈所有可索引的 slug,給 sitemap 用
+// 撈所有可索引的 slug,給 sitemap 用 — Supabase 預設 1000 列,要分頁撈
 export async function getAllProductSlugs(): Promise<string[]> {
   const supabase = await getServerSupabase();
   if (!supabase) return FALLBACK.map((p) => p.slug);
-  const { data, error } = await supabase
-    .from("products")
-    .select("slug")
-    .eq("available", true);
-  if (error || !data) return [];
-  return data.map((r: { slug: string }) => r.slug);
+  const all: string[] = [];
+  const pageSize = 1000;
+  let from = 0;
+  while (true) {
+    const { data, error } = await supabase
+      .from("products")
+      .select("slug")
+      .eq("available", true)
+      .range(from, from + pageSize - 1);
+    if (error || !data || data.length === 0) break;
+    all.push(...data.map((r: { slug: string }) => r.slug));
+    if (data.length < pageSize) break;
+    from += pageSize;
+  }
+  return all;
 }
