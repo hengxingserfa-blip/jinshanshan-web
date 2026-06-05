@@ -1,13 +1,12 @@
 import Ornament from "@/components/Ornament";
 import {
   INSTAGRAM_HANDLE,
-  INSTAGRAM_POSTS,
   INSTAGRAM_PROFILE_URL,
-  toEmbedUrl,
+  fetchInstagramPosts,
 } from "@/lib/instagram";
 
-export default function InstagramSection() {
-  const hasPosts = INSTAGRAM_POSTS.length > 0;
+export default async function InstagramSection() {
+  const posts = await fetchInstagramPosts(6);
 
   return (
     <section className="bg-ivory-50 py-28 md:py-36">
@@ -29,21 +28,21 @@ export default function InstagramSection() {
           </p>
         </div>
 
-        {hasPosts && (
+        {posts.length > 0 && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-            {INSTAGRAM_POSTS.slice(0, 6).map((post, i) => (
+            {posts.map((post, i) => (
               <div
-                key={post}
+                key={post.shortcode}
                 className="bg-ink-950/5 border border-ink-950/8 overflow-hidden"
               >
                 <iframe
-                  src={toEmbedUrl(post)}
+                  src={post.embedUrl}
                   className="w-full"
-                  style={{ aspectRatio: "9/16", minHeight: "560px", border: 0 }}
+                  style={{ aspectRatio: "9/14", minHeight: "560px", border: 0 }}
                   loading={i < 2 ? "eager" : "lazy"}
                   scrolling="no"
                   allowTransparency
-                  title={`Instagram 貼文 ${i + 1}`}
+                  title={post.caption || `Instagram ${post.isVideo ? "Reel" : "Post"} ${i + 1}`}
                 />
               </div>
             ))}
@@ -63,7 +62,7 @@ export default function InstagramSection() {
             <span>追蹤 @{INSTAGRAM_HANDLE}</span>
             <span>→</span>
           </a>
-          {!hasPosts && (
+          {posts.length === 0 && (
             <p className="text-[10px] tracking-[0.25em] text-ink-400 font-display max-w-md text-center mt-2 leading-loose">
               ※ 點上方按鈕到 Instagram 看每日更新的新品影片
             </p>

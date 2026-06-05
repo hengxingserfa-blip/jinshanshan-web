@@ -1,18 +1,57 @@
-// 首頁要 highlight 的 IG 貼文 / Reels 連結
-// 取得方式:打開 IG 貼文 → 右上角分享 → 複製連結
-// 範例: "https://www.instagram.com/reel/Cxxxxxxxxxx/"
-// 留空陣列就只顯示「追蹤 IG」CTA 不顯示影片格
+// IG 整合:從公開 web profile API 抓最近貼文/Reels
+// 每小時 revalidate 一次,Gino 在 IG 發新影片網站自動跟著更新
 export const INSTAGRAM_HANDLE = "shiny_gold991";
 export const INSTAGRAM_PROFILE_URL = `https://www.instagram.com/${INSTAGRAM_HANDLE}`;
 
-export const INSTAGRAM_POSTS: string[] = [
-  // 等 Gino 提供 3-4 個影片連結後填入,例如:
-  // "https://www.instagram.com/reel/DABCxxx/",
-  // "https://www.instagram.com/p/DDEFxxx/",
-];
+export interface IGPost {
+  url: string;
+  embedUrl: string;
+  isVideo: boolean;
+  caption: string;
+  shortcode: string;
+}
 
-// 把 IG 貼文連結轉成 embed iframe URL
-export function toEmbedUrl(postUrl: string): string {
-  const clean = postUrl.split("?")[0].replace(/\/$/, "");
-  return `${clean}/embed/`;
+interface IGEdge {
+  node: {
+    shortcode: string;
+    is_video: boolean;
+    __typename?: string;
+    edge_media_to_caption?: {
+      edges: Array<{ node: { text: string } }>;
+    };
+  };
+}
+
+// 從 IG 公開端點抓取最近的貼文 (server-side only)
+export async function fetchInstagramPosts(limit = 6): Promise<IGPost[]> {
+  try {
+    const res = await fetch(
+      `https://www.instagram.com/api/v1/users/web_profile_info/?username=${INSTAGRAM_HANDLE}`,
+      {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+          "X-IG-App-ID": "936619743392459",
+        },
+        next: { revalidate: 3600 }, // 1 小時快取
+      }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    const edges: IGEdge[] = data?.data?.user?.edge_owner_to_timeline_media?.edges ?? [];
+    return edges.slice(0, limit).map((e) => {
+      const n = e.node;
+      const caption =
+        n.edge_media_to_caption?.edges?.[0]?.node?.text?.slice(0, 80) ?? "";
+      const path = n.is_video ? "reel" : "p";
+      return {
+        url: `https://www.instagram.com/${path}/${n.shortcode}/`,
+        embedUrl: `https://www.instagram.com/${path}/${n.shortcode}/embed/`,
+        isVideo: n.is_video,
+        caption,
+        shortcode: n.shortcode,
+      };
+    });
+  } catch {
+    return [];
+  }
 }
