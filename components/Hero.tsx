@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { IMG } from "@/lib/images";
 import Ornament from "@/components/Ornament";
@@ -10,9 +8,6 @@ import { useT } from "@/lib/i18n/provider";
 
 export default function Hero() {
   const t = useT();
-  const sp = useSearchParams();
-  // ?preview=video 才顯示影片版 (一般訪客 / SEO 不受影響)
-  const showVideo = sp.get("preview") === "video";
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // iOS Safari 對 React 駝峰屬性 (playsInline / autoPlay) 不認, 用 ref 直接操作 DOM
@@ -35,7 +30,7 @@ export default function Hero() {
       document.removeEventListener("touchstart", tryPlay);
       document.removeEventListener("click", tryPlay);
     };
-  }, [showVideo]);
+  }, []);
   return (
     <section className="relative bg-ivory-50">
       <div className="grid lg:grid-cols-12 min-h-[90vh] lg:min-h-screen">
@@ -75,37 +70,22 @@ export default function Hero() {
           </div>
         </div>
 
-        <div
-          className={`lg:col-span-7 relative order-1 lg:order-2 bg-ink-950 lg:min-h-screen ${
-            showVideo ? "aspect-[9/16] lg:aspect-auto" : "min-h-[60vh]"
-          }`}
-        >
-          {showVideo ? (
-            // 直式 9:16 影片:手機剛好填滿,桌機 contain 完整顯示 + 兩側深色底
-            // 屬性透過 useEffect 用 setAttribute 補上小寫 HTML 屬性 (iOS 才會自動播)
-            <video
-              ref={videoRef}
-              src="/hero-opening.mp4"
-              poster={typeof IMG.heroJewelry === "string" ? IMG.heroJewelry : undefined}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              controls={false}
-              className="absolute inset-0 w-full h-full object-contain"
-              aria-label="金閃閃銀樓 開幕宣傳影片"
-            />
-          ) : (
-            <Image
-              src={IMG.heroJewelry}
-              alt="金閃閃銀樓 SHINY GOLD Jeweller's · 桃園中壢 9999 純金黃金飾品 · 公開秤重透明金價"
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 58vw"
-              className="object-cover scale-[1.02]"
-            />
-          )}
+        <div className="lg:col-span-7 relative order-1 lg:order-2 bg-ink-950 lg:min-h-screen aspect-[9/16] lg:aspect-auto">
+          {/* 開幕影片:直式 9:16,容器跟影片同比例 object-contain 完整呈現不切 */}
+          {/* iOS 需要 useEffect 手動 setAttribute 小寫屬性才會自動播 */}
+          <video
+            ref={videoRef}
+            src="/hero-opening.mp4"
+            poster={typeof IMG.heroJewelry === "string" ? IMG.heroJewelry : undefined}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            controls={false}
+            className="absolute inset-0 w-full h-full object-contain"
+            aria-label="金閃閃銀樓 開幕宣傳影片"
+          />
           <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-ivory-50/30" />
           <div className="absolute inset-0 bg-gradient-to-t from-ink-950/35 via-transparent to-transparent" />
 
