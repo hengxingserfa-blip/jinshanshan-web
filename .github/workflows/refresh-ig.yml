@@ -1,0 +1,88 @@
+name: 每日同步 Instagram 最新貼文
+
+on:
+  schedule:
+    # 每日 00:00 UTC = 台北時間 08:00 (Gino 早上看的時候已是最新)
+    # 加 1 個下午 06:00 UTC = 台北 02:00 凌晨,雙保險
+    - cron: "0 0 * * *"
+    - cron: "0 18 * * *"
+  workflow_dispatch: # 也可以手動點按鈕觸發
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 從 IG 抓最新 12 則,POST 進網站 cache
+        env:
+          IG_HANDLE: shiny_gold991
+          REFRESH_KEY: 2305ea313728c459b75f4c628c8b6845
+          SITE: https://www.shinygold.com.tw
+        run: |
+          python3 <<'PY'
+          import urllib.request, urllib.error, json, os, time
+
+          handle = os.environ["IG_HANDLE"]
+          key = os.environ["REFRESH_KEY"]
+          site = os.environ["SITE"]
+
+          # 1. 抓 IG (GitHub runner IP 不被 Meta 擋)
+          ig_url = f"https://www.instagram.com/api/v1/users/web_profile_info/?username={handle}"
+          req = urllib.request.Request(
+              ig_url,
+              headers={
+                  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                  "X-IG-App-ID": "936619743392459",
+              },
+          )
+          try:
+              with urllib.request.urlopen(req, timeout=15) as r:
+                  if r.status != 200:
+                      print(f"IG fetch 失敗 status={r.status}")
+                      raise SystemExit(1)
+                  data = json.loads(r.read())
+          except urllib.error.URLError as e:
+              print(f"IG fetch 失敗: {e}")
+              raise SystemExit(1)
+
+          edges = data.get("data", {}).get("user", {}).get("edge_owner_to_timeline_media", {}).get("edges", [])
+          if not edges:
+              print("IG 沒回貼文,可能被 ban 或帳號設定問題")
+              raise SystemExit(1)
+
+          posts = []
+          for e in edges[:12]:
+              n = e["node"]
+              cap = ""
+              cap_edges = n.get("edge_media_to_caption", {}).get("edges", [])
+              if cap_edges:
+                  cap = cap_edges[0]["node"]["text"][:120]
+              posts.append({
+                  "shortcode": n["shortcode"],
+                  "isVideo": n["is_video"],
+                  "caption": cap,
+              })
+
+          print(f"✓ 從 IG 抓到 {len(posts)} 則:")
+          for p in posts[:6]:
+              print(f"  {p['shortcode']:18} {p['caption'][:40]}")
+
+          # 2. POST 進 /api/refresh-ig
+          body = json.dumps({"posts": posts}).encode("utf-8")
+          refresh_url = f"{site}/api/refresh-ig?key={key}"
+
+          req = urllib.request.Request(
+              refresh_url,
+              data=body,
+              method="POST",
+              headers={"Content-Type": "application/json"},
+          )
+          try:
+              with urllib.request.urlopen(req, timeout=15) as r:
+                  resp = json.loads(r.read())
+                  print(f"\n✓ 寫入 Supabase: {resp}")
+          except urllib.error.HTTPError as e:
+              err = e.read().decode("utf-8", errors="ignore")
+              print(f"refresh-ig POST 失敗 status={e.code} body={err[:300]}")
+              raise SystemExit(1)
+          PY
