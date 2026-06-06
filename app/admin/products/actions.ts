@@ -4,19 +4,43 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { isAdminLoggedIn } from "@/lib/admin/auth";
 import { getServiceRoleSupabase } from "@/lib/supabase/server";
-
-type ProductCategory =
-  | "rings" | "earrings" | "necklaces" | "bracelets" | "wedding"
-  | "newborn" | "bullion" | "custom";
+import type { Translations } from "@/lib/supabase/types";
 
 interface ActionResult {
   ok: boolean;
   message: string;
 }
 
+function parseTranslations(raw: unknown): Translations | null {
+  if (typeof raw !== "string" || !raw.trim()) return null;
+  try {
+    const obj = JSON.parse(raw);
+    if (!obj || typeof obj !== "object") return null;
+    // 把每個語言空字串清掉,只保留有填的
+    const cleaned: Translations = {};
+    for (const lang of ["en", "vi", "id", "fil", "th"] as const) {
+      const langObj = (obj as Record<string, unknown>)[lang];
+      if (langObj && typeof langObj === "object") {
+        const fields: Record<string, string> = {};
+        for (const [k, v] of Object.entries(langObj as Record<string, unknown>)) {
+          if (typeof v === "string" && v.trim().length > 0) {
+            fields[k] = v.trim();
+          }
+        }
+        if (Object.keys(fields).length > 0) {
+          cleaned[lang] = fields;
+        }
+      }
+    }
+    return cleaned;
+  } catch {
+    return null;
+  }
+}
+
 function parseForm(formData: FormData) {
   const slug = (formData.get("slug") as string | null)?.trim() ?? "";
-  const category = (formData.get("category") as string | null) ?? "";
+  const category = (formData.get("category") as string | null)?.trim() ?? "";
   const name_zh = (formData.get("name_zh") as string | null)?.trim() ?? "";
   const name_en = (formData.get("name_en") as string | null)?.trim() || null;
   const description_zh = (formData.get("description_zh") as string | null)?.trim() || null;
@@ -29,21 +53,39 @@ function parseForm(formData: FormData) {
 
   const weight_qian = weight_str ? parseFloat(weight_str) : null;
 
+  // 翻譯欄位從 hidden input "translations" 撈 JSON
+  const translations = parseTranslations(formData.get("translations"));
+
   return {
     slug, category, name_zh, name_en, description_zh, image_url,
-    weight_qian, purity, featured, available, sort_order,
+    weight_qian, purity, featured, available, sort_order, translations,
   };
 }
 
-const ALLOWED_CATEGORIES: ProductCategory[] = [
-  "rings", "earrings", "necklaces", "bracelets", "wedding", "newborn", "bullion", "custom",
-];
+// 從 DB 撈當前合法分類 slug (允許員工新增) — 失敗回 fallback 8 個
+async function getAllowedCategorySlugs(): Promise<Set<string>> {
+  const supabase = getServiceRoleSupabase();
+  const fallback = new Set([
+    "rings", "earrings", "necklaces", "bracelets",
+    "wedding", "newborn", "bullion", "custom",
+  ]);
+  if (!supabase) return fallback;
+  const { data, error } = await supabase
+    .from("product_categories")
+    .select("slug");
+  if (error || !data) return fallback;
+  return new Set(data.map((r: { slug: string }) => r.slug));
+}
 
-function validate(p: ReturnType<typeof parseForm>): string | null {
+async function validate(p: ReturnType<typeof parseForm>): Promise<string | null> {
   if (!p.slug) return "slug 必填";
-  if (!/^[a-z0-9-]+$/.test(p.slug)) return "slug 只能用小寫英文+數字+連字號";
+  // 放寬:允許大寫 (DB 裡 1000+ 舊資料含大寫 hash)
+  if (!/^[A-Za-z0-9_-]+$/.test(p.slug)) return "slug 只能用英文字母 + 數字 + _ -";
   if (!p.category) return "分類必填";
-  if (!ALLOWED_CATEGORIES.includes(p.category as ProductCategory)) return "分類值不合法";
+  const allowed = await getAllowedCategorySlugs();
+  if (!allowed.has(p.category)) {
+    return `分類 "${p.category}" 不在 product_categories 表內,請先到分類管理新增`;
+  }
   if (!p.name_zh) return "中文名稱必填";
   if (p.weight_qian !== null && (p.weight_qian < 0 || p.weight_qian > 9999)) return "金重需在 0 ~ 9999 之間";
   return null;
@@ -58,10 +100,12 @@ export async function createProductAction(
   if (!supabase) return { ok: false, message: "Supabase 尚未設定" };
 
   const data = parseForm(formData);
-  const err = validate(data);
+  const err = await validate(data);
   if (err) return { ok: false, message: err };
 
-  const { error } = await supabase.from("products").insert(data);
+  // translations 是 null 時要塞空物件(DB schema 預期 jsonb)
+  const insert = { ...data, translations: data.translations ?? {} };
+  const { error } = await supabase.from("products").insert(insert);
   if (error) return { ok: false, message: error.message };
 
   revalidatePath("/admin/products");
@@ -80,10 +124,11 @@ export async function updateProductAction(
   if (!supabase) return { ok: false, message: "Supabase 尚未設定" };
 
   const data = parseForm(formData);
-  const err = validate(data);
+  const err = await validate(data);
   if (err) return { ok: false, message: err };
 
-  const { error } = await supabase.from("products").update(data).eq("id", id);
+  const update = { ...data, translations: data.translations ?? {} };
+  const { error } = await supabase.from("products").update(update).eq("id", id);
   if (error) return { ok: false, message: error.message };
 
   revalidatePath("/admin/products");
