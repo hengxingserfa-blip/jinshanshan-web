@@ -53,6 +53,7 @@ export default function Hero() {
 
         <div className="lg:col-span-7 relative min-h-[60vh] lg:min-h-screen order-1 lg:order-2 bg-ink-950">
           {showVideo ? (
+            // 直式 9:16 影片:手機剛好填滿,桌機 contain 完整顯示 + 兩側深色金漸層
             <video
               src="/hero-opening.mp4"
               poster={typeof IMG.heroJewelry === "string" ? IMG.heroJewelry : undefined}
@@ -61,7 +62,7 @@ export default function Hero() {
               loop
               playsInline
               preload="metadata"
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover lg:object-contain"
               aria-label="金閃閃銀樓 開幕宣傳影片"
             />
           ) : (

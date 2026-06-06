@@ -12,36 +12,37 @@ interface Props {
 export default function InstagramSection({ posts }: Props) {
 
   return (
-    <section className="bg-ivory-50 py-28 md:py-36">
-      <div className="mx-auto max-w-7xl px-6 sm:px-10">
-        <div className="text-center mb-16 md:mb-20">
-          <p className="font-display tracking-[0.5em] text-gold-600 text-[10px] mb-6 uppercase">
+    <section className="bg-ivory-50 py-16 md:py-36">
+      <div className="mx-auto max-w-7xl px-3 sm:px-10">
+        <div className="text-center mb-8 md:mb-20 px-3 sm:px-0">
+          <p className="font-display tracking-[0.5em] text-gold-600 text-[10px] mb-4 md:mb-6 uppercase">
             Daily on Instagram
           </p>
-          <h2 className="font-display text-4xl md:text-6xl text-ink-950 mb-6 leading-tight">
+          <h2 className="font-display text-3xl md:text-6xl text-ink-950 mb-4 md:mb-6 leading-tight">
             每天<span className="italic font-serif text-gold-500"> 新到櫃 </span>都在 IG
           </h2>
-          <Ornament className="mb-8" />
-          <p className="text-ink-700 max-w-2xl mx-auto text-base md:text-lg leading-loose font-light">
+          <Ornament className="mb-6 md:mb-8" />
+          <p className="text-ink-700 max-w-2xl mx-auto text-sm md:text-lg leading-loose font-light">
             試戴影片 · 進貨直播 · 限量款搶先看
             <br />
-            <span className="text-ink-500 text-sm md:text-base">
+            <span className="text-ink-500 text-xs md:text-base">
               追蹤 @{INSTAGRAM_HANDLE} 第一手看到新品
             </span>
           </p>
         </div>
 
         {posts.length > 0 && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6 mb-10 md:mb-16">
             {posts.map((post, i) => (
               <div
                 key={post.shortcode}
                 className="bg-ink-950/5 border border-ink-950/8 overflow-hidden"
               >
+                {/* 手機 short iframe (一畫面看 4-6 個),桌機高度大 */}
                 <iframe
                   src={post.embedUrl}
-                  className="w-full"
-                  style={{ aspectRatio: "9/14", minHeight: "560px", border: 0 }}
+                  className="w-full block h-[320px] sm:h-[560px]"
+                  style={{ border: 0 }}
                   loading={i < 2 ? "eager" : "lazy"}
                   scrolling="no"
                   allowTransparency
