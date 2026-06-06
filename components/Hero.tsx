@@ -47,15 +47,21 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="lg:col-span-7 relative min-h-[60vh] lg:min-h-screen order-1 lg:order-2">
-          <Image
-            src={IMG.heroJewelry}
-            alt="金閃閃銀樓 SHINY GOLD Jeweller's · 桃園中壢 9999 純金黃金飾品 · 公開秤重透明金價"
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 58vw"
-            className="object-cover scale-[1.02]"
+        <div className="lg:col-span-7 relative min-h-[60vh] lg:min-h-screen order-1 lg:order-2 bg-ink-950">
+          {/* 開幕影片:autoplay muted loop playsinline 才能在 iOS 自動播 */}
+          <video
+            src="/hero-opening.mp4"
+            poster={typeof IMG.heroJewelry === "string" ? IMG.heroJewelry : undefined}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full object-cover"
+            aria-label="金閃閃銀樓 開幕宣傳影片"
           />
+          {/* 影片是直式 576x1024,桌機橫拉會有左右黑底,加漸層柔化 */}
+          <div className="absolute inset-0 bg-gradient-to-r from-ivory-50/0 via-transparent to-ivory-50/30 pointer-events-none lg:block hidden" />
           <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-ivory-50/30" />
           <div className="absolute inset-0 bg-gradient-to-t from-ink-950/35 via-transparent to-transparent" />
 
