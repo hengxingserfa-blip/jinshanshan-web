@@ -2,12 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { IMG } from "@/lib/images";
 import Ornament from "@/components/Ornament";
 import { useT } from "@/lib/i18n/provider";
 
 export default function Hero() {
   const t = useT();
+  const sp = useSearchParams();
+  // ?preview=video 才顯示影片版 (一般訪客 / SEO 不受影響)
+  const showVideo = sp.get("preview") === "video";
   return (
     <section className="relative bg-ivory-50">
       <div className="grid lg:grid-cols-12 min-h-[90vh] lg:min-h-screen">
@@ -47,15 +51,29 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="lg:col-span-7 relative min-h-[60vh] lg:min-h-screen order-1 lg:order-2">
-          <Image
-            src={IMG.heroJewelry}
-            alt="金閃閃銀樓 SHINY GOLD Jeweller's · 桃園中壢 9999 純金黃金飾品 · 公開秤重透明金價"
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 58vw"
-            className="object-cover scale-[1.02]"
-          />
+        <div className="lg:col-span-7 relative min-h-[60vh] lg:min-h-screen order-1 lg:order-2 bg-ink-950">
+          {showVideo ? (
+            <video
+              src="/hero-opening.mp4"
+              poster={typeof IMG.heroJewelry === "string" ? IMG.heroJewelry : undefined}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              className="absolute inset-0 w-full h-full object-cover"
+              aria-label="金閃閃銀樓 開幕宣傳影片"
+            />
+          ) : (
+            <Image
+              src={IMG.heroJewelry}
+              alt="金閃閃銀樓 SHINY GOLD Jeweller's · 桃園中壢 9999 純金黃金飾品 · 公開秤重透明金價"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 58vw"
+              className="object-cover scale-[1.02]"
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-ivory-50/30" />
           <div className="absolute inset-0 bg-gradient-to-t from-ink-950/35 via-transparent to-transparent" />
 
