@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { IMG } from "@/lib/images";
 import Ornament from "@/components/Ornament";
 import { useT } from "@/lib/i18n/provider";
@@ -12,6 +13,29 @@ export default function Hero() {
   const sp = useSearchParams();
   // ?preview=video 才顯示影片版 (一般訪客 / SEO 不受影響)
   const showVideo = sp.get("preview") === "video";
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // iOS Safari 對 React 駝峰屬性 (playsInline / autoPlay) 不認, 用 ref 直接操作 DOM
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true;
+    v.playsInline = true;
+    v.setAttribute("playsinline", "");
+    v.setAttribute("webkit-playsinline", "");
+    v.setAttribute("autoplay", "");
+    v.setAttribute("muted", "");
+    v.setAttribute("loop", "");
+    const tryPlay = () => v.play().catch(() => {});
+    tryPlay();
+    // 萬一第一次沒播 (iOS Low Power Mode 等), 用戶任意觸碰螢幕時再試一次
+    document.addEventListener("touchstart", tryPlay, { once: true, passive: true });
+    document.addEventListener("click", tryPlay, { once: true });
+    return () => {
+      document.removeEventListener("touchstart", tryPlay);
+      document.removeEventListener("click", tryPlay);
+    };
+  }, [showVideo]);
   return (
     <section className="relative bg-ivory-50">
       <div className="grid lg:grid-cols-12 min-h-[90vh] lg:min-h-screen">
@@ -53,15 +77,18 @@ export default function Hero() {
 
         <div className="lg:col-span-7 relative min-h-[60vh] lg:min-h-screen order-1 lg:order-2 bg-ink-950">
           {showVideo ? (
-            // 直式 9:16 影片:手機剛好填滿,桌機 contain 完整顯示 + 兩側深色金漸層
+            // 直式 9:16 影片:手機剛好填滿,桌機 contain 完整顯示 + 兩側深色底
+            // 屬性透過 useEffect 用 setAttribute 補上小寫 HTML 屬性 (iOS 才會自動播)
             <video
+              ref={videoRef}
               src="/hero-opening.mp4"
               poster={typeof IMG.heroJewelry === "string" ? IMG.heroJewelry : undefined}
               autoPlay
               muted
               loop
               playsInline
-              preload="metadata"
+              preload="auto"
+              controls={false}
               className="absolute inset-0 w-full h-full object-cover lg:object-contain"
               aria-label="金閃閃銀樓 開幕宣傳影片"
             />
