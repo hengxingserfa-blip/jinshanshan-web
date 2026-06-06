@@ -75,7 +75,11 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="lg:col-span-7 relative min-h-[60vh] lg:min-h-screen order-1 lg:order-2 bg-ink-950">
+        <div
+          className={`lg:col-span-7 relative order-1 lg:order-2 bg-ink-950 lg:min-h-screen ${
+            showVideo ? "aspect-[9/16] lg:aspect-auto" : "min-h-[60vh]"
+          }`}
+        >
           {showVideo ? (
             // 直式 9:16 影片:手機剛好填滿,桌機 contain 完整顯示 + 兩側深色底
             // 屬性透過 useEffect 用 setAttribute 補上小寫 HTML 屬性 (iOS 才會自動播)
@@ -89,7 +93,7 @@ export default function Hero() {
               playsInline
               preload="auto"
               controls={false}
-              className="absolute inset-0 w-full h-full object-cover lg:object-contain"
+              className="absolute inset-0 w-full h-full object-contain"
               aria-label="金閃閃銀樓 開幕宣傳影片"
             />
           ) : (
