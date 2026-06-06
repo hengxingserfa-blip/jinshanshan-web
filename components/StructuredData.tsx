@@ -93,7 +93,7 @@ const jsonLd = {
       reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
       author: { "@type": "Person", name: "Ms. Nguyễn" },
       reviewBody:
-        "我講越南話,他們慢慢用簡單的中文跟我溝通,還拿紙筆寫給我看。我帶兩條金鍊回收,給我的價錢比另外兩家好,當天就拿到現金。",
+        "店裡有越南店員,從進門到結帳全程越南話溝通。金價怎麼算、純度怎麼驗,她都用我聽得懂的話講一遍。兩條金鍊回收,當天就拿到現金。",
     },
     {
       "@type": "Review",
