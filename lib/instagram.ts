@@ -5,13 +5,16 @@ export const INSTAGRAM_HANDLE = "shiny_gold991";
 export const INSTAGRAM_PROFILE_URL = `https://www.instagram.com/${INSTAGRAM_HANDLE}`;
 
 // 手選的精選貼文 (從 IG 抓最新後挑產品向的) —— 萬一 Vercel fetch 不到 IG 就用這份
+// 最後更新:2026-06-06
+// Vercel server 抓 IG API 會被 Meta 擋,所以網站永遠走這份 FALLBACK
+// 要更新最新貼文 → 打 /api/refresh-ig 或叫 Claude 重寫這陣列
 const FALLBACK_SHORTCODES: Array<{ code: string; isVideo: boolean }> = [
-  { code: "DZMKL_6zc3r", isVideo: true },  // 愛心金鍊
-  { code: "DZKYZ4UTsbT", isVideo: true },  // 高級感細節款
-  { code: "DZKOIyGTdx4", isVideo: true },  // 黃金蛇鍊手鍊 1.8 錢
-  { code: "DZKCt06TTNL", isVideo: true },  // 黃寶石戒指
-  { code: "DZJ74KBTypL", isVideo: true },  // 燦爛心語 1.24 錢
-  { code: "DZJ22m7zgp3", isVideo: true },  // 破繭新生 3.22 錢
+  { code: "DZPZw_WTauR", isVideo: true },  // 成交啦 小小金項鍊
+  { code: "DZPSYvEz3gE", isVideo: true },  // 黃金虎爺 × 擲筊
+  { code: "DZPIxTlTVmK", isVideo: true },  // 星河流轉 金光閃耀
+  { code: "DZPA5sVTfX1", isVideo: true },  // 一箭穿心 愛意鎖在心
+  { code: "DZOyqqATopF", isVideo: true },  // 小巧金戒 日常戴
+  { code: "DZOu2avzcMc", isVideo: true },  // 金珠細語手鏈
 ];
 
 export interface IGPost {
@@ -20,17 +23,6 @@ export interface IGPost {
   isVideo: boolean;
   caption: string;
   shortcode: string;
-}
-
-interface IGEdge {
-  node: {
-    shortcode: string;
-    is_video: boolean;
-    __typename?: string;
-    edge_media_to_caption?: {
-      edges: Array<{ node: { text: string } }>;
-    };
-  };
 }
 
 function buildPost(shortcode: string, isVideo: boolean, caption = ""): IGPost {
@@ -47,34 +39,32 @@ function buildPost(shortcode: string, isVideo: boolean, caption = ""): IGPost {
 const fallbackPosts = (limit: number): IGPost[] =>
   FALLBACK_SHORTCODES.slice(0, limit).map((p) => buildPost(p.code, p.isVideo));
 
-// 從 IG 公開端點抓取最近的貼文。失敗 / 拿到空陣列就退回 FALLBACK_SHORTCODES
+// 從 Supabase ig_posts_cache 撈最近的貼文 (員工 / cron 推進來的)。
+// 失敗 / 拿到空陣列就退回 FALLBACK_SHORTCODES (寫死)
 export async function fetchInstagramPosts(limit = 6): Promise<IGPost[]> {
+  // 從 Supabase 撈 cache
   try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 4000);
-    const res = await fetch(
-      `https://www.instagram.com/api/v1/users/web_profile_info/?username=${INSTAGRAM_HANDLE}`,
-      {
-        headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-          "X-IG-App-ID": "936619743392459",
-        },
-        next: { revalidate: 3600 }, // 1 小時快取
-        signal: ctrl.signal,
+    const { getServerSupabase } = await import("@/lib/supabase/server");
+    const supabase = await getServerSupabase();
+    if (supabase) {
+      const { data } = await supabase
+        .from("ig_posts_cache")
+        .select("posts")
+        .eq("id", 1)
+        .maybeSingle();
+      const cached = (data?.posts ?? []) as Array<{
+        shortcode: string;
+        isVideo: boolean;
+        caption?: string;
+      }>;
+      if (Array.isArray(cached) && cached.length > 0) {
+        return cached
+          .slice(0, limit)
+          .map((c) => buildPost(c.shortcode, c.isVideo, c.caption ?? ""));
       }
-    );
-    clearTimeout(timer);
-    if (!res.ok) return fallbackPosts(limit);
-    const data = await res.json();
-    const edges: IGEdge[] = data?.data?.user?.edge_owner_to_timeline_media?.edges ?? [];
-    if (edges.length === 0) return fallbackPosts(limit);
-    return edges.slice(0, limit).map((e) => {
-      const n = e.node;
-      const caption =
-        n.edge_media_to_caption?.edges?.[0]?.node?.text?.slice(0, 80) ?? "";
-      return buildPost(n.shortcode, n.is_video, caption);
-    });
+    }
   } catch {
-    return fallbackPosts(limit);
+    // ignore — 落到 fallback
   }
+  return fallbackPosts(limit);
 }
