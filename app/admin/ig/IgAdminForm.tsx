@@ -1,6 +1,7 @@
 "use client";
 
 import { useFormState, useFormStatus } from "react-dom";
+import { useState } from "react";
 import { saveIgPinned } from "./actions";
 import type { IGPost } from "@/lib/instagram";
 import { IG_SIZES, type IGSize } from "@/lib/ig-config";
@@ -16,6 +17,7 @@ interface Props {
   slots: (SlotRow | null)[];
   latestForFallback: IGPost[];
   currentSize: IGSize;
+  currentSlotSizes: Record<string, IGSize>;
 }
 
 const initial = { ok: false, message: "" };
@@ -33,62 +35,92 @@ function SubmitBtn() {
   );
 }
 
-export default function IgAdminForm({ slots, latestForFallback, currentSize }: Props) {
+const SIZE_KEYS: IGSize[] = ["S", "M", "M_TALL", "L", "L_TALL", "XL"];
+const SHORT_LABEL: Record<IGSize, string> = {
+  S: "S",
+  M: "M",
+  M_TALL: "M+",
+  L: "L",
+  L_TALL: "L+",
+  XL: "XL",
+};
+
+export default function IgAdminForm({
+  slots,
+  latestForFallback,
+  currentSlotSizes,
+}: Props) {
   const [state, formAction] = useFormState(saveIgPinned, initial);
 
+  // 預覽用 sample reel
+  const sampleShortcode =
+    latestForFallback[0]?.shortcode ?? "DZUBqm1z8KA";
+
+  // 用 state 控制每格 size + 對照 demo 選擇
+  const [slotSizes, setSlotSizes] = useState<Record<number, IGSize>>(() => {
+    const init: Record<number, IGSize> = {};
+    for (let i = 1; i <= 6; i++) {
+      init[i] = (currentSlotSizes[String(i)] ?? "M") as IGSize;
+    }
+    return init;
+  });
+
   return (
-    <form action={formAction} className="space-y-4">
-      {/* IG 影片大小選擇 */}
-      <div className="bg-white border border-ink-950/10 p-4 sm:p-5">
-        <span className="block font-display text-xs tracking-[0.25em] uppercase text-gold-700 font-medium mb-3">
-          首頁 IG 影片大小
-        </span>
-
-        {/* 用 radio 卡片式選擇 (比 select 直覺,防止選錯) */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {(Object.entries(IG_SIZES) as [IGSize, typeof IG_SIZES.M][]).map(([key, val]) => (
-            <label
-              key={key}
-              className="cursor-pointer block bg-ivory-50 border border-ink-950/10 hover:border-gold-400 has-[:checked]:border-gold-500 has-[:checked]:bg-gold-50/40 has-[:checked]:ring-1 has-[:checked]:ring-gold-500 transition-colors p-3"
-            >
-              <input
-                type="radio"
-                name="ig_size"
-                value={key}
-                defaultChecked={currentSize === key}
-                className="sr-only peer"
-              />
-              <div className="flex items-center justify-between mb-1">
-                <span className="font-medium text-sm text-ink-950">{val.label}</span>
-                <span className="text-[10px] text-ink-400 font-mono">
-                  {val.mobile}/{val.desktop}
-                </span>
-              </div>
-              <p className="text-[11px] text-ink-600 leading-snug">{val.description}</p>
-            </label>
-          ))}
+    <form action={formAction} className="space-y-5">
+      {/* 對照預覽 — 同一支影片 6 種尺寸並排 */}
+      <details className="bg-white border border-ink-950/10" open>
+        <summary className="cursor-pointer select-none px-4 sm:px-5 py-3 flex items-center justify-between font-display text-xs tracking-[0.25em] uppercase text-gold-700 font-medium">
+          <span>📐 6 種尺寸對照預覽</span>
+          <span className="text-ink-400 group-open:rotate-180">▾</span>
+        </summary>
+        <div className="px-4 sm:px-5 pb-5">
+          <p className="text-[11px] text-ink-500 mb-3 leading-loose">
+            同一支影片在不同尺寸下的樣子(模擬手機顯示寬度,1 欄)。
+            選好之後在下面 6 格各自指定。
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {SIZE_KEYS.map((key) => {
+              const cfg = IG_SIZES[key];
+              // 預覽用 mobile 高度 (因為員工大多在手機後台)
+              return (
+                <div
+                  key={key}
+                  className="bg-ivory-50 border border-ink-950/10"
+                >
+                  <div className="px-2 py-1.5 bg-ink-950/5 text-[10px] text-ink-700 font-medium flex items-center justify-between">
+                    <span>{cfg.label}</span>
+                    <span className="text-ink-400 font-mono">
+                      {cfg.mobile}/{cfg.desktop}
+                    </span>
+                  </div>
+                  <iframe
+                    src={`https://www.instagram.com/reel/${sampleShortcode}/embed/`}
+                    style={{ height: cfg.mobile, border: 0, width: "100%" }}
+                    scrolling="no"
+                    loading="lazy"
+                    title={`預覽 ${cfg.label}`}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
+      </details>
 
-        <p className="text-[11px] text-ink-500 mt-3 leading-loose">
-          📱 數字是 手機 / 桌機 iframe 高度 (px)。<br />
-          ✅ 所有尺寸都已測試不跑版 — 6 格 2 欄(手機)或 3 欄(桌機)排列不變。<br />
-          ※ 改完按下面「儲存 6 格設定」生效。
-        </p>
-      </div>
-
+      {/* 6 格設定 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         {slots.map((row, idx) => {
           const slotNum = idx + 1;
-          // 預覽:有手動指定就用該 shortcode,沒有就用 latestForFallback 下一個沒被用過的
           const previewShortcode = row?.shortcode;
           const fallbackPost = !row ? latestForFallback[idx] : null;
+          const currentSize = slotSizes[slotNum] ?? "M";
 
           return (
             <div
               key={slotNum}
-              className="bg-white border border-ink-950/10 p-3 sm:p-4"
+              className="bg-white border border-ink-950/10 p-3 sm:p-4 space-y-3"
             >
-              <div className="flex items-start justify-between mb-2 gap-2">
+              <div className="flex items-start justify-between gap-2">
                 <p className="font-display text-xs tracking-[0.25em] uppercase text-gold-700 font-medium">
                   第 {slotNum} 格
                 </p>
@@ -103,20 +135,56 @@ export default function IgAdminForm({ slots, latestForFallback, currentSize }: P
                 )}
               </div>
 
+              {/* IG URL */}
               <input
                 type="text"
                 name={`slot_${slotNum}`}
                 defaultValue={row?.source_url ?? ""}
-                placeholder="https://www.instagram.com/reel/XXXXX/  ← 留空 = 自動抓最新"
+                placeholder="https://www.instagram.com/reel/XXXXX/  ← 留空=自動抓最新"
                 className="w-full bg-ivory-50 border border-ink-950/15 px-3 py-2 text-xs focus:outline-none focus:border-gold-500"
               />
 
+              {/* 該格 size 選擇 (6 個 mini button) */}
+              <div>
+                <p className="text-[10px] text-ink-500 mb-1.5">這格大小:</p>
+                <div className="grid grid-cols-6 gap-1">
+                  {SIZE_KEYS.map((key) => {
+                    const active = currentSize === key;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setSlotSizes((s) => ({ ...s, [slotNum]: key }))}
+                        className={`px-1.5 py-1.5 text-[11px] font-medium border transition-colors ${
+                          active
+                            ? "bg-gold-500 text-ink-950 border-gold-500"
+                            : "bg-ivory-50 text-ink-700 border-ink-950/15 hover:border-gold-400"
+                        }`}
+                      >
+                        {SHORT_LABEL[key]}
+                      </button>
+                    );
+                  })}
+                </div>
+                {/* hidden input 把選擇丟進 form */}
+                <input
+                  type="hidden"
+                  name={`size_${slotNum}`}
+                  value={currentSize}
+                />
+              </div>
+
+              {/* 即時預覽 iframe (用該格選的 size) */}
               {(previewShortcode || fallbackPost) && (
-                <div className="mt-3 bg-ink-950/5 border border-ink-950/8 overflow-hidden">
+                <div className="bg-ink-950/5 border border-ink-950/8 overflow-hidden">
                   <iframe
                     src={`https://www.instagram.com/${row?.is_video ?? fallbackPost?.isVideo ? "reel" : "p"}/${previewShortcode ?? fallbackPost?.shortcode}/embed/`}
-                    className="w-full block"
-                    style={{ height: "260px", border: 0 }}
+                    style={{
+                      height: IG_SIZES[currentSize].mobile,
+                      border: 0,
+                      width: "100%",
+                      display: "block",
+                    }}
                     scrolling="no"
                     loading="lazy"
                     allowTransparency
@@ -139,12 +207,13 @@ export default function IgAdminForm({ slots, latestForFallback, currentSize }: P
         </p>
       )}
 
-      <div className="flex justify-end pt-2">
+      <div className="flex justify-end pt-2 sticky bottom-4">
         <SubmitBtn />
       </div>
 
       <p className="text-[11px] text-ink-400 leading-loose pt-3 border-t border-ink-950/8">
-        ※ 規則:有貼網址的格子用手動指定,留空的格子會用 GitHub Actions 每天抓的 IG 最新貼文補上(不會跟手動指定的重複)。
+        ※ 每格大小可以不一樣。例:slot 1, 3, 5 用「大 L」, slot 2, 4, 6 用「中 M」,
+        做出層次感。所有尺寸都不會跑版,6 格永遠手機 2 欄 / 桌機 3 欄排。
       </p>
     </form>
   );

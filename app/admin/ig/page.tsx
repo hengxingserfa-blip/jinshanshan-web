@@ -71,7 +71,12 @@ export default async function IgAdminPage() {
         </div>
       </details>
 
-      <IgAdminForm slots={slots} latestForFallback={latest} currentSize={settings.ig_size} />
+      <IgAdminForm
+        slots={slots}
+        latestForFallback={latest}
+        currentSize={settings.ig_size}
+        currentSlotSizes={settings.slot_sizes}
+      />
     </div>
   );
 }

@@ -8,11 +8,17 @@ import { IG_SIZES, type IGSize } from "@/lib/ig-config";
 
 interface Props {
   posts: IGPost[];
-  size?: IGSize;
+  size?: IGSize;                          // 舊參數,保留兼容(全域 fallback)
+  slotSizes?: Record<string, IGSize>;     // 新:每格獨立大小 (key "1".."6")
 }
 
-export default function InstagramSection({ posts, size = "M" }: Props) {
-  const dims = IG_SIZES[size] ?? IG_SIZES.M;
+export default function InstagramSection({ posts, size = "M", slotSizes }: Props) {
+  // 每格的 size: 優先用 slotSizes,沒提供就用全域 size
+  const getDims = (i: number) => {
+    const key = String(i + 1);
+    const s = slotSizes?.[key] ?? size;
+    return IG_SIZES[s] ?? IG_SIZES.M;
+  };
 
   return (
     <section className="bg-ivory-50 py-16 md:py-36">
@@ -36,8 +42,11 @@ export default function InstagramSection({ posts, size = "M" }: Props) {
 
         {posts.length > 0 && (
           <>
-            {/* 大小由後台 site_settings.ig_size 控制 (S/M/L/XL) — 用 CSS var 切換手機/桌機 */}
-            <style>{`.ig-iframe{height:${dims.mobile}px}@media(min-width:640px){.ig-iframe{height:${dims.desktop}px}}`}</style>
+            {/* 每格 iframe 高度透過 inline CSS rule, 動態針對 mobile/desktop */}
+            <style>{posts.map((_, i) => {
+              const d = getDims(i);
+              return `.ig-i-${i}{height:${d.mobile}px}@media(min-width:640px){.ig-i-${i}{height:${d.desktop}px}}`;
+            }).join("\n")}</style>
             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6 mb-10 md:mb-16">
               {posts.map((post, i) => (
                 <div
@@ -46,7 +55,7 @@ export default function InstagramSection({ posts, size = "M" }: Props) {
                 >
                   <iframe
                     src={post.embedUrl}
-                    className="w-full block ig-iframe"
+                    className={`w-full block ig-i-${i}`}
                     style={{ border: 0 }}
                     loading={i < 2 ? "eager" : "lazy"}
                     scrolling="no"

@@ -89,19 +89,30 @@ export async function saveIgPinned(
     if (error) return { ok: false, message: error.message };
   }
 
-  // 同步處理大小設定
-  const sizeRaw = (formData.get("ig_size") as string | null) ?? "M";
+  // 同步處理每格大小設定 (從 size_1 .. size_6 撈)
   const VALID_SIZES = ["S", "M", "M_TALL", "L", "L_TALL", "XL"];
-  const igSize = VALID_SIZES.includes(sizeRaw) ? sizeRaw : "M";
+  const slotSizes: Record<string, string> = {};
+  for (let i = 1; i <= 6; i++) {
+    const raw = (formData.get(`size_${i}`) as string | null) ?? "M";
+    slotSizes[String(i)] = VALID_SIZES.includes(raw) ? raw : "M";
+  }
   const { error: szErr } = await sb
     .from("site_settings")
-    .upsert({ id: 1, ig_size: igSize, updated_at: new Date().toISOString() }, { onConflict: "id" });
+    .upsert(
+      {
+        id: 1,
+        slot_sizes: slotSizes,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "id" }
+    );
   if (szErr) return { ok: false, message: `儲存大小失敗:${szErr.message}` };
 
   revalidatePath("/admin/ig");
   revalidatePath("/");
+  const sizeSummary = Object.values(slotSizes).join("/");
   return {
     ok: true,
-    message: `已儲存。${rows.length} 格手動指定,${toDelete.length} 格自動抓 IG 最新,大小 = ${igSize}`,
+    message: `已儲存。${rows.length} 格手動指定,${toDelete.length} 格自動抓 IG 最新。6 格大小: ${sizeSummary}`,
   };
 }

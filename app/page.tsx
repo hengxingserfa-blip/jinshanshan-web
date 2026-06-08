@@ -51,7 +51,7 @@ export default async function Home() {
     <>
       <Hero />
       <TrustBadges />
-      <InstagramSection posts={igPosts} size={settings.ig_size} />
+      <InstagramSection posts={igPosts} size={settings.ig_size} slotSizes={settings.slot_sizes} />
       <Calculator />
       <GoldPriceTicker />
       <Services />
