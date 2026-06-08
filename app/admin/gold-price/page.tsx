@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  getServerSupabase,
+  getServiceRoleSupabase,
   isSupabaseConfigured,
 } from "@/lib/supabase/server";
 import GoldPriceForm from "./GoldPriceForm";
@@ -21,7 +21,8 @@ export default async function GoldPriceAdmin() {
   let todays: GoldPriceOverride | null = null;
 
   if (configured) {
-    const supabase = await getServerSupabase();
+    // admin 頁用 service role 撈 (RLS policy 對 anon 只開放今天的紀錄,後台要看全部歷史)
+    const supabase = getServiceRoleSupabase();
     if (supabase) {
       const { data } = await supabase
         .from("gold_price_overrides")
