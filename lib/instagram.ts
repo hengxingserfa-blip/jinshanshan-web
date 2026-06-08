@@ -6,14 +6,14 @@
 export const INSTAGRAM_HANDLE = "shiny_gold991";
 export const INSTAGRAM_PROFILE_URL = `https://www.instagram.com/${INSTAGRAM_HANDLE}`;
 
-// 萬一 DB 全失敗的最後保險
+// 萬一 DB 全失敗的最後保險 — 2026-06-08 從 IG 抓最新更新
 const FALLBACK_SHORTCODES: Array<{ code: string; isVideo: boolean }> = [
-  { code: "DZPZw_WTauR", isVideo: true },
-  { code: "DZPSYvEz3gE", isVideo: true },
-  { code: "DZPIxTlTVmK", isVideo: true },
-  { code: "DZPA5sVTfX1", isVideo: true },
-  { code: "DZOyqqATopF", isVideo: true },
-  { code: "DZOu2avzcMc", isVideo: true },
+  { code: "DZUBqm1z8KA", isVideo: true },  // 招財貓手鏈
+  { code: "DZT6gXrTWv4", isVideo: true },  // 龍頭古巴手鏈
+  { code: "DZT24LMzecd", isVideo: true },  // 今日金價
+  { code: "DZSBtmgTF2X", isVideo: true },  // 黃金手鍊 1.16 錢
+  { code: "DZR2U5KTheU", isVideo: true },  // 金穗滿滿
+  { code: "DZPZw_WTauR", isVideo: true },  // 成交啦
 ];
 
 export interface IGPost {

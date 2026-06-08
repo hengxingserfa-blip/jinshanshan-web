@@ -38,10 +38,10 @@ export default function InstagramSection({ posts }: Props) {
                 key={post.shortcode}
                 className="bg-ink-950/5 border border-ink-950/8 overflow-hidden"
               >
-                {/* 手機 short iframe (一畫面看 4-6 個),桌機高度大 */}
+                {/* 手機 480px, 桌機 640px — 把影片內容顯示出來,不只 thumbnail */}
                 <iframe
                   src={post.embedUrl}
-                  className="w-full block h-[320px] sm:h-[560px]"
+                  className="w-full block h-[480px] sm:h-[640px]"
                   style={{ border: 0 }}
                   loading={i < 2 ? "eager" : "lazy"}
                   scrolling="no"

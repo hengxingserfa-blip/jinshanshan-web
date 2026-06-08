@@ -2,52 +2,72 @@ name: 每日同步 Instagram 最新貼文
 
 on:
   schedule:
-    # 每日 00:00 UTC = 台北時間 08:00 (Gino 早上看的時候已是最新)
-    # 加 1 個下午 06:00 UTC = 台北 02:00 凌晨,雙保險
-    - cron: "0 0 * * *"
-    - cron: "0 18 * * *"
-  workflow_dispatch: # 也可以手動點按鈕觸發
+    # 每日 4 次 (台北 02:00 / 08:00 / 14:00 / 20:00),IG 擋機房 IP 嚴, 多試幾次提高成功率
+    - cron: "0 18 * * *"   # 台北 02:00
+    - cron: "0 0 * * *"    # 台北 08:00
+    - cron: "0 6 * * *"    # 台北 14:00
+    - cron: "0 12 * * *"   # 台北 20:00
+  workflow_dispatch:
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: 從 IG 抓最新 12 則,POST 進網站 cache
+      - name: 從 IG 抓最新 12 則, POST 進網站 cache
         env:
           IG_HANDLE: shiny_gold991
           REFRESH_KEY: 2305ea313728c459b75f4c628c8b6845
           SITE: https://www.shinygold.com.tw
         run: |
           python3 <<'PY'
-          import urllib.request, urllib.error, json, os, time
+          import urllib.request, urllib.error, json, os, time, random
 
           handle = os.environ["IG_HANDLE"]
           key = os.environ["REFRESH_KEY"]
           site = os.environ["SITE"]
 
-          # 1. 抓 IG (GitHub runner IP 不被 Meta 擋)
-          ig_url = f"https://www.instagram.com/api/v1/users/web_profile_info/?username={handle}"
-          req = urllib.request.Request(
-              ig_url,
-              headers={
-                  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-                  "X-IG-App-ID": "936619743392459",
-              },
-          )
-          try:
-              with urllib.request.urlopen(req, timeout=15) as r:
-                  if r.status != 200:
-                      print(f"IG fetch 失敗 status={r.status}")
-                      raise SystemExit(1)
-                  data = json.loads(r.read())
-          except urllib.error.URLError as e:
-              print(f"IG fetch 失敗: {e}")
+          # 多個 User-Agent 輪流, 提高繞過 IG 機房擋 IP 的機率
+          UAS = [
+              "Mozilla/5.0 (iPhone; CPU iPhone OS 17_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3 Mobile/15E148 Safari/604.1",
+              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3 Safari/605.1.15",
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+              "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          ]
+
+          def try_fetch_ig():
+              """試 3 次, 不同 UA, 之間加隨機 delay"""
+              for attempt in range(3):
+                  ua = random.choice(UAS)
+                  url = f"https://www.instagram.com/api/v1/users/web_profile_info/?username={handle}"
+                  req = urllib.request.Request(url, headers={
+                      "User-Agent": ua,
+                      "X-IG-App-ID": "936619743392459",
+                      "Accept": "*/*",
+                      "Accept-Language": "en-US,en;q=0.9,zh-TW;q=0.8",
+                      "Sec-Fetch-Site": "same-origin",
+                      "Sec-Fetch-Mode": "cors",
+                      "Sec-Fetch-Dest": "empty",
+                  })
+                  try:
+                      with urllib.request.urlopen(req, timeout=15) as r:
+                          if r.status == 200:
+                              return json.loads(r.read())
+                  except urllib.error.HTTPError as e:
+                      print(f"attempt {attempt+1} HTTP {e.code}, UA={ua[:40]}")
+                  except Exception as e:
+                      print(f"attempt {attempt+1} ERR: {str(e)[:80]}")
+                  time.sleep(random.uniform(2, 5))
+              return None
+
+          data = try_fetch_ig()
+          if not data:
+              print("IG fetch 3 次都失敗 (可能機房 IP 被擋)")
               raise SystemExit(1)
 
           edges = data.get("data", {}).get("user", {}).get("edge_owner_to_timeline_media", {}).get("edges", [])
           if not edges:
-              print("IG 沒回貼文,可能被 ban 或帳號設定問題")
+              print("IG 沒回貼文")
               raise SystemExit(1)
 
           posts = []
@@ -67,16 +87,11 @@ jobs:
           for p in posts[:6]:
               print(f"  {p['shortcode']:18} {p['caption'][:40]}")
 
-          # 2. POST 進 /api/refresh-ig
+          # POST 進 /api/refresh-ig 寫入 Supabase cache
           body = json.dumps({"posts": posts}).encode("utf-8")
           refresh_url = f"{site}/api/refresh-ig?key={key}"
-
-          req = urllib.request.Request(
-              refresh_url,
-              data=body,
-              method="POST",
-              headers={"Content-Type": "application/json"},
-          )
+          req = urllib.request.Request(refresh_url, data=body, method="POST",
+              headers={"Content-Type": "application/json"})
           try:
               with urllib.request.urlopen(req, timeout=15) as r:
                   resp = json.loads(r.read())
