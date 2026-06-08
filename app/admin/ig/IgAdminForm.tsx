@@ -215,7 +215,7 @@ export default function IgAdminForm({
                       width: "118%",
                       position: "absolute",
                       left: "50%",
-                      top: 0,
+                      top: -60,
                       transform: "translateX(-50%)",
                     }}
                     scrolling="no"
@@ -364,7 +364,7 @@ function FrontendPreview({
                           border: 0,
                           position: "absolute",
                           left: "50%",
-                          top: 0,
+                          top: -60,
                           transform: "translateX(-50%)",
                         }}
                         scrolling="no"

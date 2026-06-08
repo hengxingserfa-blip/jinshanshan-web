@@ -65,7 +65,7 @@ export default function InstagramSection({
                   key={post.shortcode}
                   className={`bg-ink-950/5 border border-ink-950/8 overflow-hidden relative ig-c-${i}`}
                 >
-                  {/* 用 transform scale 把 iframe 放大 1.18 倍,左右黑邊被擠出去 */}
+                  {/* iframe 放大 118% 去左右黑邊 + top:-60 把 IG「查看個人檔案」按鈕推出框外 */}
                   <iframe
                     src={post.embedUrl}
                     className="block absolute"
@@ -74,7 +74,7 @@ export default function InstagramSection({
                       height: 1200,
                       width: "118%",
                       left: "50%",
-                      top: 0,
+                      top: -60,
                       transform: "translateX(-50%)",
                     }}
                     loading={i < 2 ? "eager" : "lazy"}
