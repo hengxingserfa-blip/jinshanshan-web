@@ -48,14 +48,11 @@ export default function InstagramSection({
 
         {posts.length > 0 && (
           <>
-            {/* 容器用 overflow:hidden 把 iframe 底下空白裁掉 (影片大小靠寬度 = 欄數)
-                iframe 內部始終 render full widget, 只是我們只顯示 top N px */}
+            {/* iframe 內 IG widget 影片區會留左右黑邊,把 iframe 放大 1.18 倍 + 容器裁切 → 黑邊推出框外 */}
             <style>{
               [
-                // 欄數 — 控制 iframe 寬度 = 控制影片大小
                 `.ig-grid{grid-template-columns:repeat(${cols.mobile},minmax(0,1fr))}`,
                 `@media(min-width:640px){.ig-grid{grid-template-columns:repeat(${cols.desktop},minmax(0,1fr))}}`,
-                // 每格容器裁切高度
                 ...posts.map((_, i) => {
                   const d = getDims(i);
                   return `.ig-c-${i}{height:${d.mobileHeight}px}@media(min-width:640px){.ig-c-${i}{height:${d.desktopHeight}px}}`;
@@ -66,12 +63,20 @@ export default function InstagramSection({
               {posts.map((post, i) => (
                 <div
                   key={post.shortcode}
-                  className={`bg-ink-950/5 border border-ink-950/8 overflow-hidden ig-c-${i}`}
+                  className={`bg-ink-950/5 border border-ink-950/8 overflow-hidden relative ig-c-${i}`}
                 >
+                  {/* 用 transform scale 把 iframe 放大 1.18 倍,左右黑邊被擠出去 */}
                   <iframe
                     src={post.embedUrl}
-                    className="w-full block"
-                    style={{ border: 0, height: 1200 }}
+                    className="block absolute"
+                    style={{
+                      border: 0,
+                      height: 1200,
+                      width: "118%",
+                      left: "50%",
+                      top: 0,
+                      transform: "translateX(-50%)",
+                    }}
                     loading={i < 2 ? "eager" : "lazy"}
                     scrolling="no"
                     allowTransparency

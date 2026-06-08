@@ -201,10 +201,10 @@ export default function IgAdminForm({
                 />
               </div>
 
-              {/* 即時預覽 iframe (overflow:hidden 裁底下空白) */}
+              {/* 即時預覽 iframe (overflow:hidden 裁底下空白 + 放大去黑邊) */}
               {(previewShortcode || fallbackPost) && (
                 <div
-                  className="bg-ink-950/5 border border-ink-950/8"
+                  className="bg-ink-950/5 border border-ink-950/8 relative"
                   style={{ height: IG_SIZES[currentSize].mobileHeight, overflow: "hidden" }}
                 >
                   <iframe
@@ -212,8 +212,11 @@ export default function IgAdminForm({
                     style={{
                       height: 1200,
                       border: 0,
-                      width: "100%",
-                      display: "block",
+                      width: "118%",
+                      position: "absolute",
+                      left: "50%",
+                      top: 0,
+                      transform: "translateX(-50%)",
                     }}
                     scrolling="no"
                     loading="lazy"
@@ -351,11 +354,19 @@ function FrontendPreview({
                     key={i}
                     className="bg-white border border-ink-950/8"
                   >
-                    {/* overflow:hidden 容器,只露出 top h px 的 widget 內容 */}
-                    <div style={{ height: h, overflow: "hidden" }}>
+                    {/* overflow:hidden 容器,只露出 top h px + 放大 1.18 去黑邊 */}
+                    <div style={{ height: h, overflow: "hidden", position: "relative" }}>
                       <iframe
                         src={`https://www.instagram.com/${p.isVideo ? "reel" : "p"}/${p.shortcode}/embed/`}
-                        style={{ height: 1200, width: "100%", border: 0, display: "block" }}
+                        style={{
+                          height: 1200,
+                          width: "118%",
+                          border: 0,
+                          position: "absolute",
+                          left: "50%",
+                          top: 0,
+                          transform: "translateX(-50%)",
+                        }}
                         scrolling="no"
                         loading="lazy"
                         title={`預覽 slot ${i + 1}`}
