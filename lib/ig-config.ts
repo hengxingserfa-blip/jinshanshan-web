@@ -1,52 +1,93 @@
-// IG 設定 - 純常數 / 類型, client 跟 server 都能 import (不含 supabase 依賴)
-// 已新增多種尺寸 + 包含 16:9 / 1:1 等避免跑版的選項
+// IG 顯示設定 - 純常數/類型 (client + server 都能用)
+//
+// IG 官方 embed widget 的結構:
+//   ┌─────────────────────────┐
+//   │ 帳號名稱 + View profile  │ ← header ~60px
+//   ├─────────────────────────┤
+//   │                         │
+//   │     [影片]              │ ← width × 16/9 直影片
+//   │                         │
+//   ├─────────────────────────┤
+//   │ ♥ 💬 ↗  · likes         │ ← footer ~60px
+//   │ caption                 │
+//   │ Add a comment...        │
+//   └─────────────────────────┘
+//
+// 「影片的大小」由 iframe 寬度決定 (越寬影片越大), 不是 iframe 高度。
+// iframe 高度只是讓底下 caption/likes 有空間。
+//
+// 所以我們提供兩個獨立設定:
+//   1. 欄數 (cols)         — 控制每格寬度 = 控制影片大小
+//   2. 顯示模式 (showInfo) — 控制 iframe 多高 / 裁多少底下空白
 
-export type IGSize = "S" | "M" | "M_TALL" | "L" | "L_TALL" | "XL";
+export type IGSize = "S" | "M" | "L" | "XL" | "M_TALL" | "L_TALL";
 
 export interface IGSizeConfig {
-  mobile: number;
-  desktop: number;
+  // 影片區內裁顯示高度 (整個 iframe 始終是 1200px, 容器 overflow:hidden 切到這個高度)
+  mobileHeight: number;
+  desktopHeight: number;
   label: string;
   description: string;
 }
 
-// 高度 = iframe 內 IG embed 元件需要的高度,IG embed 包含影片 + caption + footer
-// 9:16 直影片 + caption + footer 約需 mobile 480 / desktop 640 才剛好不切
+// 6 個尺寸 = 6 種裁掉底下空白的程度 (mobile 寬約 180px, desktop 寬約 300px)
+// 影片佔的高度大約 = 寬 × 1.7 (header + 9:16 視訊區)
 export const IG_SIZES: Record<IGSize, IGSizeConfig> = {
   S: {
-    mobile: 360,
-    desktop: 460,
-    label: "小 S",
-    description: "只看影片預覽圖,點開才看影片",
+    mobileHeight: 280,
+    desktopHeight: 380,
+    label: "影片精簡",
+    description: "只看影片, 沒底下空白",
   },
   M: {
-    mobile: 480,
-    desktop: 620,
-    label: "中 M(預設)",
-    description: "看得到影片 + 部分 caption,平衡",
+    mobileHeight: 360,
+    desktopHeight: 500,
+    label: "影片+按鈕",
+    description: "影片 + 愛心 / 留言 / 分享 鈕",
   },
   M_TALL: {
-    mobile: 560,
-    desktop: 700,
-    label: "中高 M+",
-    description: "略高,完整顯示 caption",
+    mobileHeight: 440,
+    desktopHeight: 580,
+    label: "影片+簡介",
+    description: "加上 likes 數 + 短 caption",
   },
   L: {
-    mobile: 640,
-    desktop: 780,
-    label: "大 L",
-    description: "影片明顯,看得到完整內容",
+    mobileHeight: 520,
+    desktopHeight: 660,
+    label: "完整資訊",
+    description: "影片 + 完整 caption + 留言框",
   },
   L_TALL: {
-    mobile: 720,
-    desktop: 860,
-    label: "大高 L+",
-    description: "強調影片,接近 IG App 原始尺寸",
+    mobileHeight: 620,
+    desktopHeight: 760,
+    label: "加長",
+    description: "完整 + 多餘空白 (caption 長)",
   },
   XL: {
-    mobile: 820,
-    desktop: 960,
-    label: "超大 XL",
-    description: "主視覺等級,佔大量空間",
+    mobileHeight: 740,
+    desktopHeight: 880,
+    label: "完整 widget",
+    description: "全部都顯示, 含底下大量留白",
   },
 };
+
+// 欄數設定 — 控制影片大小的關鍵
+export type IGCols = 1 | 2 | 3;
+
+export interface IGColsConfig {
+  mobile: 1 | 2;       // 手機:1 或 2 欄
+  desktop: 2 | 3;      // 桌機:2 或 3 欄
+}
+
+// 影片預估顯示寬度 (px),給後台預覽用
+export function estimateVideoWidth(
+  view: "mobile" | "desktop",
+  cols: IGColsConfig
+): number {
+  if (view === "mobile") {
+    // 手機螢幕約 380px (扣 padding)
+    return cols.mobile === 1 ? 360 : 175;
+  }
+  // 桌機容器 max 1280px (扣 padding 約 1200), 但留 margin 用 1000
+  return cols.desktop === 2 ? 480 : 310;
+}

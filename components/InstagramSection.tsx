@@ -4,15 +4,21 @@ import {
   INSTAGRAM_PROFILE_URL,
   type IGPost,
 } from "@/lib/instagram";
-import { IG_SIZES, type IGSize } from "@/lib/ig-config";
+import { IG_SIZES, type IGSize, type IGColsConfig } from "@/lib/ig-config";
 
 interface Props {
   posts: IGPost[];
-  size?: IGSize;                          // 舊參數,保留兼容(全域 fallback)
-  slotSizes?: Record<string, IGSize>;     // 新:每格獨立大小 (key "1".."6")
+  size?: IGSize;
+  slotSizes?: Record<string, IGSize>;
+  cols?: IGColsConfig;
 }
 
-export default function InstagramSection({ posts, size = "M", slotSizes }: Props) {
+export default function InstagramSection({
+  posts,
+  size = "M",
+  slotSizes,
+  cols = { mobile: 2, desktop: 3 },
+}: Props) {
   // 每格的 size: 優先用 slotSizes,沒提供就用全域 size
   const getDims = (i: number) => {
     const key = String(i + 1);
@@ -42,21 +48,30 @@ export default function InstagramSection({ posts, size = "M", slotSizes }: Props
 
         {posts.length > 0 && (
           <>
-            {/* 每格 iframe 高度透過 inline CSS rule, 動態針對 mobile/desktop */}
-            <style>{posts.map((_, i) => {
-              const d = getDims(i);
-              return `.ig-i-${i}{height:${d.mobile}px}@media(min-width:640px){.ig-i-${i}{height:${d.desktop}px}}`;
-            }).join("\n")}</style>
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6 mb-10 md:mb-16">
+            {/* 容器用 overflow:hidden 把 iframe 底下空白裁掉 (影片大小靠寬度 = 欄數)
+                iframe 內部始終 render full widget, 只是我們只顯示 top N px */}
+            <style>{
+              [
+                // 欄數 — 控制 iframe 寬度 = 控制影片大小
+                `.ig-grid{grid-template-columns:repeat(${cols.mobile},minmax(0,1fr))}`,
+                `@media(min-width:640px){.ig-grid{grid-template-columns:repeat(${cols.desktop},minmax(0,1fr))}}`,
+                // 每格容器裁切高度
+                ...posts.map((_, i) => {
+                  const d = getDims(i);
+                  return `.ig-c-${i}{height:${d.mobileHeight}px}@media(min-width:640px){.ig-c-${i}{height:${d.desktopHeight}px}}`;
+                }),
+              ].join("\n")
+            }</style>
+            <div className="ig-grid grid gap-2 sm:gap-6 mb-10 md:mb-16">
               {posts.map((post, i) => (
                 <div
                   key={post.shortcode}
-                  className="bg-ink-950/5 border border-ink-950/8 overflow-hidden"
+                  className={`bg-ink-950/5 border border-ink-950/8 overflow-hidden ig-c-${i}`}
                 >
                   <iframe
                     src={post.embedUrl}
-                    className={`w-full block ig-i-${i}`}
-                    style={{ border: 0 }}
+                    className="w-full block"
+                    style={{ border: 0, height: 1200 }}
                     loading={i < 2 ? "eager" : "lazy"}
                     scrolling="no"
                     allowTransparency

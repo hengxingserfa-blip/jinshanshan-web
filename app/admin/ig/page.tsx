@@ -76,6 +76,7 @@ export default async function IgAdminPage() {
         latestForFallback={latest}
         currentSize={settings.ig_size}
         currentSlotSizes={settings.slot_sizes}
+        currentCols={settings.ig_cols}
       />
     </div>
   );

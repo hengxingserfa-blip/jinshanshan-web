@@ -96,12 +96,21 @@ export async function saveIgPinned(
     const raw = (formData.get(`size_${i}`) as string | null) ?? "M";
     slotSizes[String(i)] = VALID_SIZES.includes(raw) ? raw : "M";
   }
+
+  // 欄數設定 (控制影片大小的關鍵)
+  const colsMobileRaw = parseInt((formData.get("ig_cols_mobile") as string | null) ?? "2", 10);
+  const colsDesktopRaw = parseInt((formData.get("ig_cols_desktop") as string | null) ?? "3", 10);
+  const colsMobile = [1, 2].includes(colsMobileRaw) ? colsMobileRaw : 2;
+  const colsDesktop = [2, 3].includes(colsDesktopRaw) ? colsDesktopRaw : 3;
+
   const { error: szErr } = await sb
     .from("site_settings")
     .upsert(
       {
         id: 1,
         slot_sizes: slotSizes,
+        ig_cols_mobile: colsMobile,
+        ig_cols_desktop: colsDesktop,
         updated_at: new Date().toISOString(),
       },
       { onConflict: "id" }

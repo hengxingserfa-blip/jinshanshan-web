@@ -4,7 +4,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { useState } from "react";
 import { saveIgPinned } from "./actions";
 import type { IGPost } from "@/lib/instagram";
-import { IG_SIZES, type IGSize } from "@/lib/ig-config";
+import { IG_SIZES, type IGSize, type IGColsConfig } from "@/lib/ig-config";
 
 interface SlotRow {
   slot: number;
@@ -18,6 +18,7 @@ interface Props {
   latestForFallback: IGPost[];
   currentSize: IGSize;
   currentSlotSizes: Record<string, IGSize>;
+  currentCols: IGColsConfig;
 }
 
 const initial = { ok: false, message: "" };
@@ -49,6 +50,7 @@ export default function IgAdminForm({
   slots,
   latestForFallback,
   currentSlotSizes,
+  currentCols,
 }: Props) {
   const [state, formAction] = useFormState(saveIgPinned, initial);
 
@@ -61,13 +63,75 @@ export default function IgAdminForm({
     return init;
   });
 
+  // 欄數 - 控制影片大小
+  const [colsMobile, setColsMobile] = useState<1 | 2>(currentCols.mobile);
+  const [colsDesktop, setColsDesktop] = useState<2 | 3>(currentCols.desktop);
+
   return (
     <form action={formAction} className="space-y-5">
+      {/* 欄數設定 — 真正控制影片大小 */}
+      <div className="bg-white border border-ink-950/10 p-4 sm:p-5">
+        <p className="font-display text-xs tracking-[0.25em] uppercase text-gold-700 font-medium mb-3">
+          🎬 影片大小 (= 欄數)
+        </p>
+        <p className="text-[11px] text-ink-600 mb-3 leading-loose">
+          ⚠️ IG embed 影片大小由<strong>欄數</strong>決定 — 欄數少, 每格寬, 影片大。
+          下面每格的「裁切高度」只控制底下空白要不要顯示, 不會讓影片變大。
+        </p>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <p className="text-[10px] text-ink-500 mb-1.5">📱 手機欄數:</p>
+            <div className="flex gap-2">
+              {([1, 2] as const).map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => setColsMobile(n)}
+                  className={`flex-1 px-3 py-2 text-xs font-medium border transition-colors ${
+                    colsMobile === n
+                      ? "bg-gold-500 text-ink-950 border-gold-500"
+                      : "bg-ivory-50 text-ink-700 border-ink-950/15 hover:border-gold-400"
+                  }`}
+                >
+                  {n} 欄
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-[10px] text-ink-500 mb-1.5">🖥️ 桌機欄數:</p>
+            <div className="flex gap-2">
+              {([2, 3] as const).map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => setColsDesktop(n)}
+                  className={`flex-1 px-3 py-2 text-xs font-medium border transition-colors ${
+                    colsDesktop === n
+                      ? "bg-gold-500 text-ink-950 border-gold-500"
+                      : "bg-ivory-50 text-ink-700 border-ink-950/15 hover:border-gold-400"
+                  }`}
+                >
+                  {n} 欄
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+        <input type="hidden" name="ig_cols_mobile" value={colsMobile} />
+        <input type="hidden" name="ig_cols_desktop" value={colsDesktop} />
+        <p className="text-[11px] text-ink-500 mt-3 leading-loose">
+          推薦: 手機 2 欄 + 桌機 3 欄 (預設 / 視訊小)。
+          想要影片更大 → 手機 1 欄 / 桌機 2 欄 (但 6 格就會排很長)。
+        </p>
+      </div>
       {/* 前台實際效果預覽 — 用當前 6 格設定模擬首頁 */}
       <FrontendPreview
         slots={slots}
         latestForFallback={latestForFallback}
         slotSizes={slotSizes}
+        colsMobile={colsMobile}
+        colsDesktop={colsDesktop}
       />
 
       {/* 6 格設定 */}
@@ -137,13 +201,16 @@ export default function IgAdminForm({
                 />
               </div>
 
-              {/* 即時預覽 iframe (用該格選的 size) */}
+              {/* 即時預覽 iframe (overflow:hidden 裁底下空白) */}
               {(previewShortcode || fallbackPost) && (
-                <div className="bg-ink-950/5 border border-ink-950/8 overflow-hidden">
+                <div
+                  className="bg-ink-950/5 border border-ink-950/8"
+                  style={{ height: IG_SIZES[currentSize].mobileHeight, overflow: "hidden" }}
+                >
                   <iframe
                     src={`https://www.instagram.com/${row?.is_video ?? fallbackPost?.isVideo ? "reel" : "p"}/${previewShortcode ?? fallbackPost?.shortcode}/embed/`}
                     style={{
-                      height: IG_SIZES[currentSize].mobile,
+                      height: 1200,
                       border: 0,
                       width: "100%",
                       display: "block",
@@ -189,10 +256,14 @@ function FrontendPreview({
   slots,
   latestForFallback,
   slotSizes,
+  colsMobile,
+  colsDesktop,
 }: {
   slots: (SlotRow | null)[];
   latestForFallback: IGPost[];
   slotSizes: Record<number, IGSize>;
+  colsMobile: 1 | 2;
+  colsDesktop: 2 | 3;
 }) {
   const [view, setView] = useState<"mobile" | "desktop">("mobile");
 
@@ -218,8 +289,8 @@ function FrontendPreview({
     }
   }
 
-  // 桌機 3 欄 / 手機 2 欄,跟前台一樣
-  const cols = view === "mobile" ? 2 : 3;
+  // 跟前台一致的欄數
+  const cols = view === "mobile" ? colsMobile : colsDesktop;
   // 預覽容器寬度:模擬手機 380px 寬,模擬桌機 1000px 寬
   const containerW = view === "mobile" ? 380 : 1000;
 
@@ -273,20 +344,23 @@ function FrontendPreview({
               {previewPosts.map((p, i) => {
                 const size = slotSizes[i + 1] ?? "M";
                 const cfg = IG_SIZES[size];
-                // 用 mobile 高度給手機 view,desktop 高度給桌機 view
-                const h = view === "mobile" ? cfg.mobile : cfg.desktop;
+                // 容器裁切高度 (iframe 內部仍 1200, overflow:hidden)
+                const h = view === "mobile" ? cfg.mobileHeight : cfg.desktopHeight;
                 return (
                   <div
                     key={i}
-                    className="bg-white border border-ink-950/8 overflow-hidden"
+                    className="bg-white border border-ink-950/8"
                   >
-                    <iframe
-                      src={`https://www.instagram.com/${p.isVideo ? "reel" : "p"}/${p.shortcode}/embed/`}
-                      style={{ height: h, width: "100%", border: 0, display: "block" }}
-                      scrolling="no"
-                      loading="lazy"
-                      title={`預覽 slot ${i + 1}`}
-                    />
+                    {/* overflow:hidden 容器,只露出 top h px 的 widget 內容 */}
+                    <div style={{ height: h, overflow: "hidden" }}>
+                      <iframe
+                        src={`https://www.instagram.com/${p.isVideo ? "reel" : "p"}/${p.shortcode}/embed/`}
+                        style={{ height: 1200, width: "100%", border: 0, display: "block" }}
+                        scrolling="no"
+                        loading="lazy"
+                        title={`預覽 slot ${i + 1}`}
+                      />
+                    </div>
                     <div className="px-2 py-1 text-[10px] text-ink-500 bg-ivory-100 border-t border-ink-950/8 flex justify-between">
                       <span>第 {i + 1} 格</span>
                       <span className="font-mono text-ink-400">{size} · {h}px</span>

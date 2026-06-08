@@ -25,36 +25,46 @@ export interface IGPost {
   pinned?: boolean;  // true = 後台手動指定的
 }
 
-// 撈站台設定 — 每個 slot 獨立 size
+// 撈站台設定 — 每格 size + 全局欄數
 export async function getSiteSettings(): Promise<{
-  ig_size: import("./ig-config").IGSize;  // 兼容舊欄位 (全域 fallback)
+  ig_size: import("./ig-config").IGSize;
   slot_sizes: Record<string, import("./ig-config").IGSize>;
+  ig_cols: import("./ig-config").IGColsConfig;
 }> {
   const { IG_SIZES } = await import("./ig-config");
   const defaultSlots: Record<string, import("./ig-config").IGSize> = {
     "1": "M", "2": "M", "3": "M", "4": "M", "5": "M", "6": "M",
   };
+  const defaultCols: import("./ig-config").IGColsConfig = {
+    mobile: 2,
+    desktop: 3,
+  };
   try {
     const { getServerSupabase } = await import("@/lib/supabase/server");
     const supabase = await getServerSupabase();
-    if (!supabase) return { ig_size: "M", slot_sizes: defaultSlots };
+    if (!supabase) return { ig_size: "M", slot_sizes: defaultSlots, ig_cols: defaultCols };
     const { data } = await supabase
       .from("site_settings")
-      .select("ig_size, slot_sizes")
+      .select("ig_size, slot_sizes, ig_cols_mobile, ig_cols_desktop")
       .eq("id", 1)
       .maybeSingle();
     const size = data?.ig_size as string | undefined;
     const igSize = (size && size in IG_SIZES ? size : "M") as import("./ig-config").IGSize;
-    // 把 DB 的 slot_sizes 驗證 + 缺的補預設
     const rawSlots = (data?.slot_sizes ?? {}) as Record<string, string>;
     const cleanSlots: Record<string, import("./ig-config").IGSize> = { ...defaultSlots };
     for (let i = 1; i <= 6; i++) {
       const v = rawSlots[String(i)];
       if (v && v in IG_SIZES) cleanSlots[String(i)] = v as import("./ig-config").IGSize;
     }
-    return { ig_size: igSize, slot_sizes: cleanSlots };
+    const colsMobile = data?.ig_cols_mobile === 1 ? 1 : 2;
+    const colsDesktop = data?.ig_cols_desktop === 2 ? 2 : 3;
+    return {
+      ig_size: igSize,
+      slot_sizes: cleanSlots,
+      ig_cols: { mobile: colsMobile, desktop: colsDesktop },
+    };
   } catch {
-    return { ig_size: "M", slot_sizes: defaultSlots };
+    return { ig_size: "M", slot_sizes: defaultSlots, ig_cols: defaultCols };
   }
 }
 
