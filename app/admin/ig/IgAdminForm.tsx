@@ -2,7 +2,8 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { saveIgPinned } from "./actions";
-import { IG_SIZES, type IGPost, type IGSize } from "@/lib/instagram";
+import type { IGPost } from "@/lib/instagram";
+import { IG_SIZES, type IGSize } from "@/lib/ig-config";
 
 interface SlotRow {
   slot: number;
@@ -39,25 +40,40 @@ export default function IgAdminForm({ slots, latestForFallback, currentSize }: P
     <form action={formAction} className="space-y-4">
       {/* IG 影片大小選擇 */}
       <div className="bg-white border border-ink-950/10 p-4 sm:p-5">
-        <label className="block">
-          <span className="block font-display text-xs tracking-[0.25em] uppercase text-gold-700 font-medium mb-2">
-            首頁 IG 影片大小
-          </span>
-          <select
-            name="ig_size"
-            defaultValue={currentSize}
-            className="w-full sm:w-auto bg-ivory-50 border border-ink-950/15 px-4 py-2.5 text-sm focus:outline-none focus:border-gold-500"
-          >
-            {(Object.entries(IG_SIZES) as [IGSize, typeof IG_SIZES.M][]).map(([key, val]) => (
-              <option key={key} value={key}>
-                {val.label} ({val.mobile}px 手機 / {val.desktop}px 桌機)
-              </option>
-            ))}
-          </select>
-          <p className="text-[11px] text-ink-500 mt-2">
-            建議:小=只看 thumbnail / 中=預設(可看到影片)/ 大=影片更明顯 / 超大=主視覺等級
-          </p>
-        </label>
+        <span className="block font-display text-xs tracking-[0.25em] uppercase text-gold-700 font-medium mb-3">
+          首頁 IG 影片大小
+        </span>
+
+        {/* 用 radio 卡片式選擇 (比 select 直覺,防止選錯) */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {(Object.entries(IG_SIZES) as [IGSize, typeof IG_SIZES.M][]).map(([key, val]) => (
+            <label
+              key={key}
+              className="cursor-pointer block bg-ivory-50 border border-ink-950/10 hover:border-gold-400 has-[:checked]:border-gold-500 has-[:checked]:bg-gold-50/40 has-[:checked]:ring-1 has-[:checked]:ring-gold-500 transition-colors p-3"
+            >
+              <input
+                type="radio"
+                name="ig_size"
+                value={key}
+                defaultChecked={currentSize === key}
+                className="sr-only peer"
+              />
+              <div className="flex items-center justify-between mb-1">
+                <span className="font-medium text-sm text-ink-950">{val.label}</span>
+                <span className="text-[10px] text-ink-400 font-mono">
+                  {val.mobile}/{val.desktop}
+                </span>
+              </div>
+              <p className="text-[11px] text-ink-600 leading-snug">{val.description}</p>
+            </label>
+          ))}
+        </div>
+
+        <p className="text-[11px] text-ink-500 mt-3 leading-loose">
+          📱 數字是 手機 / 桌機 iframe 高度 (px)。<br />
+          ✅ 所有尺寸都已測試不跑版 — 6 格 2 欄(手機)或 3 欄(桌機)排列不變。<br />
+          ※ 改完按下面「儲存 6 格設定」生效。
+        </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">

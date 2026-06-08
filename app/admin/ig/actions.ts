@@ -91,7 +91,8 @@ export async function saveIgPinned(
 
   // 同步處理大小設定
   const sizeRaw = (formData.get("ig_size") as string | null) ?? "M";
-  const igSize = ["S", "M", "L", "XL"].includes(sizeRaw) ? sizeRaw : "M";
+  const VALID_SIZES = ["S", "M", "M_TALL", "L", "L_TALL", "XL"];
+  const igSize = VALID_SIZES.includes(sizeRaw) ? sizeRaw : "M";
   const { error: szErr } = await sb
     .from("site_settings")
     .upsert({ id: 1, ig_size: igSize, updated_at: new Date().toISOString() }, { onConflict: "id" });

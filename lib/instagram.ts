@@ -25,18 +25,9 @@ export interface IGPost {
   pinned?: boolean;  // true = 後台手動指定的
 }
 
-export type IGSize = "S" | "M" | "L" | "XL";
-
-// IG iframe 高度設定 (mobile / desktop)
-export const IG_SIZES: Record<IGSize, { mobile: number; desktop: number; label: string }> = {
-  S:  { mobile: 320, desktop: 460, label: "小 (S)" },
-  M:  { mobile: 480, desktop: 640, label: "中 (M) — 預設" },
-  L:  { mobile: 600, desktop: 780, label: "大 (L)" },
-  XL: { mobile: 720, desktop: 920, label: "超大 (XL)" },
-};
-
-// 撈站台設定 (目前只有 ig_size)
-export async function getSiteSettings(): Promise<{ ig_size: IGSize }> {
+// 撈站台設定 (目前只有 ig_size) — 此 function 必須 server-only
+export async function getSiteSettings(): Promise<{ ig_size: import("./ig-config").IGSize }> {
+  const { IG_SIZES } = await import("./ig-config");
   try {
     const { getServerSupabase } = await import("@/lib/supabase/server");
     const supabase = await getServerSupabase();
@@ -46,8 +37,8 @@ export async function getSiteSettings(): Promise<{ ig_size: IGSize }> {
       .select("ig_size")
       .eq("id", 1)
       .maybeSingle();
-    const size = (data?.ig_size as IGSize | undefined) ?? "M";
-    return { ig_size: ["S", "M", "L", "XL"].includes(size) ? size : "M" };
+    const size = data?.ig_size as string | undefined;
+    return { ig_size: size && size in IG_SIZES ? (size as import("./ig-config").IGSize) : "M" };
   } catch {
     return { ig_size: "M" };
   }

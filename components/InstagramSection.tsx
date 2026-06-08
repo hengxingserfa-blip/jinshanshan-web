@@ -2,10 +2,9 @@ import Ornament from "@/components/Ornament";
 import {
   INSTAGRAM_HANDLE,
   INSTAGRAM_PROFILE_URL,
-  IG_SIZES,
   type IGPost,
-  type IGSize,
 } from "@/lib/instagram";
+import { IG_SIZES, type IGSize } from "@/lib/ig-config";
 
 interface Props {
   posts: IGPost[];
