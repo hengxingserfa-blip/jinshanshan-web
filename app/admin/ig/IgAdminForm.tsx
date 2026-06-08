@@ -52,11 +52,7 @@ export default function IgAdminForm({
 }: Props) {
   const [state, formAction] = useFormState(saveIgPinned, initial);
 
-  // 預覽用 sample reel
-  const sampleShortcode =
-    latestForFallback[0]?.shortcode ?? "DZUBqm1z8KA";
-
-  // 用 state 控制每格 size + 對照 demo 選擇
+  // 用 state 控制每格 size
   const [slotSizes, setSlotSizes] = useState<Record<number, IGSize>>(() => {
     const init: Record<number, IGSize> = {};
     for (let i = 1; i <= 6; i++) {
@@ -67,45 +63,12 @@ export default function IgAdminForm({
 
   return (
     <form action={formAction} className="space-y-5">
-      {/* 對照預覽 — 同一支影片 6 種尺寸並排 */}
-      <details className="bg-white border border-ink-950/10" open>
-        <summary className="cursor-pointer select-none px-4 sm:px-5 py-3 flex items-center justify-between font-display text-xs tracking-[0.25em] uppercase text-gold-700 font-medium">
-          <span>📐 6 種尺寸對照預覽</span>
-          <span className="text-ink-400 group-open:rotate-180">▾</span>
-        </summary>
-        <div className="px-4 sm:px-5 pb-5">
-          <p className="text-[11px] text-ink-500 mb-3 leading-loose">
-            同一支影片在不同尺寸下的樣子(模擬手機顯示寬度,1 欄)。
-            選好之後在下面 6 格各自指定。
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {SIZE_KEYS.map((key) => {
-              const cfg = IG_SIZES[key];
-              // 預覽用 mobile 高度 (因為員工大多在手機後台)
-              return (
-                <div
-                  key={key}
-                  className="bg-ivory-50 border border-ink-950/10"
-                >
-                  <div className="px-2 py-1.5 bg-ink-950/5 text-[10px] text-ink-700 font-medium flex items-center justify-between">
-                    <span>{cfg.label}</span>
-                    <span className="text-ink-400 font-mono">
-                      {cfg.mobile}/{cfg.desktop}
-                    </span>
-                  </div>
-                  <iframe
-                    src={`https://www.instagram.com/reel/${sampleShortcode}/embed/`}
-                    style={{ height: cfg.mobile, border: 0, width: "100%" }}
-                    scrolling="no"
-                    loading="lazy"
-                    title={`預覽 ${cfg.label}`}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </details>
+      {/* 前台實際效果預覽 — 用當前 6 格設定模擬首頁 */}
+      <FrontendPreview
+        slots={slots}
+        latestForFallback={latestForFallback}
+        slotSizes={slotSizes}
+      />
 
       {/* 6 格設定 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
@@ -216,5 +179,129 @@ export default function IgAdminForm({
         做出層次感。所有尺寸都不會跑版,6 格永遠手機 2 欄 / 桌機 3 欄排。
       </p>
     </form>
+  );
+}
+
+// ────────────────────────────────────────────────────────
+// 前台實際效果預覽 (即時跟著 slotSizes 狀態變)
+// ────────────────────────────────────────────────────────
+function FrontendPreview({
+  slots,
+  latestForFallback,
+  slotSizes,
+}: {
+  slots: (SlotRow | null)[];
+  latestForFallback: IGPost[];
+  slotSizes: Record<number, IGSize>;
+}) {
+  const [view, setView] = useState<"mobile" | "desktop">("mobile");
+
+  // 組裝 6 個要顯示的 shortcode (pinned 優先,空格用 fallback)
+  const previewPosts: { shortcode: string; isVideo: boolean }[] = [];
+  // 已 pinned 的 shortcode 不要重複出現
+  const pinnedSet = new Set(
+    slots.filter((s): s is SlotRow => !!s).map((s) => s.shortcode)
+  );
+  const fallbackQueue = latestForFallback.filter(
+    (p) => !pinnedSet.has(p.shortcode)
+  );
+  let fbIdx = 0;
+  for (let i = 0; i < 6; i++) {
+    const row = slots[i];
+    if (row) {
+      previewPosts.push({ shortcode: row.shortcode, isVideo: row.is_video });
+    } else {
+      const next = fallbackQueue[fbIdx++];
+      if (next) {
+        previewPosts.push({ shortcode: next.shortcode, isVideo: next.isVideo });
+      }
+    }
+  }
+
+  // 桌機 3 欄 / 手機 2 欄,跟前台一樣
+  const cols = view === "mobile" ? 2 : 3;
+  // 預覽容器寬度:模擬手機 380px 寬,模擬桌機 1000px 寬
+  const containerW = view === "mobile" ? 380 : 1000;
+
+  return (
+    <details className="bg-white border border-ink-950/10" open>
+      <summary className="cursor-pointer select-none px-4 sm:px-5 py-3 flex items-center justify-between font-display text-xs tracking-[0.25em] uppercase text-gold-700 font-medium">
+        <span>📱 前台實際效果預覽</span>
+        <span className="text-ink-400 normal-case tracking-normal text-[10px] font-normal">
+          (跟著下面設定即時變)
+        </span>
+      </summary>
+      <div className="px-4 sm:px-5 pb-5">
+        <div className="flex items-center gap-2 mb-3">
+          <button
+            type="button"
+            onClick={() => setView("mobile")}
+            className={`px-3 py-1.5 text-xs font-medium border transition-colors ${
+              view === "mobile"
+                ? "bg-ink-950 text-ivory-50 border-ink-950"
+                : "bg-ivory-50 text-ink-700 border-ink-950/15 hover:border-gold-400"
+            }`}
+          >
+            📱 手機
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("desktop")}
+            className={`px-3 py-1.5 text-xs font-medium border transition-colors ${
+              view === "desktop"
+                ? "bg-ink-950 text-ivory-50 border-ink-950"
+                : "bg-ivory-50 text-ink-700 border-ink-950/15 hover:border-gold-400"
+            }`}
+          >
+            🖥️ 桌機
+          </button>
+          <p className="text-[11px] text-ink-500 ml-2">
+            手機 2 欄 / 桌機 3 欄
+          </p>
+        </div>
+
+        {/* 模擬容器 — 用實際寬度 + scroll bar 給後台看 */}
+        <div className="overflow-x-auto -mx-4 sm:-mx-5 px-4 sm:px-5">
+          <div
+            className="bg-ivory-50 p-3 mx-auto"
+            style={{ width: containerW, maxWidth: "100%" }}
+          >
+            <div
+              className="grid gap-2"
+              style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
+            >
+              {previewPosts.map((p, i) => {
+                const size = slotSizes[i + 1] ?? "M";
+                const cfg = IG_SIZES[size];
+                // 用 mobile 高度給手機 view,desktop 高度給桌機 view
+                const h = view === "mobile" ? cfg.mobile : cfg.desktop;
+                return (
+                  <div
+                    key={i}
+                    className="bg-white border border-ink-950/8 overflow-hidden"
+                  >
+                    <iframe
+                      src={`https://www.instagram.com/${p.isVideo ? "reel" : "p"}/${p.shortcode}/embed/`}
+                      style={{ height: h, width: "100%", border: 0, display: "block" }}
+                      scrolling="no"
+                      loading="lazy"
+                      title={`預覽 slot ${i + 1}`}
+                    />
+                    <div className="px-2 py-1 text-[10px] text-ink-500 bg-ivory-100 border-t border-ink-950/8 flex justify-between">
+                      <span>第 {i + 1} 格</span>
+                      <span className="font-mono text-ink-400">{size} · {h}px</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+        <p className="text-[11px] text-ink-500 mt-3 leading-loose">
+          ↑ 這就是訪客在 {view === "mobile" ? "手機" : "桌機"} 上看到首頁 IG 區塊的樣子。
+          下面改完任一格大小,這上面會立刻跟著變。
+        </p>
+      </div>
+    </details>
   );
 }
