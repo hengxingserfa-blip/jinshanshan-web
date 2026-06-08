@@ -212,7 +212,7 @@ export default function IgAdminForm({
                     style={{
                       height: 1200,
                       border: 0,
-                      width: "118%",
+                      width: "108%",
                       position: "absolute",
                       left: "50%",
                       top: -60,
@@ -360,7 +360,7 @@ function FrontendPreview({
                         src={`https://www.instagram.com/${p.isVideo ? "reel" : "p"}/${p.shortcode}/embed/`}
                         style={{
                           height: 1200,
-                          width: "118%",
+                          width: "108%",
                           border: 0,
                           position: "absolute",
                           left: "50%",
