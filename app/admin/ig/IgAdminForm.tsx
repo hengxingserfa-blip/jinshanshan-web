@@ -2,7 +2,7 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { saveIgPinned } from "./actions";
-import type { IGPost } from "@/lib/instagram";
+import { IG_SIZES, type IGPost, type IGSize } from "@/lib/instagram";
 
 interface SlotRow {
   slot: number;
@@ -14,6 +14,7 @@ interface SlotRow {
 interface Props {
   slots: (SlotRow | null)[];
   latestForFallback: IGPost[];
+  currentSize: IGSize;
 }
 
 const initial = { ok: false, message: "" };
@@ -31,11 +32,34 @@ function SubmitBtn() {
   );
 }
 
-export default function IgAdminForm({ slots, latestForFallback }: Props) {
+export default function IgAdminForm({ slots, latestForFallback, currentSize }: Props) {
   const [state, formAction] = useFormState(saveIgPinned, initial);
 
   return (
     <form action={formAction} className="space-y-4">
+      {/* IG 影片大小選擇 */}
+      <div className="bg-white border border-ink-950/10 p-4 sm:p-5">
+        <label className="block">
+          <span className="block font-display text-xs tracking-[0.25em] uppercase text-gold-700 font-medium mb-2">
+            首頁 IG 影片大小
+          </span>
+          <select
+            name="ig_size"
+            defaultValue={currentSize}
+            className="w-full sm:w-auto bg-ivory-50 border border-ink-950/15 px-4 py-2.5 text-sm focus:outline-none focus:border-gold-500"
+          >
+            {(Object.entries(IG_SIZES) as [IGSize, typeof IG_SIZES.M][]).map(([key, val]) => (
+              <option key={key} value={key}>
+                {val.label} ({val.mobile}px 手機 / {val.desktop}px 桌機)
+              </option>
+            ))}
+          </select>
+          <p className="text-[11px] text-ink-500 mt-2">
+            建議:小=只看 thumbnail / 中=預設(可看到影片)/ 大=影片更明顯 / 超大=主視覺等級
+          </p>
+        </label>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         {slots.map((row, idx) => {
           const slotNum = idx + 1;

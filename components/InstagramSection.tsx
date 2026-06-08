@@ -2,14 +2,18 @@ import Ornament from "@/components/Ornament";
 import {
   INSTAGRAM_HANDLE,
   INSTAGRAM_PROFILE_URL,
+  IG_SIZES,
   type IGPost,
+  type IGSize,
 } from "@/lib/instagram";
 
 interface Props {
   posts: IGPost[];
+  size?: IGSize;
 }
 
-export default function InstagramSection({ posts }: Props) {
+export default function InstagramSection({ posts, size = "M" }: Props) {
+  const dims = IG_SIZES[size] ?? IG_SIZES.M;
 
   return (
     <section className="bg-ivory-50 py-16 md:py-36">
@@ -32,25 +36,28 @@ export default function InstagramSection({ posts }: Props) {
         </div>
 
         {posts.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6 mb-10 md:mb-16">
-            {posts.map((post, i) => (
-              <div
-                key={post.shortcode}
-                className="bg-ink-950/5 border border-ink-950/8 overflow-hidden"
-              >
-                {/* 手機 480px, 桌機 640px — 把影片內容顯示出來,不只 thumbnail */}
-                <iframe
-                  src={post.embedUrl}
-                  className="w-full block h-[480px] sm:h-[640px]"
-                  style={{ border: 0 }}
-                  loading={i < 2 ? "eager" : "lazy"}
-                  scrolling="no"
-                  allowTransparency
-                  title={post.caption || `Instagram ${post.isVideo ? "Reel" : "Post"} ${i + 1}`}
-                />
-              </div>
-            ))}
-          </div>
+          <>
+            {/* 大小由後台 site_settings.ig_size 控制 (S/M/L/XL) — 用 CSS var 切換手機/桌機 */}
+            <style>{`.ig-iframe{height:${dims.mobile}px}@media(min-width:640px){.ig-iframe{height:${dims.desktop}px}}`}</style>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6 mb-10 md:mb-16">
+              {posts.map((post, i) => (
+                <div
+                  key={post.shortcode}
+                  className="bg-ink-950/5 border border-ink-950/8 overflow-hidden"
+                >
+                  <iframe
+                    src={post.embedUrl}
+                    className="w-full block ig-iframe"
+                    style={{ border: 0 }}
+                    loading={i < 2 ? "eager" : "lazy"}
+                    scrolling="no"
+                    allowTransparency
+                    title={post.caption || `Instagram ${post.isVideo ? "Reel" : "Post"} ${i + 1}`}
+                  />
+                </div>
+              ))}
+            </div>
+          </>
         )}
 
         <div className="flex flex-col items-center gap-4">

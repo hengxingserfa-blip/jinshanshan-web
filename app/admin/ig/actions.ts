@@ -89,10 +89,18 @@ export async function saveIgPinned(
     if (error) return { ok: false, message: error.message };
   }
 
+  // 同步處理大小設定
+  const sizeRaw = (formData.get("ig_size") as string | null) ?? "M";
+  const igSize = ["S", "M", "L", "XL"].includes(sizeRaw) ? sizeRaw : "M";
+  const { error: szErr } = await sb
+    .from("site_settings")
+    .upsert({ id: 1, ig_size: igSize, updated_at: new Date().toISOString() }, { onConflict: "id" });
+  if (szErr) return { ok: false, message: `儲存大小失敗:${szErr.message}` };
+
   revalidatePath("/admin/ig");
   revalidatePath("/");
   return {
     ok: true,
-    message: `已儲存。${rows.length} 格手動指定,${toDelete.length} 格用 IG 最新貼文 fallback`,
+    message: `已儲存。${rows.length} 格手動指定,${toDelete.length} 格自動抓 IG 最新,大小 = ${igSize}`,
   };
 }

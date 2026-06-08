@@ -11,7 +11,7 @@ import Testimonials from "@/components/Testimonials";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
 import { getFeaturedProducts } from "@/lib/data/products";
-import { fetchInstagramPosts } from "@/lib/instagram";
+import { fetchInstagramPosts, getSiteSettings } from "@/lib/instagram";
 
 const SITE = "https://www.shinygold.com.tw";
 
@@ -41,16 +41,17 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const [featured, igPosts] = await Promise.all([
+  const [featured, igPosts, settings] = await Promise.all([
     getFeaturedProducts(3),
     fetchInstagramPosts(6),
+    getSiteSettings(),
   ]);
 
   return (
     <>
       <Hero />
       <TrustBadges />
-      <InstagramSection posts={igPosts} />
+      <InstagramSection posts={igPosts} size={settings.ig_size} />
       <Calculator />
       <GoldPriceTicker />
       <Services />

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import IgAdminForm from "./IgAdminForm";
-import { fetchInstagramPosts } from "@/lib/instagram";
+import { fetchInstagramPosts, getSiteSettings } from "@/lib/instagram";
 
 export const metadata = { title: "IG 影片管理 | 金閃閃後台" };
 
@@ -29,8 +29,11 @@ export default async function IgAdminPage() {
     pinned = (data ?? []) as PinnedRow[];
   }
 
-  // 抓 IG 最新 (fallback,給空 slot 預覽)
-  const latest = await fetchInstagramPosts(6);
+  // 抓 IG 最新 (fallback,給空 slot 預覽) + 當前大小設定
+  const [latest, settings] = await Promise.all([
+    fetchInstagramPosts(6),
+    getSiteSettings(),
+  ]);
 
   // 6 個 slot 對應 source_url (空就 null)
   const slots: (PinnedRow | null)[] = Array.from({ length: 6 }, (_, i) => {
@@ -68,7 +71,7 @@ export default async function IgAdminPage() {
         </div>
       </details>
 
-      <IgAdminForm slots={slots} latestForFallback={latest} />
+      <IgAdminForm slots={slots} latestForFallback={latest} currentSize={settings.ig_size} />
     </div>
   );
 }
