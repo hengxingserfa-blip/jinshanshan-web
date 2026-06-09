@@ -21,19 +21,30 @@ interface State {
 
 type ParseResult =
   | { error: string }
-  | { slug: string; name_zh: string; name_en: string | null; sort_order: number };
+  | {
+      slug: string;
+      name_zh: string;
+      name_en: string | null;
+      sort_order: number;
+      parent_slug: string | null;
+    };
 
 function parseForm(formData: FormData): ParseResult {
   const slug = ((formData.get("slug") as string) || "").trim().toLowerCase();
   const name_zh = ((formData.get("name_zh") as string) || "").trim();
   const name_en = ((formData.get("name_en") as string) || "").trim() || null;
   const sort_order = Number(formData.get("sort_order") ?? 0);
+  const parent_raw = ((formData.get("parent_slug") as string) || "").trim();
+  const parent_slug = parent_raw && parent_raw !== "—" ? parent_raw : null;
 
   if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
     return { error: "Slug 只能用小寫英文 / 數字 / 連字號 (例: my-custom)" };
   }
   if (!name_zh) return { error: "中文名稱必填" };
-  return { slug, name_zh, name_en, sort_order };
+  if (parent_slug && parent_slug === slug) {
+    return { error: "父分類不能是自己" };
+  }
+  return { slug, name_zh, name_en, sort_order, parent_slug };
 }
 
 export async function createCategoryAction(
@@ -51,6 +62,7 @@ export async function createCategoryAction(
     name_zh: parsed.name_zh,
     name_en: parsed.name_en,
     sort_order: parsed.sort_order,
+    parent_slug: parsed.parent_slug,
   });
 
   if (error) {
@@ -85,6 +97,7 @@ export async function updateCategoryAction(
       name_zh: parsed.name_zh,
       name_en: parsed.name_en,
       sort_order: parsed.sort_order,
+      parent_slug: parsed.parent_slug,
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);
@@ -124,6 +137,18 @@ export async function deleteCategoryAction(id: string): Promise<State> {
     return {
       ok: false,
       message: `這分類底下還有 ${count} 件商品,請先改分類或刪除商品`,
+    };
+  }
+
+  // 檢查還有沒有子分類
+  const { count: childCount } = await sb
+    .from("product_categories")
+    .select("id", { count: "exact", head: true })
+    .eq("parent_slug", cat.slug);
+  if (childCount && childCount > 0) {
+    return {
+      ok: false,
+      message: `這分類底下還有 ${childCount} 個子分類,請先刪除子分類`,
     };
   }
 

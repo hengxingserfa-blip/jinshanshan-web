@@ -78,18 +78,32 @@ export default function ProductForm({
               required
               className={input}
             >
-              {categories.map((c) => (
-                <option key={c.slug} value={c.slug}>
-                  {c.name_zh}
-                  {c.name_en ? ` ${c.name_en}` : ""}
-                </option>
-              ))}
+              {/* 樹狀:先列頂層,再列其底下子分類 (縮排呈現) */}
+              {categories
+                .filter((c) => !c.parent_slug)
+                .sort((a, b) => a.sort_order - b.sort_order)
+                .flatMap((parent) => [
+                  <option key={parent.slug} value={parent.slug}>
+                    {parent.name_zh}
+                    {parent.name_en ? ` ${parent.name_en}` : ""}
+                  </option>,
+                  ...categories
+                    .filter((c) => c.parent_slug === parent.slug)
+                    .sort((a, b) => a.sort_order - b.sort_order)
+                    .map((child) => (
+                      <option key={child.slug} value={child.slug}>
+                        　└─ {child.name_zh}
+                        {child.name_en ? ` ${child.name_en}` : ""}
+                      </option>
+                    )),
+                ])}
             </select>
             <p className="text-[11px] text-ink-500 mt-1.5">
               ※ 沒看到需要的分類?{" "}
               <a href="/admin/categories" className="text-gold-700 underline">
                 到分類管理新增
-              </a>
+              </a>{" "}
+              (可新增子分類, 例:項鍊 → 套鍊系列)
             </p>
           </Field>
           <Field label="中文名稱" required>

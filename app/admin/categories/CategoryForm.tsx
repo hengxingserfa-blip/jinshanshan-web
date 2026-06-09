@@ -11,6 +11,12 @@ interface Defaults {
   name_zh?: string;
   name_en?: string | null;
   sort_order?: number;
+  parent_slug?: string | null;
+}
+
+interface ParentOption {
+  slug: string;
+  name_zh: string;
 }
 
 const initial = { ok: false, message: "" };
@@ -28,7 +34,13 @@ function SubmitBtn({ label }: { label: string }) {
   );
 }
 
-export default function CategoryForm({ defaults }: { defaults?: Defaults }) {
+export default function CategoryForm({
+  defaults,
+  parentOptions,
+}: {
+  defaults?: Defaults;
+  parentOptions: ParentOption[];
+}) {
   const isEdit = !!defaults?.id;
   const action = isEdit
     ? updateCategoryAction.bind(null, defaults!.id!)
@@ -72,6 +84,26 @@ export default function CategoryForm({ defaults }: { defaults?: Defaults }) {
             placeholder="例: Pendants"
             className={input}
           />
+        </Field>
+
+        <Field label="父分類 (選填 — 留空就是頂層大分類)">
+          <select
+            name="parent_slug"
+            defaultValue={defaults?.parent_slug ?? "—"}
+            className={input}
+          >
+            <option value="—">— 沒有父分類(自己是大分類)</option>
+            {parentOptions
+              .filter((p) => p.slug !== defaults?.slug)
+              .map((p) => (
+                <option key={p.slug} value={p.slug}>
+                  {p.name_zh} ({p.slug})
+                </option>
+              ))}
+          </select>
+          <p className="text-[11px] text-ink-500 mt-1.5">
+            ※ 例:選「項鍊 (necklaces)」當父分類 → 這分類就是項鍊下的子分類,前台 tab 滑過項鍊會出下拉。
+          </p>
         </Field>
 
         <Field label="排序順位">

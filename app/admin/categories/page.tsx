@@ -1,11 +1,15 @@
 import Link from "next/link";
-import { getCategories } from "@/lib/data/categories";
+import { getCategoryTree, getCategories } from "@/lib/data/categories";
 import { getProducts } from "@/lib/data/products";
 
 export const metadata = { title: "商品分類 | 金閃閃後台" };
 
 export default async function CategoriesAdmin() {
-  const [cats, products] = await Promise.all([getCategories(), getProducts()]);
+  const [tree, allCats, products] = await Promise.all([
+    getCategoryTree(),
+    getCategories(),
+    getProducts(),
+  ]);
 
   // 算每個分類有幾件商品
   const counts: Record<string, number> = {};
@@ -22,7 +26,8 @@ export default async function CategoriesAdmin() {
           </p>
           <h1 className="font-display text-2xl sm:text-4xl text-ink-950">商品分類</h1>
           <p className="text-xs sm:text-sm text-ink-700 mt-1 sm:mt-2">
-            共 <strong>{cats.length}</strong> 個分類 · 員工可以新增 / 編輯 / 刪除
+            共 <strong>{allCats.length}</strong> 個分類(含 {tree.length} 個大分類 +{" "}
+            {allCats.length - tree.length} 個子分類)
           </p>
         </div>
         <Link
@@ -35,46 +40,92 @@ export default async function CategoriesAdmin() {
 
       <details className="mb-4 sm:mb-6 bg-blue-50 border border-blue-200 text-blue-900 text-xs leading-loose group">
         <summary className="px-4 sm:px-5 py-3 cursor-pointer font-medium select-none">
-          💡 新增分類 + 商品掛上去的流程(點開)
+          💡 大分類 + 子分類 + 商品掛上去的流程(點開)
         </summary>
         <div className="px-4 sm:px-5 pb-4 space-y-1">
-          1. 點上面「+ 新增分類」<br />
-          2. 填:slug(英文網址)、中文名稱、英文名稱、排序<br />
-          3. 儲存後立刻出現在「商品編輯頁的分類下拉」<br />
-          4. 編輯任一商品 → 分類欄改成新分類 → 儲存<br />
-          5. 該分類就會出現在前台 /products 頂部 tab
+          <strong>新增大分類</strong>(例:項鍊)
+          <br />
+          1. 點「+ 新增分類」<br />
+          2. 「父分類」<strong>留空</strong> → 自己就是大分類<br />
+          <br />
+          <strong>新增子分類</strong>(例:項鍊底下的「套鍊系列」)<br />
+          1. 點「+ 新增分類」<br />
+          2. 「父分類」選「項鍊 (necklaces)」<br />
+          3. 儲存 → 前台 tab 滑過項鍊會自動出下拉<br />
+          <br />
+          <strong>商品掛分類</strong>:編輯商品 → 分類欄選大分類 或 子分類 都可以
         </div>
       </details>
 
       <div className="bg-white border border-ink-950/10 divide-y divide-ink-950/8">
-        {cats.map((c) => {
-          const n = counts[c.slug] ?? 0;
+        {tree.map((parent) => {
+          const parentCount = counts[parent.slug] ?? 0;
           return (
-            <Link
-              key={c.id}
-              href={`/admin/categories/${c.id}`}
-              className="flex items-center justify-between gap-3 p-4 sm:p-5 hover:bg-ivory-50 transition-colors"
-            >
-              <div className="min-w-0 flex-1">
-                <div className="flex items-baseline gap-3 flex-wrap">
-                  <span className="text-[10px] font-mono text-ink-400 bg-ivory-100 px-1.5 py-0.5">
-                    {c.sort_order}
-                  </span>
-                  <p className="font-display text-lg sm:text-xl text-ink-950 leading-tight">
-                    {c.name_zh}
-                  </p>
-                  {c.name_en && (
-                    <p className="text-sm tracking-wider text-ink-500 italic font-serif">
-                      {c.name_en}
+            <div key={parent.id}>
+              {/* 大分類 row */}
+              <Link
+                href={`/admin/categories/${parent.id}`}
+                className="flex items-center justify-between gap-3 p-4 sm:p-5 hover:bg-ivory-50 transition-colors"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline gap-3 flex-wrap">
+                    <span className="text-[10px] font-mono text-ink-400 bg-ivory-100 px-1.5 py-0.5">
+                      {parent.sort_order}
+                    </span>
+                    <p className="font-display text-lg sm:text-xl text-ink-950 leading-tight">
+                      {parent.name_zh}
                     </p>
-                  )}
+                    {parent.name_en && (
+                      <p className="text-sm tracking-wider text-ink-500 italic font-serif">
+                        {parent.name_en}
+                      </p>
+                    )}
+                    {parent.children.length > 0 && (
+                      <span className="text-[10px] bg-gold-100 text-gold-700 px-1.5 py-0.5 rounded">
+                        含 {parent.children.length} 個子分類
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-ink-400 font-mono mt-1">
+                    slug: {parent.slug} · 商品 {parentCount} 件
+                  </p>
                 </div>
-                <p className="text-[11px] text-ink-400 font-mono mt-1">
-                  slug: {c.slug} · 商品 {n} 件
-                </p>
-              </div>
-              <span className="text-xs text-gold-700 shrink-0">✏ 編輯 →</span>
-            </Link>
+                <span className="text-xs text-gold-700 shrink-0">✏ 編輯 →</span>
+              </Link>
+
+              {/* 子分類縮排顯示 */}
+              {parent.children.map((child) => {
+                const childCount = counts[child.slug] ?? 0;
+                return (
+                  <Link
+                    key={child.id}
+                    href={`/admin/categories/${child.id}`}
+                    className="flex items-center justify-between gap-3 pl-10 sm:pl-14 pr-4 sm:pr-5 py-3 sm:py-4 hover:bg-ivory-50 transition-colors bg-ivory-50/40"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline gap-2 flex-wrap">
+                        <span className="text-ink-400 text-sm">↳</span>
+                        <span className="text-[10px] font-mono text-ink-400 bg-ivory-100 px-1.5 py-0.5">
+                          {child.sort_order}
+                        </span>
+                        <p className="font-display text-base sm:text-lg text-ink-800 leading-tight">
+                          {child.name_zh}
+                        </p>
+                        {child.name_en && (
+                          <p className="text-xs tracking-wider text-ink-500 italic font-serif">
+                            {child.name_en}
+                          </p>
+                        )}
+                      </div>
+                      <p className="text-[10px] text-ink-400 font-mono mt-0.5">
+                        slug: {child.slug} · 商品 {childCount} 件
+                      </p>
+                    </div>
+                    <span className="text-xs text-gold-700 shrink-0">✏ 編輯 →</span>
+                  </Link>
+                );
+              })}
+            </div>
           );
         })}
       </div>
