@@ -14,6 +14,7 @@ import { getFeaturedProducts } from "@/lib/data/products";
 import { fetchInstagramPosts, getSiteSettings } from "@/lib/instagram";
 import { getActivePromotion } from "@/lib/data/promotions";
 import PromoPopup from "@/components/PromoPopup";
+import PromoBanner from "@/components/PromoBanner";
 
 const SITE = "https://www.shinygold.com.tw";
 
@@ -51,6 +52,7 @@ export default async function Home() {
   ]);
 
   const showPopup = promo?.show_popup && promo?.poster_url;
+  const showBanner = promo?.poster_url;
 
   return (
     <>
@@ -60,11 +62,19 @@ export default async function Home() {
           titleZh={promo.title_zh}
           ctaUrl={promo.cta_url}
           ctaLabel={promo.cta_label}
-          promotionId={promo.id}
         />
       )}
       <Hero />
       <TrustBadges />
+      {showBanner && (
+        <PromoBanner
+          posterUrl={promo.poster_url!}
+          titleZh={promo.title_zh}
+          bodyZh={promo.body_zh}
+          ctaUrl={promo.cta_url}
+          ctaLabel={promo.cta_label}
+        />
+      )}
       <InstagramSection
         posts={igPosts}
         size={settings.ig_size}

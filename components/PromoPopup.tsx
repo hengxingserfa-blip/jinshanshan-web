@@ -9,34 +9,27 @@ interface Props {
   titleZh?: string | null;
   ctaUrl?: string | null;
   ctaLabel?: string | null;
-  promotionId: string;
 }
 
-// 活動彈窗 — 訪客進首頁顯示,每位訪客每天最多看一次 (localStorage 記)
+// 活動彈窗 — 每次進首頁都顯示
 export default function PromoPopup({
   posterUrl,
   titleZh,
   ctaUrl,
   ctaLabel,
-  promotionId,
 }: Props) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    // 看 localStorage 有沒有今天關過
-    const key = `promo_seen_${promotionId}`;
-    const today = new Date().toISOString().slice(0, 10);
-    const seenDate = localStorage.getItem(key);
-    if (seenDate === today) return;
     // 0.5 秒後開,讓首頁先 paint 不影響 LCP
     const t = setTimeout(() => setOpen(true), 500);
     return () => clearTimeout(t);
-  }, [promotionId]);
+  }, []);
 
   // ESC 關
   useEffect(() => {
     if (!open) return;
-    const handler = (e: KeyboardEvent) => e.key === "Escape" && close();
+    const handler = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     document.addEventListener("keydown", handler);
     document.body.style.overflow = "hidden";
     return () => {
@@ -45,12 +38,7 @@ export default function PromoPopup({
     };
   }, [open]);
 
-  const close = () => {
-    const key = `promo_seen_${promotionId}`;
-    const today = new Date().toISOString().slice(0, 10);
-    localStorage.setItem(key, today);
-    setOpen(false);
-  };
+  const close = () => setOpen(false);
 
   if (!open) return null;
 
