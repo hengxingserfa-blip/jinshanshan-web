@@ -24,9 +24,18 @@ export default function PromoBanner({
       className="bg-gradient-to-b from-ivory-50 to-ivory-100 border-y border-gold-200/60 py-12 sm:py-20"
     >
       <div className="max-w-6xl mx-auto px-6">
-        <p className="text-center font-display tracking-[0.4em] text-[10px] sm:text-[11px] text-gold-600 uppercase mb-6 sm:mb-10">
-          ✦ 當月限定 Featured ✦
-        </p>
+        <div className="text-center mb-10 sm:mb-14">
+          <h2 className="font-display text-3xl sm:text-5xl md:text-6xl text-ink-950 leading-tight tracking-wide mb-3 sm:mb-4">
+            當前主打活動
+          </h2>
+          <div className="flex items-center justify-center gap-3 sm:gap-4">
+            <span className="h-px w-10 sm:w-16 bg-gold-500/60" aria-hidden />
+            <span className="font-display tracking-[0.4em] text-[10px] sm:text-[11px] text-gold-600 uppercase">
+              Featured Promotion
+            </span>
+            <span className="h-px w-10 sm:w-16 bg-gold-500/60" aria-hidden />
+          </div>
+        </div>
 
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* 海報 */}
