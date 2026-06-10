@@ -5,6 +5,7 @@ import { useTransition, useState } from "react";
 import Link from "next/link";
 import { createPromotionAction, updatePromotionAction, deletePromotionAction } from "./actions";
 import TranslationsEditor from "../_components/TranslationsEditor";
+import ImageUpload from "../_components/ImageUpload";
 import type { Translations } from "@/lib/supabase/types";
 
 interface PromotionDefaults {
@@ -18,6 +19,8 @@ interface PromotionDefaults {
   cta_url?: string | null;
   active?: boolean;
   translations?: Translations | null;
+  poster_url?: string | null;
+  show_popup?: boolean;
 }
 
 const initial = { ok: false, message: "" };
@@ -84,6 +87,28 @@ export default function PromotionForm({ defaults }: { defaults?: PromotionDefaul
           <Field label="CTA 連結(選填)">
             <input name="cta_url" defaultValue={defaults?.cta_url ?? ""} placeholder="例: /#contact 或 https://..." className={input} />
           </Field>
+        </div>
+
+        {/* 海報 + 彈窗 */}
+        <div className="bg-gold-50 border border-gold-200 p-5 space-y-4">
+          <p className="font-display text-xs tracking-[0.25em] uppercase text-gold-700 font-medium">
+            🎯 進站彈窗(選用)
+          </p>
+          <p className="text-[11px] text-ink-600 leading-loose">
+            上傳當月活動海報,訪客進首頁會看到彈窗。每位訪客每天最多看 1 次,點 ×<br />
+            建議比例 9:16 直式(像 IG 限動 / 海報尺寸),寬至少 720px。
+          </p>
+          <ImageUpload
+            name="poster_url"
+            folder="promotions"
+            defaultUrl={defaults?.poster_url}
+            label="海報圖"
+          />
+          <Toggle
+            name="show_popup"
+            label="✨ 啟用首頁彈窗顯示這個海報"
+            defaultChecked={defaults?.show_popup ?? false}
+          />
         </div>
 
         <Toggle name="active" label="啟用(在時間範圍內顯示)" defaultChecked={defaults?.active ?? true} />

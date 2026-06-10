@@ -19,11 +19,13 @@ function parseForm(formData: FormData) {
   const cta_label = (formData.get("cta_label") as string | null)?.trim() || null;
   const cta_url = (formData.get("cta_url") as string | null)?.trim() || null;
   const active = formData.get("active") === "on";
+  const poster_url = (formData.get("poster_url") as string | null)?.trim() || null;
+  const show_popup = formData.get("show_popup") === "on";
 
   const starts_at = startsRaw ? new Date(startsRaw).toISOString() : "";
   const ends_at = endsRaw ? new Date(endsRaw).toISOString() : "";
 
-  return { title_zh, title_en, body_zh, starts_at, ends_at, cta_label, cta_url, active };
+  return { title_zh, title_en, body_zh, starts_at, ends_at, cta_label, cta_url, active, poster_url, show_popup };
 }
 
 function validate(p: ReturnType<typeof parseForm>): string | null {

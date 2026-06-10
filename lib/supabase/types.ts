@@ -56,6 +56,8 @@ export interface Promotion {
   active: boolean;
   translations: Translations;
   created_at: string;
+  poster_url: string | null;   // 海報圖,用於首頁彈窗
+  show_popup: boolean;          // 是否在首頁顯示彈窗
 }
 
 export interface GoldPriceOverride {

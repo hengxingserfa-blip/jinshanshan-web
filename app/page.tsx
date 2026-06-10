@@ -12,6 +12,8 @@ import About from "@/components/About";
 import Contact from "@/components/Contact";
 import { getFeaturedProducts } from "@/lib/data/products";
 import { fetchInstagramPosts, getSiteSettings } from "@/lib/instagram";
+import { getActivePromotion } from "@/lib/data/promotions";
+import PromoPopup from "@/components/PromoPopup";
 
 const SITE = "https://www.shinygold.com.tw";
 
@@ -41,14 +43,26 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const [featured, igPosts, settings] = await Promise.all([
+  const [featured, igPosts, settings, promo] = await Promise.all([
     getFeaturedProducts(3),
     fetchInstagramPosts(6),
     getSiteSettings(),
+    getActivePromotion(),
   ]);
+
+  const showPopup = promo?.show_popup && promo?.poster_url;
 
   return (
     <>
+      {showPopup && (
+        <PromoPopup
+          posterUrl={promo.poster_url!}
+          titleZh={promo.title_zh}
+          ctaUrl={promo.cta_url}
+          ctaLabel={promo.cta_label}
+          promotionId={promo.id}
+        />
+      )}
       <Hero />
       <TrustBadges />
       <InstagramSection
