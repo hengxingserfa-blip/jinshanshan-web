@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useI18n, useT } from "@/lib/i18n/provider";
 import { localize } from "@/lib/i18n/localize";
 import type { Product } from "@/lib/supabase/types";
@@ -137,8 +137,8 @@ export default function ProductsGrid({ products, categories }: Props) {
 
   return (
     <>
-      {/* 分類 tab — 手機橫滑,桌機 wrap;有子分類的 tab hover/touch 出下拉 */}
-      <div className="-mx-6 sm:mx-0 mb-6 sm:mb-10 border-b border-ink-950/8 pb-4 sm:pb-8">
+      {/* 分類 tab — 主分類 row + 子分類 secondary row(parent active 時自動顯示) */}
+      <div className="-mx-6 sm:mx-0 mb-6 sm:mb-10 pt-1 border-b border-ink-950/8 pb-4 sm:pb-6">
         <div className="flex overflow-x-auto scrollbar-none sm:flex-wrap sm:justify-center gap-x-6 sm:gap-x-10 gap-y-4 sm:gap-y-6 px-6 sm:px-0 snap-x">
           {tabs.map((key) => {
             const isActive = key === activeTopLevel;
@@ -148,22 +148,80 @@ export default function ProductsGrid({ products, categories }: Props) {
             const children = key !== "all" ? childrenByParent[key] ?? [] : [];
             const hasChildren = children.length > 0;
             return (
-              <CategoryTab
+              <Link
                 key={key}
-                tabKey={key}
                 href={href}
-                labelEn={labelEn}
-                labelNative={labelNative}
-                count={categoryCounts[key] ?? 0}
-                isActive={isActive}
-                hasChildren={hasChildren}
-                children={children}
-                activeChild={active}
-                categoryCounts={categoryCounts}
-              />
+                scroll={false}
+                className="flex flex-col items-center group shrink-0 snap-start"
+              >
+                <span
+                  className={`font-display tracking-[0.3em] sm:tracking-[0.35em] text-[10px] uppercase whitespace-nowrap flex items-center gap-1 ${
+                    isActive
+                      ? "text-gold-600 border-b border-gold-500"
+                      : "text-ink-700 group-hover:text-gold-600"
+                  } transition-colors pb-1`}
+                >
+                  {labelEn}
+                  {hasChildren && (
+                    <span className="text-[8px] text-ink-400" aria-hidden>
+                      ▾
+                    </span>
+                  )}
+                </span>
+                <span className="text-[10px] tracking-[0.2em] sm:tracking-[0.25em] text-ink-400 mt-1 whitespace-nowrap">
+                  {labelNative}
+                  {categoryCounts[key] > 0 && (
+                    <span className="text-ink-400 ml-1">
+                      ({categoryCounts[key]})
+                    </span>
+                  )}
+                </span>
+              </Link>
             );
           })}
         </div>
+
+        {/* 子分類 row — 當選了「有子分類的主分類」時顯示在下方 */}
+        {activeTopLevel !== "all" &&
+          (childrenByParent[activeTopLevel]?.length ?? 0) > 0 && (
+            <div className="mt-3 sm:mt-4 bg-ivory-100/60 border-y border-ink-950/8">
+              <div className="flex overflow-x-auto scrollbar-none sm:flex-wrap sm:justify-center gap-x-1 sm:gap-x-2 gap-y-1 px-3 sm:px-6 py-2 sm:py-3 snap-x">
+                <Link
+                  href={`/products?category=${activeTopLevel}`}
+                  scroll={false}
+                  className={`shrink-0 snap-start px-3 py-1.5 text-[11px] tracking-wider whitespace-nowrap transition-colors ${
+                    active === activeTopLevel
+                      ? "bg-gold-500 text-ink-950 font-medium"
+                      : "bg-white text-ink-700 hover:bg-gold-100 hover:text-gold-700 border border-ink-950/10"
+                  }`}
+                >
+                  全部 {categoryLabels[activeTopLevel]?.native}
+                  <span className="ml-1 opacity-60">
+                    ({categoryCounts[activeTopLevel] ?? 0})
+                  </span>
+                </Link>
+                {childrenByParent[activeTopLevel].map((child) => {
+                  const childCount = categoryCounts[child.slug] ?? 0;
+                  const childActive = active === child.slug;
+                  return (
+                    <Link
+                      key={child.slug}
+                      href={`/products?category=${child.slug}`}
+                      scroll={false}
+                      className={`shrink-0 snap-start px-3 py-1.5 text-[11px] tracking-wider whitespace-nowrap transition-colors ${
+                        childActive
+                          ? "bg-gold-500 text-ink-950 font-medium"
+                          : "bg-white text-ink-700 hover:bg-gold-100 hover:text-gold-700 border border-ink-950/10"
+                      }`}
+                    >
+                      {child.name_zh}
+                      <span className="ml-1 opacity-60">({childCount})</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
       </div>
 
       {/* 搜尋 + 篩選 + 排序 */}
@@ -346,123 +404,3 @@ export default function ProductsGrid({ products, categories }: Props) {
   );
 }
 
-// 分類 tab + 下拉 — click toggle (手機友好) + outside click 關閉
-function CategoryTab({
-  tabKey,
-  href,
-  labelEn,
-  labelNative,
-  count,
-  isActive,
-  hasChildren,
-  children,
-  activeChild,
-  categoryCounts,
-}: {
-  tabKey: string;
-  href: string;
-  labelEn: string;
-  labelNative: string;
-  count: number;
-  isActive: boolean;
-  hasChildren: boolean;
-  children: ProductCategory[];
-  activeChild: string;
-  categoryCounts: Record<string, number>;
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  // outside click 關下拉
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent | TouchEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    document.addEventListener("touchstart", handler, { passive: true });
-    return () => {
-      document.removeEventListener("mousedown", handler);
-      document.removeEventListener("touchstart", handler);
-    };
-  }, [open]);
-
-  return (
-    <div ref={ref} className="relative shrink-0 snap-start">
-      <div className="flex flex-col items-center">
-        {/* 有子分類:點箭頭/標題 toggle 下拉;沒有就直接跳連結 */}
-        {hasChildren ? (
-          <button
-            type="button"
-            onClick={() => setOpen((o) => !o)}
-            className="flex flex-col items-center cursor-pointer"
-          >
-            <span
-              className={`font-display tracking-[0.3em] sm:tracking-[0.35em] text-[10px] uppercase whitespace-nowrap flex items-center gap-1 ${
-                isActive ? "text-gold-600 border-b border-gold-500" : "text-ink-700 hover:text-gold-600"
-              } transition-colors pb-1`}
-            >
-              {labelEn}
-              <span className={`text-[8px] transition-transform ${open ? "rotate-180" : ""}`}>▾</span>
-            </span>
-            <span className="text-[10px] tracking-[0.2em] sm:tracking-[0.25em] text-ink-400 mt-1 whitespace-nowrap">
-              {labelNative}
-              {count > 0 && <span className="text-ink-400 ml-1">({count})</span>}
-            </span>
-          </button>
-        ) : (
-          <Link href={href} scroll={false} className="flex flex-col items-center">
-            <span
-              className={`font-display tracking-[0.3em] sm:tracking-[0.35em] text-[10px] uppercase whitespace-nowrap ${
-                isActive ? "text-gold-600 border-b border-gold-500" : "text-ink-700 hover:text-gold-600"
-              } transition-colors pb-1`}
-            >
-              {labelEn}
-            </span>
-            <span className="text-[10px] tracking-[0.2em] sm:tracking-[0.25em] text-ink-400 mt-1 whitespace-nowrap">
-              {labelNative}
-              {count > 0 && <span className="text-ink-400 ml-1">({count})</span>}
-            </span>
-          </Link>
-        )}
-      </div>
-
-      {/* 子分類下拉 — click 開,outside click 關 */}
-      {hasChildren && open && (
-        <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 z-40">
-          <div className="bg-ivory-50 border border-ink-950/15 shadow-xl min-w-[200px] py-1">
-            <Link
-              href={href}
-              scroll={false}
-              onClick={() => setOpen(false)}
-              className="block px-4 py-2.5 text-xs text-ink-700 hover:bg-gold-50 hover:text-gold-700 transition-colors border-b border-ink-950/8"
-            >
-              <span className="font-medium">全部 {labelNative}</span>
-              <span className="text-ink-400 ml-1">({count})</span>
-            </Link>
-            {children.map((child) => {
-              const childCount = categoryCounts[child.slug] ?? 0;
-              const childActive = activeChild === child.slug;
-              return (
-                <Link
-                  key={child.slug}
-                  href={`/products?category=${child.slug}`}
-                  scroll={false}
-                  onClick={() => setOpen(false)}
-                  className={`block px-4 py-2.5 text-xs transition-colors ${
-                    childActive
-                      ? "bg-gold-100 text-gold-700"
-                      : "text-ink-700 hover:bg-gold-50 hover:text-gold-700"
-                  }`}
-                >
-                  {child.name_zh}{" "}
-                  <span className="text-ink-400">({childCount})</span>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
