@@ -56,25 +56,10 @@ export default async function Home() {
 
   return (
     <>
-      {showPopup && (
-        <PromoPopup
-          posterUrl={promo.poster_url!}
-          titleZh={promo.title_zh}
-          ctaUrl={promo.cta_url}
-          ctaLabel={promo.cta_label}
-        />
-      )}
+      {showPopup && <PromoPopup promo={promo} />}
       <Hero />
       <TrustBadges />
-      {showBanner && (
-        <PromoBanner
-          posterUrl={promo.poster_url!}
-          titleZh={promo.title_zh}
-          bodyZh={promo.body_zh}
-          ctaUrl={promo.cta_url}
-          ctaLabel={promo.cta_label}
-        />
-      )}
+      {showBanner && <PromoBanner promo={promo} />}
       <InstagramSection
         posts={igPosts}
         size={settings.ig_size}

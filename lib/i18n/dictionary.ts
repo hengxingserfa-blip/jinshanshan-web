@@ -32,6 +32,22 @@ export type Dict = {
     promo_cta_default: string;
     language: string;
   };
+  trust_badges: {
+    eyebrow: string;
+    pure_label: string;
+    pure_desc: string;
+    scale_label: string;
+    scale_desc: string;
+    price_label: string;
+    price_desc: string;
+    loss_label: string;
+    loss_desc: string;
+  };
+  promo_banner: {
+    eyebrow_main: string;
+    eyebrow_sub: string;
+    cta_default: string;
+  };
   hero: {
     eyebrow: string;
     title_a: string;
@@ -259,6 +275,22 @@ const zhTW: Dict = {
     promo_body_default: "母親節黃金回收加碼活動進行中",
     promo_cta_default: "詢問詳情",
     language: "Language",
+  },
+  trust_badges: {
+    eyebrow: "為什麼選金閃閃",
+    pure_label: "9999 純金",
+    pure_desc: "保證足金,純度標示明確",
+    scale_label: "公開秤重",
+    scale_desc: "電子秤現場過秤,客人親眼看",
+    price_label: "透明金價",
+    price_desc: "每日國際金價即時更新",
+    loss_label: "無耗損計算",
+    loss_desc: "舊金換新不扣火耗,實重計價",
+  },
+  promo_banner: {
+    eyebrow_main: "當前主打活動",
+    eyebrow_sub: "Featured Promotion",
+    cta_default: "看更多 →",
   },
   hero: {
     eyebrow: "Est. Zhongli · Taoyuan",
@@ -488,6 +520,22 @@ const en: Dict = {
     promo_cta_default: "Learn More",
     language: "Language",
   },
+  trust_badges: {
+    eyebrow: "Why Shiny Gold",
+    pure_label: "9999 Pure Gold",
+    pure_desc: "Certified purity, clearly marked",
+    scale_label: "Public Weighing",
+    scale_desc: "Weighed live in front of you",
+    price_label: "Transparent Pricing",
+    price_desc: "Updated to daily global gold price",
+    loss_label: "No Wastage Deduction",
+    loss_desc: "Trade-in by actual weight, no fire-loss cut",
+  },
+  promo_banner: {
+    eyebrow_main: "Featured Promotion",
+    eyebrow_sub: "Current Highlight",
+    cta_default: "Learn More →",
+  },
   hero: {
     eyebrow: "Est. Zhongli · Taoyuan",
     title_a: "Here,",
@@ -715,6 +763,22 @@ const vi: Dict = {
     promo_body_default: "Khuyến mãi thu vàng Ngày của Mẹ đang diễn ra",
     promo_cta_default: "Xem chi tiết",
     language: "Ngôn ngữ",
+  },
+  trust_badges: {
+    eyebrow: "Tại sao chọn Shiny Gold",
+    pure_label: "Vàng 9999 nguyên chất",
+    pure_desc: "Đảm bảo vàng nguyên chất, dấu hiệu rõ ràng",
+    scale_label: "Cân công khai",
+    scale_desc: "Cân điện tử tại chỗ, khách hàng nhìn rõ",
+    price_label: "Giá vàng minh bạch",
+    price_desc: "Cập nhật giá vàng quốc tế hàng ngày",
+    loss_label: "Không trừ hao",
+    loss_desc: "Đổi vàng cũ tính theo trọng lượng thực",
+  },
+  promo_banner: {
+    eyebrow_main: "Khuyến mãi nổi bật",
+    eyebrow_sub: "Featured Promotion",
+    cta_default: "Xem thêm →",
   },
   hero: {
     eyebrow: "Est. Trung Lịch · Đào Viên",
@@ -944,6 +1008,22 @@ const id: Dict = {
     promo_cta_default: "Tanya detail",
     language: "Bahasa",
   },
+  trust_badges: {
+    eyebrow: "Mengapa Pilih Shiny Gold",
+    pure_label: "Emas Murni 9999",
+    pure_desc: "Dijamin emas murni, kadar tertera jelas",
+    scale_label: "Timbang Terbuka",
+    scale_desc: "Timbangan elektronik di depan Anda",
+    price_label: "Harga Transparan",
+    price_desc: "Harga emas internasional update setiap hari",
+    loss_label: "Tanpa Potongan Susut",
+    loss_desc: "Tukar emas lama dihitung berat aktual",
+  },
+  promo_banner: {
+    eyebrow_main: "Promo Unggulan Bulan Ini",
+    eyebrow_sub: "Featured Promotion",
+    cta_default: "Pelajari Lagi →",
+  },
   hero: {
     eyebrow: "Est. Zhongli · Taoyuan",
     title_a: "Di sini,",
@@ -1172,6 +1252,22 @@ const fil: Dict = {
     promo_cta_default: "Tanungin",
     language: "Wika",
   },
+  trust_badges: {
+    eyebrow: "Bakit Shiny Gold",
+    pure_label: "Dalisay na Gintong 9999",
+    pure_desc: "Garantisadong dalisay, malinaw na marka",
+    scale_label: "Bukas na Pagtimbang",
+    scale_desc: "Elektronikong timbangan sa harap ninyo",
+    price_label: "Transparenteng Presyo",
+    price_desc: "Pang-araw-araw na pandaigdigang presyo",
+    loss_label: "Walang Bawas na Susut",
+    loss_desc: "Aktwal na timbang sa pagpapalit ng ginto",
+  },
+  promo_banner: {
+    eyebrow_main: "Tampok na Promosyon",
+    eyebrow_sub: "Featured Promotion",
+    cta_default: "Matuto pa →",
+  },
   hero: {
     eyebrow: "Est. Zhongli · Taoyuan",
     title_a: "Dito,",
@@ -1399,6 +1495,22 @@ const th: Dict = {
     promo_body_default: "โปรโมชั่นรับซื้อทองวันแม่กำลังดำเนินอยู่",
     promo_cta_default: "ดูรายละเอียด",
     language: "ภาษา",
+  },
+  trust_badges: {
+    eyebrow: "ทำไมเลือก Shiny Gold",
+    pure_label: "ทอง 9999 บริสุทธิ์",
+    pure_desc: "รับประกันทองแท้ ระบุค่าชัดเจน",
+    scale_label: "ชั่งน้ำหนักโปร่งใส",
+    scale_desc: "เครื่องชั่งดิจิทัล ชั่งต่อหน้าลูกค้า",
+    price_label: "ราคาโปร่งใส",
+    price_desc: "ราคาทองสากลอัปเดตทุกวัน",
+    loss_label: "ไม่หักค่าสูญเสีย",
+    loss_desc: "เปลี่ยนทองเก่าคิดตามน้ำหนักจริง",
+  },
+  promo_banner: {
+    eyebrow_main: "โปรโมชั่นเด่นเดือนนี้",
+    eyebrow_sub: "Featured Promotion",
+    cta_default: "ดูเพิ่มเติม →",
   },
   hero: {
     eyebrow: "Est. จงลี่ · เถาหยวน",
