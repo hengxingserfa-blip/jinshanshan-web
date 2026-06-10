@@ -13,6 +13,8 @@ const FALLBACK: Promotion = {
   active: true,
   translations: {},
   created_at: "",
+  poster_url: null,
+  show_popup: false,
 };
 
 export async function getActivePromotion(): Promise<Promotion | null> {
