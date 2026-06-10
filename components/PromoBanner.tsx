@@ -40,7 +40,7 @@ export default function PromoBanner({
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* 海報 */}
           <div className="relative w-full max-w-sm mx-auto md:mx-0 md:ml-auto">
-            <div className="absolute inset-0 bg-gold-500/15 translate-x-3 translate-y-3" aria-hidden />
+            <div className="absolute inset-0 bg-gold-500/15 translate-x-3 translate-y-3 hidden sm:block" aria-hidden />
             <div className="relative aspect-[9/16] bg-white shadow-2xl overflow-hidden">
               <Image
                 src={posterUrl}
