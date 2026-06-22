@@ -25,6 +25,8 @@ interface ProductDefaults {
   available?: boolean;
   sort_order?: number;
   translations?: Translations | null;
+  labour_fee?: number | null;
+  selling_gold_price?: number | null;
 }
 
 const initial = { ok: false, message: "" };
@@ -57,6 +59,11 @@ export default function ProductForm({
 
   const [deleting, startDelete] = useTransition();
   const [deleteMsg, setDeleteMsg] = useState("");
+
+  // 售價即時算
+  const [weight, setWeight] = useState<number>(defaults?.weight_qian ?? 0);
+  const [goldPrice, setGoldPrice] = useState<number>(defaults?.selling_gold_price ?? 0);
+  const [labour, setLabour] = useState<number>(defaults?.labour_fee ?? 0);
 
   return (
     <div className="space-y-8">
@@ -136,8 +143,53 @@ export default function ProductForm({
               defaultValue={defaults?.weight_qian ?? ""}
               placeholder="例: 3.75"
               className={input}
+              onChange={(e) => setWeight(e.target.valueAsNumber || 0)}
             />
           </Field>
+        </div>
+
+        {/* 售價計算區 */}
+        <div className="bg-gold-50 border border-gold-200 p-5 space-y-4">
+          <p className="font-display text-xs tracking-[0.25em] uppercase text-gold-700 font-medium">
+            💰 售價設定(後台自動算)
+          </p>
+          <p className="text-[11px] text-ink-600 leading-loose">
+            公式:售出金價(每錢)× 金重 + 工錢 = 商品售價。兩個欄位都填了商品頁才顯示售價。
+          </p>
+          <div className="grid sm:grid-cols-3 gap-4">
+            <Field label="售出金價 (每錢)">
+              <input
+                name="selling_gold_price"
+                type="number"
+                step="1"
+                defaultValue={defaults?.selling_gold_price ?? ""}
+                placeholder="例: 12500"
+                className={input}
+                onChange={(e) => setGoldPrice(e.target.valueAsNumber || 0)}
+              />
+            </Field>
+            <Field label="工錢 (元)">
+              <input
+                name="labour_fee"
+                type="number"
+                step="1"
+                defaultValue={defaults?.labour_fee ?? ""}
+                placeholder="例: 800"
+                className={input}
+                onChange={(e) => setLabour(e.target.valueAsNumber || 0)}
+              />
+            </Field>
+            <div>
+              <span className="block text-xs tracking-[0.2em] text-gold-700 uppercase font-medium mb-2">
+                商品售價
+              </span>
+              <div className="bg-white border border-gold-300 px-3 py-2.5 text-lg font-display text-gold-700">
+                {weight > 0 && goldPrice > 0
+                  ? `NT$ ${Math.round(goldPrice * weight + (labour || 0)).toLocaleString()}`
+                  : <span className="text-ink-400 text-sm">填完上面才顯示</span>}
+              </div>
+            </div>
+          </div>
         </div>
 
         <ImageUpload

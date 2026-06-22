@@ -53,12 +53,18 @@ function parseForm(formData: FormData) {
 
   const weight_qian = weight_str ? parseFloat(weight_str) : null;
 
+  const labour_str = (formData.get("labour_fee") as string | null) ?? "";
+  const labour_fee = labour_str ? parseFloat(labour_str) : null;
+  const gold_str = (formData.get("selling_gold_price") as string | null) ?? "";
+  const selling_gold_price = gold_str ? parseFloat(gold_str) : null;
+
   // 翻譯欄位從 hidden input "translations" 撈 JSON
   const translations = parseTranslations(formData.get("translations"));
 
   return {
     slug, category, name_zh, name_en, description_zh, image_url,
     weight_qian, purity, featured, available, sort_order, translations,
+    labour_fee, selling_gold_price,
   };
 }
 

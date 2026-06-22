@@ -26,6 +26,8 @@ export interface Product {
   translations: Translations;
   created_at: string;
   updated_at: string;
+  labour_fee: number | null;
+  selling_gold_price: number | null;
 }
 
 export interface Article {
