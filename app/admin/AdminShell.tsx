@@ -13,6 +13,7 @@ const NAV = [
   { href: "/admin/articles", label: "Articles", zh: "文章管理", icon: "📖" },
   { href: "/admin/promotions", label: "Promotions", zh: "促銷活動", icon: "🎁" },
   { href: "/admin/ig", label: "Instagram", zh: "首頁 IG 影片", icon: "📷" },
+  { href: "/admin/sync", label: "Sync", zh: "庫存同步", icon: "🔄" },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
