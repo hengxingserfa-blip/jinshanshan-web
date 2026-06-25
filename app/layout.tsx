@@ -128,6 +128,8 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="https://jwzdhnmxlybeikysbokf.supabase.co" />
         {/* IG embed (首頁 Instagram 區塊) */}
         <link rel="dns-prefetch" href="https://www.instagram.com" />
+        {/* hero 標語書法字體 (霞鶩文楷子集), 優先載入避免閃爍 */}
+        <link rel="preload" href="/fonts/lxgw-hero-tc.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <StructuredData />
       </head>
       <body

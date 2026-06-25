@@ -294,9 +294,9 @@ const zhTW: Dict = {
   },
   hero: {
     eyebrow: "Est. Zhongli · Taoyuan",
-    title_a: "在這裡,",
-    title_b: "黃金",
-    title_c: "不只是黃金",
+    title_a: "每一件金飾，\n都承載著一段故事。",
+    title_b: "每一次相遇，\n都值得被珍藏。",
+    title_c: "金閃閃銀樓，以真誠與匠心，\n陪您收藏每一份珍貴時光。",
     subtitle_1: "桃園中壢的誠信銀樓。",
     subtitle_2: "公開金價・現場秤重・清楚試算。",
     cta_a: "加 LINE 詢今日金價",

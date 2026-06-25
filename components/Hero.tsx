@@ -35,16 +35,14 @@ export default function Hero() {
     <section className="relative bg-ivory-50">
       <div className="grid lg:grid-cols-12 min-h-[90vh] lg:min-h-screen">
         <div className="lg:col-span-5 flex items-center px-6 sm:px-10 lg:px-20 py-24 lg:py-0 order-2 lg:order-1 subtle-noise">
-          <div className="max-w-md animate-fade-up">
+          <div className="max-w-lg animate-fade-up">
             <p className="font-display tracking-[0.5em] text-gold-600 text-[10px] mb-12 uppercase">
               {t.hero.eyebrow}
             </p>
-            <h1 className="font-display text-5xl md:text-7xl lg:text-[6.5rem] leading-[0.95] text-ink-950 mb-12">
-              {t.hero.title_a}
-              <br />
-              <span className="gold-foil">{t.hero.title_b}</span>
-              <br />
-              <span className="italic font-serif text-ink-900">{t.hero.title_c}</span>
+            <h1 className="font-kai whitespace-pre-line text-[1.4rem] sm:text-2xl lg:text-[1.9rem] leading-[1.7] tracking-[0.05em] text-ink-900 mb-12">
+              <span className="block">{t.hero.title_a}</span>
+              <span className="block gold-foil font-medium my-2">{t.hero.title_b}</span>
+              <span className="block">{t.hero.title_c}</span>
             </h1>
             <Ornament className="mb-10 !justify-start" />
             <p className="text-sm md:text-base text-ink-700 leading-loose mb-12 font-light">

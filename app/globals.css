@@ -26,6 +26,22 @@ body {
   width: 100%;
 }
 
+/* 霞鶩文楷 — 圓潤書法體, 只子集化 hero 標語用到的字 (~11KB) */
+@font-face {
+  font-family: "LXGW Hero";
+  src: url("/fonts/lxgw-hero-tc.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer utilities {
+  /* 中文走霞鶩文楷, 拉丁/其他語言 fallback 回原襯線體 */
+  .font-kai {
+    font-family: "LXGW Hero", var(--font-cormorant), Georgia, serif;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
